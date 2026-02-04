@@ -1,4 +1,7 @@
-# JKAN 
+# rdl-urbantracker
+Development of an urban data tracker, part of the RDL project
+
+## Based on JKAN 
 A lightweight, backend-free open data portal, powered by Jekyll
 
 Open-source data portals can be really hard to install and maintain. But their
