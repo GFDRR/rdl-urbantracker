@@ -4,48 +4,16 @@ dataset_fields:
   - field_name: title
     label: Title
     datajson: title
-  - field_name: organization
-    label: Organization
-    datajson: publisher.name
-  - field_name: notes
-    label: Description
-    datajson: description
-  - field_name: license
-    label: License
-    datajson: license
-  - field_name: category
-    label: Category
-    display_template: display/category.html
-    datajson: category
-  - field_name: maintainer
-    label: Maintainer
-    datajson: contactPoint.fn
-  - field_name: maintainer_email
-    label: Maintainer Email
-    datajson: contactPoint.hasEmail
+  - field_name: datatype
+    label: Data Type
+    display_template: display/datatype.html
+    datajson: datatype
+  - field_name: city
+    label: City
+    display_template: display/city.html
+    datajson: city
 
-resource_fields:
-  - field_name: name
-    label: Resource Name
-    datajson: distribution.title
-  - field_name: url
-    label: URL
-    datajson: distribution.downloadURL
-  - field_name: format
-    label: Format
-    datajson: distribution.format
-    values:
-      - api
-      - csv
-      - json
-      - geojson
-      - html
-      - kml
-      - kmz
-      - shp
-      - xml
-
-organization_fields:
+datatype_fields:
   - field_name: title
     label: Title
   - field_name: description
@@ -53,12 +21,18 @@ organization_fields:
   - field_name: logo
     label: Logo
 
-category_fields:
-  - field_name: name
-    label: Name
+city_fields:
+  - field_name: title
+    label: Title
   - field_name: logo
     label: Logo
   - field_name: logo_credit
     label: Logo Credit
-  - field_name: featured
-    label: Featured on Homepage
+  - field_name: city
+    label: City
+  - field_name: state
+    label: State
+  - field_name: country
+    label: Country
+  - field_name: city_id
+    label: ID

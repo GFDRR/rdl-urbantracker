@@ -10,8 +10,8 @@ input[data-hook=search-query] {
 .js-shown { display: none; }
 .js .js-shown { display: block; }
 
-.organization-thumbnail img,
-.category-thumbnail img {
+.datatype-thumbnail img,
+.city-thumbnail img {
   width: 64px;
 }
 
@@ -56,7 +56,7 @@ dataset {
   grid-auto-flow: dense;
 }
 
-.card-grid-organizations {
+.card-grid-cities {
   grid-template-columns: 1fr;
   grid-template-rows: repeat(auto-fill, minmax(150px, 1fr));
 }
