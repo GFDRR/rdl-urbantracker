@@ -2,10 +2,12 @@
 ---
 [{% for dataset in site.datasets %}
   {% assign city = site.cities | where: "city_id", dataset.city | first %}
+  {% assign datatype = site.datatypes | where:"title", dataset.datatype | first %}
   {
     "external_url": {{ dataset.external_url | jsonify }},
     "title": {{ dataset.title | jsonify }},
-    "datatype": {{ dataset.datatype | jsonify }}{% if dataset.notes != "" %},
+    "datatype": {{ dataset.datatype | jsonify }},
+    "datatype_category": {{ datatype.category | jsonify }}{% if dataset.notes != "" %},
     "notes": {{ dataset.notes | markdownify | jsonify }}{% endif %},
     "city_id": {{ dataset.city | jsonify }},
     "city": {{ city.title | jsonify }},

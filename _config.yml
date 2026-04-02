@@ -9,7 +9,7 @@ strict_front_matter: true
 jkan_theme: Default
 
 # Dataset schema
-schema: default
+schema: urbantracker
 
 # Nav bar
 navigation:
@@ -25,6 +25,9 @@ collections:
   datatypes:
     output: true
     permalink: /datatypes/:path/
+  datatype_categories:
+    output: true
+    permalink: /datatype_categories/:path/
 
 # Collections (cont'd)
 defaults:
@@ -40,11 +43,17 @@ defaults:
       layout: dataset
       city: Missing
       datatype: Missing
+      datatype_category: Missing
   - scope:
       path: ""
       type: datatypes
     values:
       layout: datatype
+  - scope:
+      path: ""
+      type: datatype_categories
+    values:
+      layout: datatype_category
 
 # Markdown settings
 markdown: kramdown

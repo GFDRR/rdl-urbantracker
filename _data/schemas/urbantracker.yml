@@ -1,5 +1,3 @@
-# To add fields, make a new schema file in this directory
-# and change the schema setting in _config.yml to its name
 dataset_fields:
   - field_name: title
     label: Title
@@ -24,6 +22,18 @@ datatype_fields:
     label: Description
   - field_name: logo
     label: Logo
+  - field_name: logo_credit
+    label: Logo Credit
+
+datatype_category_fields:
+  - field_name: title
+    label: Title
+  - field_name: description
+    label: Description
+  - field_name: logo
+    label: Logo
+  - field_name: logo_credit
+    label: Logo Credit
 
 city_fields:
   - field_name: title

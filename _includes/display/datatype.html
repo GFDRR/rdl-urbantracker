@@ -1,6 +1,9 @@
+{% assign datatype = site.datatypes | where:"title",include.value | first %}
+
 <tr>
   <th>{{ include.field.label }}</th>
   <td>
+    <a href="{{ site.baseurl }}/datatype_categories/{{ datatype.category | slugify }}">{{ datatype.category }}</a> /
     <a href="{{ site.baseurl }}/datatypes/{{ include.value | slugify }}">{{ include.value }}</a>
   </td>
 </tr>
