@@ -12,6 +12,10 @@ dataset_fields:
     label: City
     display_template: display/city.html
     datajson: city
+  - field_name: external_url
+    label: External URL
+    datajson: external_url
+    display_template: display/external_url.html
 
 datatype_fields:
   - field_name: title

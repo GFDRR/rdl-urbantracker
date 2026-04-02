@@ -1,11 +1,14 @@
 ---
 ---
 [{% for dataset in site.datasets %}
+  {% assign city = site.cities | where: "city_id", dataset.city | first %}
   {
+    "external_url": {{ dataset.external_url | jsonify }},
     "title": {{ dataset.title | jsonify }},
     "datatype": {{ dataset.datatype | jsonify }}{% if dataset.notes != "" %},
     "notes": {{ dataset.notes | markdownify | jsonify }}{% endif %},
-    "city": {{ dataset.city | jsonify }},
+    "city_id": {{ dataset.city | jsonify }},
+    "city": {{ city.title | jsonify }},
     "url": "{{ site.baseurl }}{{ dataset.url }}"
   }{% unless forloop.last %},{% endunless %}{% endfor %}
 ]
