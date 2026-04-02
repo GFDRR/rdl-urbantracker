@@ -13,8 +13,6 @@ schema: default
 
 # Nav bar
 navigation:
-  - title: Datasets
-    url: /datasets/
 
 # Collections
 collections:
