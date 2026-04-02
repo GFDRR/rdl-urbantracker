@@ -60,25 +60,11 @@ markdown: kramdown
 kramdown:
   input: GFM
 
-# Google Analytics
-google_analytics:
-  enabled: false
-  code: "UA-XXXXXX-1"
-
 # US Digital Analytics Program - https://analytics.usa.gov
 digital_analytics_program:
   enabled: false
   agency: ""
   subagency: ""
-
-# Hypothesis.io - Annotator
-hypothesis:
-  enabled: false
-
-# Twitter
-twittercard:
-  enabled: false
-  username: "@"
 
 # Open Graph
 opengraph:
