@@ -16,11 +16,8 @@ layout: default
     <div class="col-sm-12">
     {% endif %}
       <h1>
-        {{ page.title }}
+        {{ page.category }} / {{ page.title }}
       </h1>
-      <h2>
-        {{ page.category }}
-      </h2>
       <p>{{ page.description }}</p>
       <div data-component="datasets-list" data-datatype="{{ page.title | slugify }}">
         <h3 class="datasets-count" data-hook="datasets-count">{{ datasets_count }}
