@@ -15,18 +15,18 @@ export default class {
   // Given an array of datasets, returns an array of their cities with counts
   _citiesWithCount (datasets, params) {
     return chain(datasets)
-      .filter('city')
-      .flatMap(function (value) {
-        // Explode objects where city is an array into one object per city
-        if (typeof value.city === 'string') return value
-        const duplicates = []
-        value.city.forEach(function (city) {
-          duplicates.push(defaults({city: city}, value))
+      .filter('cities')
+      .flatMap(function (dataset) {
+        return dataset.cities.map(function (city) {
+          return {
+            city: city.title,
+            dataset: dataset
+          }
         })
-        return duplicates
       })
       .groupBy('city')
-      .map(function (datasetsInCity, city) {
+      .map(function (cityDatasets, city) {
+        const datasetsInCity = cityDatasets.map(function (cd) { return cd.dataset })
         const filters = createDatasetFilters(pick(params, ['city']))
         const filteredDatasets = filter(datasetsInCity, filters)
         const citySlug = slugify(city)

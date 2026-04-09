@@ -1,0 +1,14 @@
+<tr>
+  <th>{{ include.field.label }}</th>
+  <td>
+    {% if include.value.size %}
+      {% for datatype_title in include.value %}
+        {% assign datatype = site.datatypes | where: "title", datatype_title | first %}
+        <a href="{{ site.baseurl }}{{ datatype.url }}">{{ datatype.title }}</a>{% unless forloop.last %}, {% endunless %}
+      {% endfor %}
+    {% else %}
+        {% assign datatype = site.datatypes | where: "title", include.value | first %}
+        <a href="{{ site.baseurl }}{{ datatype.url }}">{{ datatype.title }}</a>
+    {% endif %}
+  </td>
+<tr>

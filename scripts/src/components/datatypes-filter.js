@@ -14,8 +14,18 @@ export default class {
 
   _datatypesWithCount (datasets, params) {
     return chain(datasets)
+    .filter('datatypes')
+    .flatMap(function (dataset) {
+      return dataset.datatypes.map(function (datatype) {
+        return {
+          datatype: datatype.title,
+          dataset: dataset
+        }
+      })
+    })
       .groupBy('datatype')
-      .map(function (datasetsInDatatype, datatype) {
+      .map(function (datatypeDatasets, datatype) {
+        const datasetsInDatatype = datatypeDatasets.map(function (dd) { return dd.dataset })
         const filters = createDatasetFilters(pick(params, ['datatype']))
         const filteredDatasets = filter(datasetsInDatatype, filters)
         const datatypeSlug = slugify(datatype)

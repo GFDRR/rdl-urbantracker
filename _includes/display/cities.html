@@ -1,0 +1,14 @@
+<tr>
+  <th>{{ include.field.label }}</th>
+  <td>
+    {% if include.value.size %}
+      {% for city_id in include.value %}
+        {% assign city = site.cities | where: "city_id", city_id | first %}
+        <a href="{{ site.baseurl }}{{ city.url }}">{{ city.title }}</a>{% unless forloop.last %}, {% endunless %}
+      {% endfor %}
+    {% else %}
+        {% assign city = site.cities | where: "include.value", city_id | first %}
+        <a href="{{ site.baseurl }}{{ city.url }}">{{ city.title }}</a>
+    {% endif %}
+  </td>
+<tr>
