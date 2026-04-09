@@ -1,0 +1,12 @@
+# python
+bin
+lib
+lib64
+pyvenv.cfg
+.venv
+__pycache__
+
+# temporary files
+rdl-**.json
+test_results.json
+validation_results.json
