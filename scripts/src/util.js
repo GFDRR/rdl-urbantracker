@@ -25,11 +25,11 @@ export function slugify (text) {
 export function createDatasetFilters (filters) {
   return function (dataset) {
     const conditions = []
-    if (filters.organization) {
-      conditions.push(dataset.organization && slugify(dataset.organization) === filters.organization)
+    if (filters.datatype) {
+      conditions.push(dataset.datatype && slugify(dataset.datatype) === filters.datatype)
     }
-    if (filters.category) {
-      conditions.push(dataset.category && slugify(dataset.category).indexOf(filters.category) !== -1)
+    if (filters.city) {
+      conditions.push(dataset.city && slugify(dataset.city).indexOf(filters.city) !== -1)
     }
     return conditions.every(function (value) { return !!value })
   }

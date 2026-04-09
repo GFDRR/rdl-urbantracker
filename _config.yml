@@ -1,6 +1,6 @@
-title: JKAN
-greeting: Welcome to JKAN
-description: A lightweight, backend-free open data portal, powered by Jekyll.
+title: Urban Data Tracker
+greeting: Welcome to the Urban Data Tracker
+description: A lightweight, backend-free tool for tracking urban data coverage by city.
 logo: /img/jkan.png
 hero_image: /img/homepage-hero.jpg
 strict_front_matter: true
@@ -9,73 +9,62 @@ strict_front_matter: true
 jkan_theme: Default
 
 # Dataset schema
-schema: default
+schema: urbantracker
 
 # Nav bar
 navigation:
-  - title: Datasets
-    url: /datasets/
-  - title: Organizations
-    url: /organizations/
-  - title: Categories
-    url: /categories/
 
 # Collections
 collections:
   datasets:
     output: true
     permalink: /datasets/:path/
-  organizations:
+  cities:
     output: true
-    permalink: /organizations/:path/
-  dataset_categories:
+    permalink: /cities/:path/
+  datatypes:
     output: true
-    permalink: /categories/:path/
+    permalink: /datatypes/:path/
+  datatype_categories:
+    output: true
+    permalink: /datatype_categories/:path/
 
 # Collections (cont'd)
 defaults:
   - scope:
       path: ""
-      type: dataset_categories
+      type: cities
     values:
-      layout: category
+      layout: city
   - scope:
       path: ""
       type: datasets
     values:
       layout: dataset
-      category: Uncategorized
-      organization: N/A
+      city: Missing
+      datatype: Missing
+      datatype_category: Missing
   - scope:
       path: ""
-      type: organizations
+      type: datatypes
     values:
-      layout: organization
+      layout: datatype
+  - scope:
+      path: ""
+      type: datatype_categories
+    values:
+      layout: datatype_category
 
 # Markdown settings
 markdown: kramdown
 kramdown:
   input: GFM
 
-# Google Analytics
-google_analytics:
-  enabled: false
-  code: "UA-XXXXXX-1"
-
 # US Digital Analytics Program - https://analytics.usa.gov
 digital_analytics_program:
   enabled: false
   agency: ""
   subagency: ""
-
-# Hypothesis.io - Annotator
-hypothesis:
-  enabled: false
-
-# Twitter
-twittercard:
-  enabled: false
-  username: "@"
 
 # Open Graph
 opengraph:

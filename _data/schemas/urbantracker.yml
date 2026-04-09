@@ -1,0 +1,52 @@
+dataset_fields:
+  - field_name: title
+    label: Title
+    datajson: title
+  - field_name: datatype
+    label: Data Type
+    display_template: display/datatype.html
+    datajson: datatype
+  - field_name: city
+    label: City
+    display_template: display/city.html
+    datajson: city
+  - field_name: external_url
+    label: External URL
+    datajson: external_url
+    display_template: display/external_url.html
+
+datatype_fields:
+  - field_name: title
+    label: Title
+  - field_name: description
+    label: Description
+  - field_name: logo
+    label: Logo
+  - field_name: logo_credit
+    label: Logo Credit
+
+datatype_category_fields:
+  - field_name: title
+    label: Title
+  - field_name: description
+    label: Description
+  - field_name: logo
+    label: Logo
+  - field_name: logo_credit
+    label: Logo Credit
+
+city_fields:
+  - field_name: title
+    label: Title
+  - field_name: logo
+    label: Logo
+  - field_name: logo_credit
+    label: Logo Credit
+  - field_name: city
+    label: City
+  - field_name: state
+    label: State
+  - field_name: country
+    label: Country
+  - field_name: city_id
+    label: ID

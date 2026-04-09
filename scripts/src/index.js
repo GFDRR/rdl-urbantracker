@@ -4,8 +4,8 @@ import $ from 'jquery'
 import 'bootstrap/js/dist/collapse'
 
 import DatasetsList from './components/datasets-list'
-import CategoriesFilter from './components/categories-filter'
-import OrganizationsFilter from './components/organizations-filter'
+import CitiesFilter from './components/cities-filter'
+import DatatypesFilter from './components/datatypes-filter'
 import DatasetDisplay from './components/dataset-display'
 import {queryByComponent} from './util'
 
@@ -26,8 +26,8 @@ function getDatasets () {
 const components = [
   {tag: 'dataset-display', class: DatasetDisplay},
   {tag: 'datasets-list', class: DatasetsList, usesDatasets: true},
-  {tag: 'categories-filter', class: CategoriesFilter, usesDatasets: true},
-  {tag: 'organizations-filter', class: OrganizationsFilter, usesDatasets: true}
+  {tag: 'cities-filter', class: CitiesFilter, usesDatasets: true},
+  {tag: 'datatypes-filter', class: DatatypesFilter, usesDatasets: true}
 ]
 for (let component of components) {
   const els = queryByComponent(component.tag)
