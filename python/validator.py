@@ -1,7 +1,8 @@
-from jsonschema import validators, ValidationError
+from jsonschema import validate, validators, ValidationError
 import json
 import logging
 from pathlib import Path
+import config
 
 # Configuration
 RESULTS_PATH = Path(__file__).parent / "validation_results.json"
@@ -44,7 +45,7 @@ def custom_required(validator, required, instance, schema):
             yield ValidationError(f"{property!r} is a required property")
 
 
-def validate_with_custom_logic(dataset, schema):
+def validate_datasets(dataset, schema):
     """
     Validate a dataset against the schema with custom logic.
     
@@ -77,6 +78,45 @@ def validate_with_custom_logic(dataset, schema):
         }
         return 1, error_details
 
+
+def validate_datatypes():
+    """Validate datatypes against schema and return validation errors."""
+    validation_errors = []
+    
+    # Load schema
+    with open(config.datatypes_schema_path, 'r') as f:
+        full_schema = json.load(f)
+    
+    # Extract the datatype definition from the schema
+    datatype_schema = full_schema['definitions']['datatype']
+    
+    # Load datatypes data
+    with open(config.datatypes_input_path, 'r') as f:
+        datatypes = json.load(f)
+    
+    # Validate each datatype against the datatype schema
+    for datatype in datatypes:
+        datatype_id = datatype.get('id', 'unknown')
+        datatype_name = datatype.get('name', 'unnamed')
+        try:
+            validate(instance=datatype, schema=datatype_schema)
+        except ValidationError as e:
+            error_message = str(e.message)
+            schema_path = '/'.join(str(item) for item in e.absolute_path)
+            logging.error(f"Validation error for datatype {datatype_name} (id: {datatype_id}): {error_message}")
+            validation_errors.append({
+                'datatype_id': datatype_id,
+                'datatype_name': datatype_name,
+                'message': error_message,
+                'schema_path': schema_path
+            })
+    
+    if validation_errors:
+        print(f"Datatype validation failed with {len(validation_errors)} error(s).")
+    else:
+        print(f"All {len(datatypes)} datatypes validated successfully.")
+    
+    return validation_errors, datatypes
 
 def save_validation_results(results):
     """Save validation results to JSON file."""

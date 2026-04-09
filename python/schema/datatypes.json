@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://urbantracker.org/schemas/datatypes.schema.json",
+  "title": "Urban Tracker Data Types Schema",
+  "description": "JSON schema for validating RDL Urban Tracker data type definitions",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/datatype"
+  },
+  "definitions": {
+    "datatype": {
+      "type": "object",
+      "title": "Data Type Definition",
+      "description": "Definition of a data type including its metadata, requirements, and relationships to standards",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^dt-[0-9]+$",
+          "description": "Unique identifier for the data type (format: dt-{number})"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name of the data type"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of what the data type represents"
+        },
+        "category": {
+          "type": "string",
+          "description": "Thematic category that this data type belongs to"
+        },
+        "rdls_coverage": {
+          "type": "string",
+          "description": "Indication of how this data type relates to RDLS coverage",
+          "enum": [
+            "Covered",
+            "Extension",
+            "Partial",
+            "Not Covered"
+          ]
+        },
+        "rdls_component": {
+          "type": "string",
+          "description": "The RDLS component that this data type maps to"
+        },
+        "requirements": {
+          "type": "string",
+          "description": "Technical specifications and field requirements for the data type"
+        },
+        "inspire_spec": {
+          "type": "string",
+          "description": "Reference to the applicable INSPIRE specification (or N/A / Multiple if not directly applicable)"
+        },
+        "example_dataset": {
+          "type": "string",
+          "description": "Name or description of a representative example dataset"
+        },
+        "example_url": {
+          "type": "string",
+          "description": "URL reference to the example dataset or data source"
+        },
+        "comments": {
+          "type": "string",
+          "description": "Additional notes and contextual comments"
+        },
+        "reviewed": {
+          "type": "boolean",
+          "description": "Indicates whether this data type has been reviewed"
+        },
+        "review_notes": {
+          "type": "string",
+          "description": "Notes from the review process"
+        }
+      },
+      "required": ["id", "name", "description", "category", "rdls_coverage", "rdls_component", "requirements", "inspire_spec", "example_dataset", "example_url", "comments", "reviewed", "review_notes"],
+      "additionalProperties": false
+    }
+  }
+}

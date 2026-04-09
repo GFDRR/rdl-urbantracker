@@ -95,3 +95,4 @@ exclude:
   - netlify.toml
   - .parcel-cache
   - docs
+  - python

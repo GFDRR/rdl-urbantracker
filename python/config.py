@@ -19,6 +19,11 @@ SEMANTIC_MIN_SCORE = 0.25
 schema_url_v2 = "https://docs.riskdatalibrary.org/en/0__2__0/rdls_schema.json"
 schema_url_v3 = "https://docs.riskdatalibrary.org/en/0__3__0/rdls_schema.json"
 
+datatypes_input_path = f"{python_path}/input/datatypes.json"
+datatypes_schema_path = f"{python_path}/schema/datatypes.json"
+datatypes_dir = f"{root_dir}/_datatypes"
+datatype_categories_dir = f"{root_dir}/_datatype_categories"
+
 dataset_catalogs = {
     "oasishub.co": "OASIS HUB",
     "drmkc.jrc.ec.europa.eu/risk-data-hub#": "JRC DRMKC risk hub",

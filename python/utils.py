@@ -184,3 +184,23 @@ def write_frontmatter(metadata, output_path):
         outfile.write("---\n")
         outfile.write(yaml.dump(metadata))
         outfile.write("---\n")
+
+
+def write_datatype_frontmatter(metadata, output_path):
+    """Write datatype frontmatter to markdown file using id as filename."""
+    filename = metadata.get("id", "unknown") + ".md"
+
+    with open((Path(output_path) / filename), "w") as outfile:
+        outfile.write("---\n")
+        outfile.write(yaml.dump(metadata))
+        outfile.write("---\n")
+
+
+def write_datatype_category_frontmatter(metadata, output_path):
+    """Write datatype category frontmatter to markdown file using slugified title as filename."""
+    filename = slugify(metadata.get("title", "unknown"), allow_unicode=True) + ".md"
+
+    with open((Path(output_path) / filename), "w") as outfile:
+        outfile.write("---\n")
+        outfile.write(yaml.dump(metadata))
+        outfile.write("---\n")
