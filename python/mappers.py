@@ -566,6 +566,27 @@ def make_vulnerability_v03(vulnerability):
     }
 
 
+def make_datatype_frontmatter(datatype):
+    """Convert datatype metadata into JKAN frontmatter for a datatype"""
+    return {
+        "title": datatype["name"],
+        "category": datatype["category"],
+        "description": datatype.get("description", ""),
+        "logo": "",
+        "logo_credit": "",
+    }
+
+
+def make_datatype_category_frontmatter(category_name):
+    """Convert category name into JKAN frontmatter for a datatype category"""
+    return {
+        "title": category_name,
+        "description": f"Datatypes related to {category_name.lower()}",
+        "logo": "",
+        "logo_credit": "",
+    }
+
+
 def make_dataset_frontmatter_v03(dataset):
     """Formats RDL v0.3 metadata into JKAN frontmatter for a dataset"""
 

@@ -10,13 +10,50 @@ import sys
 import yaml
 import logging
 
-
 import config
 import mappers
 import utils
 import pr_comment
-from validator import validate_with_custom_logic, save_validation_results
+from validator import validate_datasets, validate_datatypes, save_validation_results
 from test import run_search_tests
+
+
+
+
+def write_datatypes_to_markdown(datatypes):
+    """Write datatypes to markdown files in _datatypes directory."""
+    # Ensure output directory exists
+    if not Path(config.datatypes_dir).is_dir():
+        os.makedirs(config.datatypes_dir)
+    
+    for datatype in datatypes:
+        frontmatter = mappers.make_datatype_frontmatter(datatype)
+        # Add id to frontmatter for filename generation
+        frontmatter_with_id = frontmatter.copy()
+        frontmatter_with_id['id'] = datatype['id']
+        utils.write_datatype_frontmatter(frontmatter_with_id, config.datatypes_dir)
+    
+    print(f"Generated {len(datatypes)} datatype markdown files in {config.datatypes_dir}.")
+
+
+def write_datatype_categories_to_markdown(datatypes):
+    """Write unique datatype categories to markdown files in _datatype_categories directory."""
+    # Ensure output directory exists
+    if not Path(config.datatype_categories_dir).is_dir():
+        os.makedirs(config.datatype_categories_dir)
+    
+    # Extract unique categories
+    categories = set()
+    for datatype in datatypes:
+        category = datatype.get('category')
+        if category:
+            categories.add(category)
+    
+    for category_name in sorted(categories):
+        frontmatter = mappers.make_datatype_category_frontmatter(category_name)
+        utils.write_datatype_category_frontmatter(frontmatter, config.datatype_categories_dir)
+    
+    print(f"Generated {len(categories)} datatype category markdown files in {config.datatype_categories_dir}.")
 
 
 def delete_stale_markdown(json_to_delete_md_for):
@@ -65,7 +102,7 @@ def validate_json_with_schema(dataset_from_json, schema_url, validation_errors):
     if schema_url == config.schema_url_v3:
         with open(schema_path, "r") as file:
             schema = json.load(file)
-            exit_code, error_details = validate_with_custom_logic(dataset_from_json, schema)
+            exit_code, error_details = validate_datasets(dataset_from_json, schema)
             if error_details:
                 validation_errors.append(error_details)
             return exit_code
@@ -254,9 +291,14 @@ def setup_args():
         help="Run tests after other operations. Use 'search' to run semantic search tests",
         choices=["search"],
     )
+    parser.add_argument(
+        "--datatypes",
+        help="Validate datatypes JSON against schema",
+        action="store_true",
+    )
     args = parser.parse_args()
-    if args.vectors is False and args.markdown is False and args.test is None:
-        print("No action specified. Use --markdown, --vectors, and/or --test.")
+    if args.vectors is False and args.markdown is False and args.test is None and args.datatypes is False:
+        print("No action specified. Use --markdown, --vectors, --datatypes, and/or --test.")
         sys.exit(1)
 
     return args
@@ -317,6 +359,16 @@ if __name__ == "__main__":
     vector_count = 0
     validation_errors = []
 
+    # Process datatypes validation and markdown generation
+    if args.datatypes:
+        datatype_errors, datatypes = validate_datatypes()
+        if datatype_errors:
+            exit_code = 1
+        else:
+            # Generate markdown files for datatypes and categories
+            write_datatypes_to_markdown(datatypes)
+            write_datatype_categories_to_markdown(datatypes)
+    
     # Process markdown generation
     if json_to_generate_md_from or json_to_delete_md_for:
         result, added, modified, deleted = write_datasets_to_markdown(
