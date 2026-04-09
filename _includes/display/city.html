@@ -1,8 +1,0 @@
-{% assign city = site.cities | where: "city_id", include.value | first %}
-
-<tr>
-  <th>{{ include.field.label }}</th>
-  <td>
-    <a href="{{ site.baseurl }}/cities/{{ include.value | slugify }}">{{ city.title }}</a>
-  </td>
-</tr>

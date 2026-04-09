@@ -26,10 +26,14 @@ export function createDatasetFilters (filters) {
   return function (dataset) {
     const conditions = []
     if (filters.datatype) {
-      conditions.push(dataset.datatype && slugify(dataset.datatype) === filters.datatype)
+      conditions.push(dataset.datatypes && dataset.datatypes.some(function (datatype) {
+        return slugify(datatype.title).indexOf(filters.datatype) !== -1
+      }))
     }
     if (filters.city) {
-      conditions.push(dataset.city && slugify(dataset.city).indexOf(filters.city) !== -1)
+      conditions.push(dataset.cities && dataset.cities.some(function (city) {
+        return slugify(city.title).indexOf(filters.city) !== -1
+      }))
     }
     return conditions.every(function (value) { return !!value })
   }

@@ -6,8 +6,6 @@ layout: default
 {% assign dataset_fields = site.data.schemas[schema].dataset_fields %}
 {% assign dataset_system_fields = "title|notes|license" | split: "|" %}
 
-{% assign city = site.cities | where:"city_id",page.city | first %}
-{% capture city_url %}{{ site.baseurl }}{{ city.url }}{% endcapture %}
 <div class="container">
   <div data-component="dataset-display" typeof="dcat:Dataset" resource="{{ page.url }}">
     <div class="col">
