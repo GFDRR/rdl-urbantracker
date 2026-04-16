@@ -13,6 +13,14 @@ schema: urbantracker
 
 # Nav bar
 navigation:
+  - title: About
+    url: /about/
+  - title: City Tracker
+    url: /city-tracker/
+  - title: Compare Cities
+    url: /compare-cities/
+  - title: Dataset Catalog
+    url: /datasets/
 
 # Collections
 collections:
