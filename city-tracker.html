@@ -4,7 +4,7 @@ layout: default
 ---
 {% assign sorted_cities = site.cities | sort: "title" %}
 <div class="row h-100">
-  <div class="col-sm-3 h-100">
+  <div class="col-sm-3 h-100 pt-3">
     <h3>Cities</h3>
     <div class="list-group js-shown" data-component="city-tracker-nav" data-show="15"></div>
     <div class="list-group js-hidden">
@@ -17,6 +17,7 @@ layout: default
   </div>
   <div class="js-shown col-md-9 h-100 overflow-scroll pt-3 pb-3" data-component="city-tracker-overview">
     <h3 data-hook="city-tracker-header"></h3>
+    <div data-hook="city-tracker-table"></div>
   </div>
   <div class="js-hidden col-md-9 h-100 pt-3 pb-3">
     <h3>Overview</h3>
