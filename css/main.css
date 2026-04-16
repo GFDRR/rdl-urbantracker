@@ -97,6 +97,11 @@ dataset {
   background-color: #fff;
 }
 
+.city-tracker-header-stats {
+  font-size: 1rem;
+  font-weight: normal;
+}
+
 body {
   background-color: #f5f3ef;
 }
