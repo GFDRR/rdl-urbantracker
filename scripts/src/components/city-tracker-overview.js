@@ -1,19 +1,25 @@
+import { defaults, filter, pick } from 'lodash'
 import TmplCityTrackerHeader from '../templates/city-tracker-header'
-import {queryByHook, setContent, slugify} from '../util'
+import TmplCityTrackerTable from '../templates/city-tracker-table'
+import {createDatasetFilters, queryByHook, setContent, slugify} from '../util'
 
 export default class {
   constructor (opts) {
     const elements = {
       cityTrackerHeader: queryByHook('city-tracker-header', opts.el),
-      cityTrackerDatatypes: queryByHook('city-tracker-datatypes', opts.el),
+      cityTrackerTable: queryByHook('city-tracker-table', opts.el),
     }
     if (!opts.params.city) {
       const firstCity = opts.cities[0]
       opts.params.city = slugify(firstCity.city_id)
     }
-    const city = opts.cities.find(c => slugify(c.city_id) === opts.params.city);
-    const cityDatasets = opts.datasets.filter(d => d.cities && d.cities.some(c => c.city_id === city.city_id))
-    const stats = cityDatasets.reduce((acc, dataset) => {
+    
+    const paramFilters = pick(opts.params, ['datatypeCategory', 'city'])
+    const attributeFilters = pick(opts.el.data(), ['datatypeCategory', 'city'])
+    const filters = createDatasetFilters(defaults(paramFilters, attributeFilters))
+    const filteredDatasets = filter(opts.datasets, filters)
+    
+    const stats = filteredDatasets.reduce((acc, dataset) => {
       const datatypes = dataset.datatypes || []
       datatypes.forEach(datatype => {
         if (datatype.isPartial) {
@@ -27,7 +33,7 @@ export default class {
       countComplete: 0,
       countPartial: 0,      
     });
-   
+    const city = opts.cities.find(c => slugify(c.city_id) === opts.params.city);
     const headerData = {
       ...city,
       countComplete: stats.countComplete,
@@ -35,6 +41,39 @@ export default class {
       countIncomplete: opts.datatypes.length - stats.countComplete - stats.countPartial,
       coverage: (stats.countComplete / opts.datatypes.length * 100).toFixed(2)+"%"
     }
+    const filteredDatatypes = defaults(paramFilters, attributeFilters).datatypeCategory
+      ? opts.datatypes.filter(dt => slugify(dt.category) === defaults(paramFilters, attributeFilters).datatypeCategory)
+      : opts.datatypes;
+    const cityDatatypes = filteredDatatypes.map(datatype => {
+      const dataset = filteredDatasets.find(d => d.datatypes && d.datatypes.some(dt => dt.title === datatype.title))
+      return {
+        datatype: datatype,
+        dataset: dataset,
+      }
+    }).sort((a, b) => {
+      if ( a.datatype.category < b.datatype.category ){
+        return -1;
+      }
+      if ( a.datatype.category > b.datatype.category ){
+        return 1;
+      }
+      if ( a.datatype.title < b.datatype.title ){
+        return -1;
+      }
+      if ( a.datatype.title > b.datatype.title ){
+        return 1;
+      }
+      if (a.dataset && b.dataset) {
+        if (a.dataset.title < b.dataset.title) {
+          return -1;
+        }
+        if (a.dataset.title > b.dataset.title) {
+          return 1;
+        }
+      }
+      return 0;
+    })
     setContent(elements.cityTrackerHeader, TmplCityTrackerHeader(headerData))
+    setContent(elements.cityTrackerTable, TmplCityTrackerTable(cityDatatypes))
   }
 }
