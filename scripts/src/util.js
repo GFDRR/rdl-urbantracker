@@ -30,6 +30,11 @@ export function createDatasetFilters (filters) {
         return slugify(datatype.title).indexOf(filters.datatype) !== -1
       }))
     }
+    if (filters.datatypeCategory) {
+      conditions.push(dataset.datatypes && dataset.datatypes.some(function (datatype) {
+        return slugify(datatype.category).indexOf(filters.datatypeCategory) !== -1
+      }))
+    }
     if (filters.city) {
       conditions.push(dataset.cities && dataset.cities.some(function (city) {
         return slugify(city.title).indexOf(filters.city) !== -1

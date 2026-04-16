@@ -1,17 +1,50 @@
 <!DOCTYPE html>
-<html class="no-js" prefix="dct: http://purl.org/dc/terms/
+<html class="no-js h-100" prefix="dct: http://purl.org/dc/terms/
               rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
               dcat: http://www.w3.org/ns/dcat#
               foaf: http://xmlns.com/foaf/0.1/">
 
   {% include head.html %}
 
-  <body>
+  <body class="h-100">
 
     {% include header.html %}
 
-    <section data-hook="main" class="container">
-      {{ content }}
+    {% assign page_url = page.url | split: '.html' | first %}
+    <section data-hook="main" class="container h-100">
+      <div class="row h-75">
+        <div class="col-sm-2 sidebar h-100">
+          <nav class="sidebar-nav mb-4 pt-3">
+            <ul class="nav nav-pills flex-column">
+              {% for link in site.navigation %}
+                {% if link.url contains page_url %}
+                <li class="nav-item"><a class="nav-link active" href="{{ site.baseurl }}{{ link.url }}" aria-current="page">{{ link.title }}</a></li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link" href="{{ site.baseurl }}{{ link.url }}">{{ link.title }}</a></li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </nav>
+          {% unless page_url == '/about' %}
+          <div class="sidebar-filter">
+            <h5>Data Types</h5>
+            <div class="list-group js-shown" data-component="datatype-categories-filter" data-show="15"></div>
+            <div class="list-group js-hidden">
+              {% for datatype in site.datatypes %}
+              {% assign count = site.datasets | where: "datatype", datatype.title | size %}
+              <a href="{{ site.baseurl}}{{ datatype.url }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                {{ datatype.title }}
+                <span class="badge bg-primary rounded-pill">{{ count }}</span>
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+          {% endunless %}
+        </div>
+        <div class="col-sm-8 content m-3 mt-0 mb-0">
+          {{ content }}
+        </div>
+      </div>
     </section>
 
     {% include footer.html %}

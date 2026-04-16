@@ -1,7 +1,6 @@
 ---
 layout: default
 ---
-{% include breadcrumbs.html parent="Cities" %}
 {% assign datasets = site.datasets | where: "city", page.city_id %}
 {% assign datasets_count = datasets | size %}
 

@@ -92,3 +92,11 @@ dataset {
   padding: .75rem 1rem;
   border-radius: .25rem;
 }
+
+.sidebar, .content {
+  background-color: #fff;
+}
+
+body {
+  background-color: #f5f3ef;
+}
