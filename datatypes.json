@@ -1,0 +1,9 @@
+---
+---
+[{% for datatype in site.datatypes %}
+  {
+    "category": {{ datatype.category | jsonify }},
+    "id": {{ datatype.id | jsonify }},  
+    "title": {{ datatype.title | jsonify }}    
+  }{% unless forloop.last %},{% endunless %}{% endfor %}
+]

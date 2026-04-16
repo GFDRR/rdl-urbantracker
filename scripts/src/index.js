@@ -1,47 +1,74 @@
 /* global settings */
-import 'core-js/actual'
-import $ from 'jquery'
-import 'bootstrap/js/dist/collapse'
+import "core-js/actual";
+import $ from "jquery";
+import "bootstrap/js/dist/collapse";
 
-import DatasetsList from './components/datasets-list'
-import CitiesFilter from './components/cities-filter'
-import DatatypesFilter from './components/datatypes-filter'
-import DatatypeCategoriesFilter from './components/datatype-categories-filter'
-import DatasetDisplay from './components/dataset-display'
-import {queryByComponent} from './util'
+import DatasetsList from "./components/datasets-list";
+import CityTrackerNav from "./components/city-tracker-nav";
+import CityTrackerOverview from "./components/city-tracker-overview";
+import CitiesFilter from "./components/cities-filter";
+import DatatypesFilter from "./components/datatypes-filter";
+import DatatypeCategoriesFilter from "./components/datatype-categories-filter";
+import DatasetDisplay from "./components/dataset-display";
+import { queryByComponent } from "./util";
 
-const urlSearchParams = new URLSearchParams(window.location.search)
-const params = {}
+const urlSearchParams = new URLSearchParams(window.location.search);
+const params = {};
 urlSearchParams.forEach((value, key) => {
-  params[key] = value
-})
+  params[key] = value;
+});
 
 // Helper function to ensure datasets.json is only fetched once per page
-let datasetsCache
-function getDatasets () {
-  datasetsCache = datasetsCache || $.getJSON(`${settings.BASE_URL}/datasets.json`)
-  return datasetsCache
+let citiesCache;
+function getCities() {
+  citiesCache = citiesCache || $.getJSON(`${settings.BASE_URL}/cities.json`);
+  return citiesCache;
+}
+
+// Helper function to ensure datasets.json is only fetched once per page
+let datasetsCache;
+function getDatasets() {
+  datasetsCache =
+    datasetsCache || $.getJSON(`${settings.BASE_URL}/datasets.json`);
+  return datasetsCache;
+}
+
+// Helper function to ensure datasets.json is only fetched once per page
+let datatypesCache;
+function getDatatypes() {
+  datatypesCache =
+    datatypesCache || $.getJSON(`${settings.BASE_URL}/datatypes.json`);
+  return datatypesCache;
 }
 
 // Check for these components on the page and initialize them
 const components = [
-  {tag: 'dataset-display', class: DatasetDisplay},
-  {tag: 'datasets-list', class: DatasetsList, usesDatasets: true},
-  {tag: 'cities-filter', class: CitiesFilter, usesDatasets: true},
-  {tag: 'datatypes-filter', class: DatatypesFilter, usesDatasets: true},
-  {tag: 'datatype-categories-filter', class: DatatypeCategoriesFilter, usesDatasets: true}
-]
+  { tag: "dataset-display", class: DatasetDisplay },
+  { tag: "datasets-list", class: DatasetsList, usesData: true },
+  { tag: "city-tracker-nav", class: CityTrackerNav, usesData: true },
+  { tag: "city-tracker-overview", class: CityTrackerOverview, usesData: true },
+  { tag: "cities-filter", class: CitiesFilter, usesData: true },
+  { tag: "datatypes-filter", class: DatatypesFilter, usesData: true },
+  {
+    tag: "datatype-categories-filter",
+    class: DatatypeCategoriesFilter,
+    usesData: true,
+  },
+];
 for (let component of components) {
-  const els = queryByComponent(component.tag)
+  const els = queryByComponent(component.tag);
   if (els.length) {
     // If the component depends on datasets.json, fetch it first (once per page) and pass it
-    if (component.usesDatasets) {
-      getDatasets().then((datasets) => {
-        els.each((index, el) => new component.class({el: $(el), params, datasets})) // eslint-disable-line
+    if (component.usesData) {
+      Promise.all([getCities(), getDatasets(), getDatatypes()]).then(([cities, datasets, datatypes]) => {
+        els.each(
+          (_, el) =>
+            new component.class({ el: $(el), params, cities, datasets, datatypes }),
+        ); 
       })
-    // Otherwise simply initialize the component
-    } else {
-      els.each((index, el) => new component.class({el: $(el), params})) // eslint-disable-line
     }
+    // Otherwise simply initialize the component
+  } else {
+    els.each((_, el) => new component.class({ el: $(el), params })); // eslint-disable-line
   }
 }
