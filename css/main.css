@@ -93,6 +93,21 @@ dataset {
   border-radius: .25rem;
 }
 
+.begin-link {
+  color: #e9ecef;
+  background-color: black;
+  padding: .75rem 1rem;
+  border-radius: .25rem;
+  width: fit-content;
+}
+
+.begin-link:hover {
+  color: black;
+  background-color: #e9ecef;
+  padding: .75rem 1rem;
+  border-radius: .25rem;
+}
+
 .sidebar, .content {
   background-color: #fff;
 }
