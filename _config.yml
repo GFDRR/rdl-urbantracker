@@ -13,6 +13,8 @@ schema: urbantracker
 
 # Nav bar
 navigation:
+  - title: Home
+    url: /
   - title: About
     url: /about/
   - title: City Tracker

@@ -17,7 +17,8 @@
           <nav class="sidebar-nav mb-4 pt-3">
             <ul class="nav nav-pills flex-column">
               {% for link in site.navigation %}
-                {% if link.url contains page_url %}
+                {% if link.url == '/' %}
+                {% elsif link.url contains page_url %}
                 <li class="nav-item"><a class="nav-link active" href="{{ site.baseurl }}{{ link.url }}" aria-current="page">{{ link.title }}</a></li>
                 {% else %}
                 <li class="nav-item"><a class="nav-link" href="{{ site.baseurl }}{{ link.url }}">{{ link.title }}</a></li>
