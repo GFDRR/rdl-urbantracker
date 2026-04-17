@@ -6,7 +6,10 @@ layout: default
 <div class="row h-100">
   <div class="col-sm-3 h-100 pt-3">
     <h3>Cities</h3>
-    <div class="list-group js-shown" data-component="city-tracker-nav" data-show="15"></div>
+    <div class="list-group js-shown" data-component="city-tracker-nav" data-show="15">
+      <div data-hook="city-tracker-nav-search"></div>
+      <div data-hook="city-tracker-nav-list"></div>
+    </div>
     <div class="list-group js-hidden">
       {% for city in sorted_cities %}
         <a href="/city-tracker/{{city.city_id}}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
