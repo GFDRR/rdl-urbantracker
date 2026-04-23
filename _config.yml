@@ -4,6 +4,7 @@ description: A lightweight, backend-free tool for tracking urban data coverage b
 logo: /img/jkan.png
 hero_image: /img/homepage-hero.jpg
 strict_front_matter: true
+url: https://urban-tracker-editor.netlify.app/
 
 # Site theme
 jkan_theme: Default

@@ -13,7 +13,11 @@ export default (cityDatatypes) => (`
         <tr>
           <td>${cdt.datatype.category}</td>
           <td>${cdt.datatype.title}</td>
-          ${cdt.dataset && !cdt.dataset.is_partial && !cdt.dataset.is_unavailable ? `<td><a href="${cdt.dataset.url}">View dataset</a></td>` : `<td>No dataset</td>`}
+          ${cdt.dataset && !cdt.dataset.is_partial && !cdt.dataset.is_unavailable
+            ? `<td><a href="${cdt.dataset.url}">View dataset</a></td>`
+            : `<td><a href="/editor/#/collections/cities/new">
+          <i class="fa fa-plus-circle"></i> Dataset needed
+        </a></td>`}
         </tr>
       `
     }).join('\n')}

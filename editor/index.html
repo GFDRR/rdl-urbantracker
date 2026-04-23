@@ -1,0 +1,80 @@
+---
+---
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Content Manager</title>
+  <link href="decap-cms.yml" type="text/yaml" rel="cms-config-url">
+</head>
+
+<body>
+  <script>
+    (function () {
+      var hash = window.location.hash || '';
+      var editorPath = '{{ site.baseurl }}/editor/';
+      if (/(^|[#&])(confirmation_token|access_token)=/.test(hash)) {
+        if (window.location.pathname !== editorPath) {
+          window.location.replace(editorPath + hash);
+        }
+      }
+    })();
+  </script> 
+  <script type="text/javascript">window.CMS_MANUAL_INIT = true</script>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script type="text/javascript">
+    const { CMS, initCMS: init } = window
+
+    const config = {
+      local_backend: {% if jekyll.environment == "production" %}false{% else %}true{% endif %},
+      site_url: "{{ site.url }}"
+    }
+    console.log("Decap config:", config);
+
+    init({ config });
+
+    const CityPrefillWidget = createClass({
+      handleChange(e) {
+        const value = e.target.value;
+        this.props.onChange(value);
+        
+        // Trigger fetch when value changes
+        if (value && value.length > 2) {
+          this.fetchWikidataCity(value);
+        }
+      },
+
+      async fetchWikidataCity(param) {
+        await fetch(`/.netlify/functions/wikidata-search?query=${encodeURIComponent(param)}`)
+          .then(response => {
+            if (!response.ok) throw new Error('API error');
+            return response.json();
+          })
+          .then(data => {
+            console.log(data)
+            window.dispatchEvent(new CustomEvent('decap:fill-fields', {
+              detail: data
+            }));
+          })
+          .catch(error => {
+            console.error('Fetch error:', error);
+          });
+      },
+
+      render() {
+        return h('input', {
+          type: 'text',
+          value: this.props.value,
+          onChange: this.handleChange.bind(this),
+          placeholder: 'Enter search term...'
+        });
+      }
+    });
+
+    CMS.registerWidget('city-prefill', CityPrefillWidget);
+  </script>
+</body>
+
+</html>

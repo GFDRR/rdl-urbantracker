@@ -1,0 +1,3 @@
+[build]
+  command = "JEKYLL_ENV=production npm run build && bundle install && bundle exec jekyll build --config _config.yml"
+  publish = "_site"
