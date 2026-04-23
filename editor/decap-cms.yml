@@ -1,0 +1,46 @@
+backend:
+  name: github
+  repo: GFDRR/rdl-urbantracker
+  branch: 6-editor
+
+media_folder: "img"
+
+collections:
+  - name: cities
+    label: Cities
+    label_singular: City
+    identifier_field: city_id
+    folder: _cities
+    create: true
+    slug: "{{city_id}}-{{city}}"
+    preview_path: "cities/{{slug}}"
+    fields:
+      - label: Search Wikidata for City Name
+        name: city_search
+        widget: "city-prefill"
+        required: false
+      - label: City
+        name: city
+        widget: string
+      - label: Wikidata ID
+        name: city_id
+        widget: string
+      - label: Title
+        name: title
+        widget: string
+        required: false
+      - label: Logo URL
+        name: logo
+        required: false
+        widget: string
+        allow_multiple: false
+      - label: Logo Credit
+        name: logo_credit
+        required: false
+        widget: string
+        allow_multiple: false
+      - label: Country
+        name: country
+        widget: string
+        allow_multiple: false
+
