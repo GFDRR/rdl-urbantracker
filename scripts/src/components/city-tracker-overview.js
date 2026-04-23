@@ -20,25 +20,22 @@ export default class {
     const filteredDatasets = filter(opts.datasets, filters)
     
     const stats = filteredDatasets.reduce((acc, dataset) => {
-      const datatypes = dataset.datatypes || []
-      datatypes.forEach(datatype => {
-        if (datatype.isPartial) {
-          acc.countPartial += 1
-        } else {
-          acc.countComplete += 1
-        }
-      })
+      const datatypes = dataset.datatypes || [];
+      if (dataset.is_partial || dataset.is_unavailable) {
+        acc.countExcluded += datatypes.length
+      } else {
+        acc.countComplete += datatypes.length
+      }
       return acc
     }, {
       countComplete: 0,
-      countPartial: 0,      
+      countExcluded: 0,      
     });
     const city = opts.cities.find(c => slugify(c.city_id) === opts.params.city);
     const headerData = {
       ...city,
       countComplete: stats.countComplete,
-      countPartial: stats.countPartial,
-      countIncomplete: opts.datatypes.length - stats.countComplete - stats.countPartial,
+      countExcluded: stats.countExcluded,
       coverage: (stats.countComplete / opts.datatypes.length * 100).toFixed(2)+"%"
     }
     const filteredDatatypes = defaults(paramFilters, attributeFilters).datatypeCategory
