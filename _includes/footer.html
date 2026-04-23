@@ -1,4 +1,14 @@
 <!-- general behavior -->
 <script type="module" src="{{ site.baseurl }}/scripts/dist/index.js"></script>
-
+<script>
+  (function () {
+    var hash = window.location.hash || '';
+    if (/(^|[#&])(invite_token|recovery_token|confirmation_token|access_token)=/.test(hash)) {
+      var target = '{{ site.baseurl }}/editor/' + hash;
+      if (window.location.pathname !== '{{ site.baseurl }}/editor/') {
+        window.location.replace(target);
+      }
+    }
+  })();
+</script> 
 <footer></footer>
