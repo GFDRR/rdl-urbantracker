@@ -1,6 +1,5 @@
 backend:
-  name: github
-  repo: GFDRR/rdl-urbantracker
+  name: git-gateway
   branch: 6-editor
 
 media_folder: "img"

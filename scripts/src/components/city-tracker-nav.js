@@ -69,7 +69,7 @@ export default class {
 
       // Add "Add new city" link at the bottom
       resultsHtml += `
-        <a href="/editor/cities${query.length > 0 ? '?city_search='+query : ''}" class="list-group-item list-group-item-action list-group-item-info">
+        <a href="/editor/#/collections/cities/new" class="list-group-item list-group-item-action list-group-item-info">
           <i class="fa fa-plus-circle"></i> Add new city
         </a>
       `
