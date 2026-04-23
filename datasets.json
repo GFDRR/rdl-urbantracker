@@ -10,8 +10,9 @@
           "category": {{ datatype.category | jsonify }},
           "title": {{ datatype.title | jsonify }}
         }{% unless forloop.last %},{% endunless %}{% endfor %}
-    ]{% if dataset.notes != "" %},
-    "notes": {{ dataset.notes | markdownify | jsonify }}{% endif %},
+    ]{% if dataset.description != "" %},
+    "description": {{ dataset.description | jsonify }}{% endif %}{% if dataset.notes != "" %},
+    "notes": {{ dataset.notes | jsonify }}{% endif %},
     "cities": [{% for city_id in dataset.cities %}
       {% assign city = site.cities | where: "city_id", city_id | first %}
         {
@@ -19,6 +20,9 @@
           "title": {{ city.title | jsonify }}
         }{% unless forloop.last %},{% endunless %}{% endfor %}
     ],
+    "external_url": {{ dataset.external_url | jsonify}},
+    "is_partial": {{ dataset.is_partial | jsonify }},
+    "is_unavailable": {{ dataset.is_unavailable | jsonify }},
     "url": "{{ site.baseurl }}{{ dataset.url }}"
   }{% unless forloop.last %},{% endunless %}{% endfor %}
 ]

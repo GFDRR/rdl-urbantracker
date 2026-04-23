@@ -1,7 +1,12 @@
 dataset_fields:
+  # required fields
   - field_name: title
     label: Title
     datajson: title
+  - field_name: external_url
+    label: External URL
+    datajson: external_url
+    display_template: display/external_url.html
   - field_name: datatypes
     label: Data Types
     display_template: display/datatypes.html
@@ -10,14 +15,19 @@ dataset_fields:
     label: Cities
     display_template: display/cities.html
     datajson: cities
-  - field_name: external_url
-    label: External URL
-    datajson: external_url
-    display_template: display/external_url.html
-  - field_name: partial
-    label: Partial
-    datajson: partial
-    display_template: display/partial.html
+  # optional fields
+  - field_name: description
+    label: Description
+    datajson: description
+  - field_name: notes
+    label: Notes
+    datajson: notes
+  - field_name: is_partial
+    label: Is Partial
+    datajson: is_partial
+  - field_name: is_unavailable
+    label: Is Unavailable
+    datajson: is_unavailable
 
 datatype_fields:
   - field_name: title

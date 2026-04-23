@@ -106,18 +106,16 @@ export default class {
 
       const cityDatasets = opts.datasets.filter(d => d.cities && d.cities.some(c => c.city_id === city.city_id))
       const stats = cityDatasets.reduce((acc, dataset) => {
-        const datatypes = dataset.datatypes || []
-        datatypes.forEach(datatype => {
-          if (datatype.isPartial) {
-            acc.countPartial += 1
-          } else {
-            acc.countComplete += 1
-          }
-        })
+        const datatypes = dataset.datatypes || [];
+        if (dataset.is_partial || dataset.is_unavailable) {
+          acc.countExcluded += datatypes.length
+        } else {
+          acc.countComplete += datatypes.length
+        }
         return acc
       }, {
         countComplete: 0,
-        countPartial: 0,      
+        countExcluded: 0,      
       });
       return {
         ...city,
