@@ -3,6 +3,8 @@
 [{% for city in site.cities %}
   {
     "city_id": {{ city.city_id | jsonify }},
-    "title": {{ city.title | jsonify }}    
+    "title": {{ city.title | jsonify }},
+    "country": {{ city.country | jsonify }},
+    "logo": {{ city.logo | jsonify }}
   }{% unless forloop.last %},{% endunless %}{% endfor %}
 ]

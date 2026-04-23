@@ -51,7 +51,7 @@ export function createDatasetFilters(filters) {
       conditions.push(
         dataset.cities &&
           dataset.cities.some(function (city) {
-            return slugify(city.city_id).indexOf(filters.city) !== -1;
+            return slugify(city.city_id).indexOf(slugify(filters.city)) !== -1;
           }),
       );
     }

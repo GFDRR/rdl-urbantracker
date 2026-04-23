@@ -6,6 +6,7 @@ import "bootstrap/js/dist/collapse";
 import DatasetsList from "./components/datasets-list";
 import CityTrackerNav from "./components/city-tracker-nav";
 import CityTrackerOverview from "./components/city-tracker-overview";
+import CompareCities from "./components/compare-cities";
 import CitiesFilter from "./components/cities-filter";
 import DatatypesFilter from "./components/datatypes-filter";
 import DatatypeCategoriesFilter from "./components/datatype-categories-filter";
@@ -43,6 +44,7 @@ const components = [
   { tag: "datasets-list", class: DatasetsList, usesData: true },
   { tag: "city-tracker-nav", class: CityTrackerNav, usesData: true },
   { tag: "city-tracker-overview", class: CityTrackerOverview, usesData: true },
+  { tag: "compare-cities", class: CompareCities, usesData: true },
   { tag: "cities-filter", class: CitiesFilter, usesData: true },
   { tag: "datatypes-filter", class: DatatypesFilter, usesData: true },
   {
