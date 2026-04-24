@@ -67,8 +67,8 @@ export default class {
       }
 
       const filteredCities = filter(cities, (city) => {
-        const titleMatch = city.title && city.title.toLowerCase().includes(query)
-        const idMatch = city.city_id && city.city_id.toLowerCase().includes(query)
+        const titleMatch = city.title && city.title.toLowerCase().includes(query.toLowerCase())
+        const idMatch = city.city_id && city.city_id.toLowerCase().includes(query.toLowerCase())
         return titleMatch || idMatch
       })
 
