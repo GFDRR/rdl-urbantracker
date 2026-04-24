@@ -1,10 +1,50 @@
 backend:
   name: git-gateway
-  branch: 6-editor
+  branch: main
 
 media_folder: "img"
 
 collections:
+  - name: datasets
+    label: Datasets
+    label_singular: Dataset
+    folder: _datasets
+    create: true
+    fields:
+      - label: Cities
+        name: cities
+        widget: relation
+        collection: "cities"
+        search_fields: ["city_id"]
+        value_field: "city_id"
+        display_fields: ["title"]
+        multiple: true
+      - label: Datatypes
+        name: datatypes
+        widget: relation
+        collection: "datatypes"
+        search_fields: ["title"]
+        value_field: "title"
+        display_fields: ["title"]
+        multiple: true
+      - label: Title
+        name: title
+        widget: string
+      - label: External URL
+        name: external_url
+        widget: string
+      - label: Description
+        name: description
+        widget: string
+  - name: datatypes
+    label: Datatypes
+    label_singular: Datatype
+    folder: _datatypes
+    identifier_field: id
+    fields:
+      - label: Title
+        name: title
+        widget: string
   - name: cities
     label: Cities
     label_singular: City

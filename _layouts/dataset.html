@@ -9,10 +9,10 @@ layout: default
   <div data-component="dataset-display" typeof="dcat:Dataset" resource="{{ page.url }}">
     <div class="col">
       <h1>
-        <span property="dct:title">{{ page.title }}</span>
+        <span property="dct:title">{{ page.title }} <a href="/editor/#/collections/datasets/entries/{{page.slug}}"><i class="m-1 fa fa-pencil"></i></a></span>
       </h1>
       <p property="dct:description" style="text-align: justify; overflow-wrap: break-word;">{{ page.notes | markdownify }}</p>
-
+      
       <h2>Info</h2>
       <table class="table table-striped dataset-details">
         {% if page.license and page.license != empty %}

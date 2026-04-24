@@ -60,7 +60,7 @@ export default class {
 
     const handleInput = debounce(async (e) => {
       const query = e.target.value.trim()
-      
+      this.wikidataCity = {}
       if (query.length === 0) {
         searchResults.hide()
         return
@@ -92,15 +92,18 @@ export default class {
       } else {
         try {
           await this._fetchWikidataCity(query)
-          const encodeParams = p => Object.entries(p).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
-
+          if (!this.wikidataCity?.city) {
+            throw new Error('City not found')
+          }
+          const encodedParams = Object.entries(this.wikidataCity).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
+  
           resultsHtml += `
             <div class="list-group-item">
-              <a href="/editor/#/collections/cities/new?${encodeParams(this.wikidataCity)}" class="list-group-item list-group-item-action list-group-item-info">
+              <a href="/editor/#/collections/cities/new?${encodedParams}" class="list-group-item list-group-item-action list-group-item-info">
                 <i class="mb-1 fa fa-plus-circle"></i> Add ${this.wikidataCity.city}
               </a>
             </div>
-            `
+          `;
         } catch (err) {
           resultsHtml = `<div class="list-group-item text-danger">Search failed.</div>`
         }
