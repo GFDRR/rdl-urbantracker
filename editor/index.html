@@ -31,49 +31,34 @@
       local_backend: {% if jekyll.environment == "production" %}false{% else %}true{% endif %},
       site_url: "{{ site.url }}"
     }
-    console.log("Decap config:", config);
 
     init({ config });
 
-    const CityPrefillWidget = createClass({
-      handleChange(e) {
-        const value = e.target.value;
-        this.props.onChange(value);
-        
-        // Trigger fetch when value changes
-        if (value && value.length > 2) {
-          this.fetchWikidataCity(value);
-        }
-      },
+    const CityPreview = createClass({
+      render: function() {
+        var entry = this.props.entry;
+        var logoUrl = entry.getIn(['data', 'logo']);
 
-      async fetchWikidataCity(param) {
-        await fetch(`/.netlify/functions/wikidata-search?query=${encodeURIComponent(param)}`)
-          .then(response => {
-            if (!response.ok) throw new Error('API error');
-            return response.json();
-          })
-          .then(data => {
-            console.log(data)
-            window.dispatchEvent(new CustomEvent('decap:fill-fields', {
-              detail: data
-            }));
-          })
-          .catch(error => {
-            console.error('Fetch error:', error);
-          });
-      },
-
-      render() {
-        return h('input', {
-          type: 'text',
-          value: this.props.value,
-          onChange: this.handleChange.bind(this),
-          placeholder: 'Enter search term...'
-        });
+        return h('div', { style: { padding: '20px' } },
+          h('h1', {}, entry.getIn(['data', 'city'])),
+          h('ul', {},
+            h('li', {}, h('strong', {}, 'Title: '), entry.getIn(['data', 'title'])),
+            h('li', {}, h('strong', {}, 'Wikidata ID: '), entry.getIn(['data', 'city_id'])),
+            h('li', {}, h('strong', {}, 'Country: '), entry.getIn(['data', 'country'])),
+                      h('div', { style: { marginBottom: '20px' } },
+            h('li', {}, h('strong', {}, 'Logo Preview:')),
+            logoUrl 
+              ? h('img', { src: logoUrl, style: { display: 'block', maxWidth: '200px', marginTop: '10px' } })
+              : h('p', { style: { color: '#666' } }, 'No logo URL provided.')
+            ),
+            h('li', {}, h('strong', {}, 'Logo Credit: '), entry.getIn(['data', 'logo_credit']))
+          )
+        );
       }
-    });
+      });
 
-    CMS.registerWidget('city-prefill', CityPrefillWidget);
+      CMS.registerPreviewTemplate('cities', CityPreview);
+
   </script>
 </body>
 

@@ -9,24 +9,31 @@ exports.handler = async (event) => {
   }
 
   const sparqlQuery = `
-    SELECT DISTINCT ?city ?cityLabel ?cityDescription ?population WHERE {
-      ?city (wdt:P31/(wdt:P279*)) wd:Q515;
-        wdt:P1082 ?population.
-      FILTER(?population > 0)
-      ?city rdfs:label ?cityLabel.
-      FILTER((LANG(?cityLabel)) = "en")
-      FILTER(CONTAINS(LCASE(?cityLabel), "${query.toLowerCase()}"))
-      ?city schema:description ?cityDescription.
-      FILTER((LANG(?cityDescription)) = "en")
+    SELECT DISTINCT ?city ?cityLabel ?countryEntity ?countryLabel ?cityFlag WHERE {
+      VALUES ?myCatalog {
+        "${query}"@en
+      }
+      ?city rdfs:label ?myCatalog;
+        (wdt:P31/(wdt:P279*)) wd:Q515;
+        wdt:P1082 ?population;
+        wdt:P17 ?countryEntity.
+      OPTIONAL { ?city wdt:P41 ?cityFlag. }
+      FILTER(?population > 0 )
+      ?countryEntity rdfs:label ?country.
+      FILTER((LANG(?country)) = "en")
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
     }
-    ORDER BY DESC(?population)
+    ORDER BY DESC (?population)
+    LIMIT 5
   `;
+
+  console.log(sparqlQuery)
 
   try {
     const url = new URL('https://query.wikidata.org/sparql');
     url.searchParams.append('format', 'json');
     url.searchParams.append('query', sparqlQuery);
-
+    console.log(url.toString())
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
@@ -51,7 +58,7 @@ exports.handler = async (event) => {
     };
   } catch (error) {
     return {
-      statusCode: 500,
+      statusCode: error.status,
       body: JSON.stringify({ error: error.message })
     };
   }

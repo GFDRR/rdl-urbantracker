@@ -14,10 +14,6 @@ collections:
     slug: "{{city_id}}-{{city}}"
     preview_path: "cities/{{slug}}"
     fields:
-      - label: Search Wikidata for City Name
-        name: city_search
-        widget: "city-prefill"
-        required: false
       - label: City
         name: city
         widget: string
