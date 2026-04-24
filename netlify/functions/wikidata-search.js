@@ -31,6 +31,7 @@ exports.handler = async (event) => {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
+        'User-Agent': "rdl-urbantracker/0.0 (https://github.com/GFDRR/rdl-urbantracker; lydia@oldgrowth.city)",
       }
     });
 
