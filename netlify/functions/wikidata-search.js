@@ -23,15 +23,15 @@ exports.handler = async (event) => {
   `;
 
   try {
-    const response = await fetch('https://query.wikidata.org/sparql', {
+    const url = new URL('https://query.wikidata.org/sparql');
+    url.searchParams.append('format', 'json');
+    url.searchParams.append('query', sparqlQuery);
+
+    const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
-      },
-      body: new URLSearchParams({
-        format: 'json',
-        query: sparqlQuery
-      })
+      }
     });
 
     if (!response.ok) {
