@@ -23,7 +23,6 @@ export default class {
       searchQuery: queryByHook('search-query', opts.el)
     }
 
-    // Filter datasets and render in items container
     const paramFilters = pick(opts.params, ['datatype', 'datatypeCategory', 'city'])
     const attributeFilters = pick(opts.el.data(), ['datatype', 'datatypeCategory', 'city'])
     const filters = createDatasetFilters(defaults(paramFilters, attributeFilters))
@@ -31,29 +30,23 @@ export default class {
     const datasetsMarkup = filteredDatasets.map(TmplDatasetItem)
     setContent(elements.datasetsItems, datasetsMarkup)
 
-    // // Dataset count
     const datasetSuffix =  filteredDatasets.length > 1 ? 's' : ''
     const datasetsCountMarkup = filteredDatasets.length + ' dataset' + datasetSuffix;
     setContent(elements.datasetsCount, datasetsCountMarkup)
 
-    // Search datasets listener
     const searchFunction = this._createSearchFunction(filteredDatasets)
     elements.searchQuery.on('keyup', (e) => {
       const query = e.currentTarget.value
 
-      // Datasets
       const results = searchFunction(query)
       const resultsMarkup = results.map(TmplDatasetItem)
       setContent(elements.datasetsItems, resultsMarkup)
 
-      // Dataset count
       const resultsCountMarkup = results.length + ' datasets'
       setContent(elements.datasetsCount, resultsCountMarkup)
     })
   }
 
-  // Returns a function that can be used to search an array of datasets
-  // The function returns the filtered array of datasets
   _createSearchFunction (datasets) {
     const keys = ['title', 'notes']
     return function (query) {

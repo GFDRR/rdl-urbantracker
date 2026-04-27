@@ -27,8 +27,6 @@ exports.handler = async (event) => {
     LIMIT 5
   `;
 
-  console.log(sparqlQuery)
-
   try {
     const url = new URL('https://query.wikidata.org/sparql');
     url.searchParams.append('format', 'json');

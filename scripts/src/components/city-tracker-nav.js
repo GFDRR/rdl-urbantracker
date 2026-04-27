@@ -1,5 +1,5 @@
 import $ from 'jquery'
-import {chain, omit, defaults, filter, debounce} from 'lodash' // Added debounce
+import {chain, omit, defaults, filter, debounce} from 'lodash'
 
 import TmplCityTrackerNavItem from '../templates/city-tracker-nav-item'
 import TmplCityTrackerNavSearchBar from '../templates/city-tracker-nav-search-bar'

@@ -3,80 +3,80 @@
 <!doctype html>
 <html>
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Content Manager</title>
-  <link href="decap-cms.yml" type="text/yaml" rel="cms-config-url">
-</head>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Content Manager</title>
+    <link href="decap-cms.yml" type="text/yaml" rel="cms-config-url">
+  </head>
 
-<body>
-  <script>
-    (function () {
-      var hash = window.location.hash || '';
-      var editorPath = '{{ site.baseurl }}/editor/';
-      if (/(^|[#&])(confirmation_token|access_token)=/.test(hash)) {
-        if (window.location.pathname !== editorPath) {
-          window.location.replace(editorPath + hash);
+  <body>
+    <script>
+      (function () {
+        var hash = window.location.hash || '';
+        var editorPath = '{{ site.baseurl }}/editor/';
+        if (/(^|[#&])(confirmation_token|access_token)=/.test(hash)) {
+          if (window.location.pathname !== editorPath) {
+            window.location.replace(editorPath + hash);
+          }
         }
+      })();
+    </script> 
+    <script type="text/javascript">window.CMS_MANUAL_INIT = true</script>
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <script type="text/javascript">
+      const { CMS, initCMS: init } = window
+
+      const config = {
+        local_backend: {% if jekyll.environment == "production" %}false{% else %}true{% endif %},
+        site_url: "{{ site.url }}"
       }
-    })();
-  </script> 
-  <script type="text/javascript">window.CMS_MANUAL_INIT = true</script>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  <script type="text/javascript">
-    const { CMS, initCMS: init } = window
 
-    const config = {
-      local_backend: {% if jekyll.environment == "production" %}false{% else %}true{% endif %},
-      site_url: "{{ site.url }}"
-    }
+      init({ config });
 
-    init({ config });
+      const CityPreview = createClass({
+        render: function() {
+          var entry = this.props.entry;
+          var logoUrl = entry.getIn(['data', 'logo']);
 
-    const CityPreview = createClass({
-      render: function() {
-        var entry = this.props.entry;
-        var logoUrl = entry.getIn(['data', 'logo']);
+          return h('div', { style: { padding: '20px' } },
+            h('h1', {}, entry.getIn(['data', 'city'])),
+            h('ul', {},
+              h('li', {}, h('strong', {}, 'Title: '), entry.getIn(['data', 'title'])),
+              h('li', {}, h('strong', {}, 'Wikidata ID: '), entry.getIn(['data', 'city_id'])),
+              h('li', {}, h('strong', {}, 'Country: '), entry.getIn(['data', 'country'])),
+                        h('div', { style: { marginBottom: '20px' } },
+              h('li', {}, h('strong', {}, 'Logo Preview:')),
+              logoUrl 
+                ? h('img', { src: logoUrl, style: { display: 'block', maxWidth: '200px', marginTop: '10px' } })
+                : h('p', { style: { color: '#666' } }, 'No logo URL provided.')
+              ),
+              h('li', {}, h('strong', {}, 'Logo Credit: '), entry.getIn(['data', 'logo_credit']))
+            )
+          );
+        }
+      });
 
-        return h('div', { style: { padding: '20px' } },
-          h('h1', {}, entry.getIn(['data', 'city'])),
-          h('ul', {},
-            h('li', {}, h('strong', {}, 'Title: '), entry.getIn(['data', 'title'])),
-            h('li', {}, h('strong', {}, 'Wikidata ID: '), entry.getIn(['data', 'city_id'])),
-            h('li', {}, h('strong', {}, 'Country: '), entry.getIn(['data', 'country'])),
-                      h('div', { style: { marginBottom: '20px' } },
-            h('li', {}, h('strong', {}, 'Logo Preview:')),
-            logoUrl 
-              ? h('img', { src: logoUrl, style: { display: 'block', maxWidth: '200px', marginTop: '10px' } })
-              : h('p', { style: { color: '#666' } }, 'No logo URL provided.')
+      const DatasetPreview = createClass({
+        render: function() {
+          var entry = this.props.entry;
+          return h('div', { style: { padding: '20px' } },
+            h('h1', {}, entry.getIn(['data', 'title'])),
+            h('p', {}, entry.getIn(['data', 'description'])),
+            h('ul', {},
+              h('li', {}, h('strong', {}, 'Cities: '), entry.getIn(['data', 'cities']).join(', ')),
+              h('li', {}, h('strong', {}, 'Datatypes: '), entry.getIn(['data', 'datatypes']).join(', ')),
+              h('div', { style: { marginBottom: '20px' } })
             ),
-            h('li', {}, h('strong', {}, 'Logo Credit: '), entry.getIn(['data', 'logo_credit']))
-          )
-        );
-      }
-    });
+            h('a', { href: entry.getIn(['data', 'external_url'])}, '[link]'),
+          );
+        }
+      });
 
-    const DatasetPreview = createClass({
-      render: function() {
-        var entry = this.props.entry;
-        return h('div', { style: { padding: '20px' } },
-          h('h1', {}, entry.getIn(['data', 'title'])),
-          h('p', {}, entry.getIn(['data', 'description'])),
-          h('ul', {},
-            h('li', {}, h('strong', {}, 'Cities: '), entry.getIn(['data', 'cities']).join(', ')),
-            h('li', {}, h('strong', {}, 'Datatypes: '), entry.getIn(['data', 'datatypes']).join(', ')),
-            h('div', { style: { marginBottom: '20px' } })
-          ),
-          h('a', { href: entry.getIn(['data', 'external_url'])}, '[link]'),
-        );
-      }
-    });
+      CMS.registerPreviewTemplate('cities', CityPreview);
+      CMS.registerPreviewTemplate('datasets', DatasetPreview);
 
-    CMS.registerPreviewTemplate('cities', CityPreview);
-    CMS.registerPreviewTemplate('datasets', DatasetPreview);
-
-  </script>
-</body>
+    </script>
+  </body>
 
 </html>
