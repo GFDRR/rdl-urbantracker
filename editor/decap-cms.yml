@@ -11,6 +11,16 @@ collections:
     folder: _datasets
     create: true
     fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: External URL
+        name: external_url
+        widget: string
+      - label: Description
+        name: description
+        widget: string
+        required: false
       - label: Cities
         name: cities
         widget: relation
@@ -27,19 +37,11 @@ collections:
         value_field: "title"
         display_fields: ["title"]
         multiple: true
-      - label: Title
-        name: title
-        widget: string
-      - label: External URL
-        name: external_url
-        widget: string
-      - label: Description
-        name: description
-        widget: string
   - name: datatypes
     label: Datatypes
     label_singular: Datatype
     folder: _datatypes
+    hide: true
     identifier_field: id
     fields:
       - label: Title

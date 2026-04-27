@@ -55,9 +55,26 @@
           )
         );
       }
-      });
+    });
 
-      CMS.registerPreviewTemplate('cities', CityPreview);
+    const DatasetPreview = createClass({
+      render: function() {
+        var entry = this.props.entry;
+        return h('div', { style: { padding: '20px' } },
+          h('h1', {}, entry.getIn(['data', 'title'])),
+          h('p', {}, entry.getIn(['data', 'description'])),
+          h('ul', {},
+            h('li', {}, h('strong', {}, 'Cities: '), entry.getIn(['data', 'cities']).join(', ')),
+            h('li', {}, h('strong', {}, 'Datatypes: '), entry.getIn(['data', 'datatypes']).join(', ')),
+            h('div', { style: { marginBottom: '20px' } })
+          ),
+          h('a', { href: entry.getIn(['data', 'external_url'])}, '[link]'),
+        );
+      }
+    });
+
+    CMS.registerPreviewTemplate('cities', CityPreview);
+    CMS.registerPreviewTemplate('datasets', DatasetPreview);
 
   </script>
 </body>
