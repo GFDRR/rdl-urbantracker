@@ -59,16 +59,28 @@
 
       const DatasetPreview = createClass({
         render: function() {
-          var entry = this.props.entry;
+          const entry = this.props.entry;
+          const cities = entry.getIn(['data', 'cities'])?.toJS() ?? [];
+          const datatypes = entry.getIn(['data', 'datatypes'])?.toJS() ?? [];
+          const external_url = entry.getIn(['data', 'external_url']);
           return h('div', { style: { padding: '20px' } },
             h('h1', {}, entry.getIn(['data', 'title'])),
             h('p', {}, entry.getIn(['data', 'description'])),
-            h('ul', {},
-              h('li', {}, h('strong', {}, 'Cities: '), entry.getIn(['data', 'cities']).join(', ')),
-              h('li', {}, h('strong', {}, 'Datatypes: '), entry.getIn(['data', 'datatypes']).join(', ')),
-              h('div', { style: { marginBottom: '20px' } })
+            h('p', {}, 'Cities: '),
+            h('ul', {}, 
+              cities.map(function(city_id) {
+                return h('li', {}, city_id)
+              }),
             ),
-            h('a', { href: entry.getIn(['data', 'external_url'])}, '[link]'),
+            h('p', {}, 'Datatypes: '),
+            h('ul', {}, 
+              datatypes.map(function(datatype_title) {
+                return h('li', {}, datatype_title)
+              }),
+            ),
+            external_url
+              ? h('a', { href: entry.getIn(['data', 'external_url'])}, '[link]')
+              : ''
           );
         }
       });
