@@ -80,4 +80,3 @@ collections:
         name: country
         widget: string
         allow_multiple: false
-
