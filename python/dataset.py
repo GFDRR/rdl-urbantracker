@@ -1,11 +1,12 @@
 import os
 from pathlib import Path
-import yaml
 
 import city as city_module
 import config
 import mappers
 import utils
+import yaml
+
 
 def write_datasets_to_markdown(datasets):
     """Write datasets to markdown files in _datasets directory."""
@@ -29,8 +30,10 @@ def write_datasets_to_markdown(datasets):
                 write_dataset_frontmatter(frontmatter, config.datasets_dir)
                 num_datasets += 1
             except Exception as e:
-                print(f"Error creating frontmatter for dataset {dataset.get('ID', 'unknown')}: {e}")
-    
+                print(
+                    f"Error creating frontmatter for dataset {dataset.get('ID', 'unknown')}: {e}"
+                )
+
     print(f"Generated {num_datasets} dataset markdown files in {config.datasets_dir}.")
 
 

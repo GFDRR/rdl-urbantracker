@@ -12,4 +12,3 @@ datatypes_dir = f"{root_dir}/_datatypes"
 datatype_categories_dir = f"{root_dir}/_datatype_categories"
 datatypes_input_path = f"{python_path}/input/datatypes.json"
 datatypes_schema_path = f"{python_path}/schema/datatypes.json"
-

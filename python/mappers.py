@@ -9,6 +9,7 @@ def make_city_frontmatter(city):
         "logo_credit": "Wikimedia",
     }
 
+
 def make_datatype_frontmatter(datatype):
     """Convert datatype metadata into JKAN frontmatter for a datatype"""
     return {
