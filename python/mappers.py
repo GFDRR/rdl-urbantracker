@@ -34,7 +34,6 @@ def make_dataset_frontmatter(dataset, city_id):
     """Formats metadata into JKAN frontmatter for a dataset"""
     payload = {
         # required; throw if missing
-        "schema": "rdl-urbantracker-0.1",
         "title": dataset["Example Dataset"],
         "external_url": dataset["Example URL"],
         "cities": [city_id],

@@ -4,6 +4,5 @@ cities:
 datatypes:
 - Stream Gauge
 external_url: https://waterdata.usgs.gov/ny/nwis/
-schema: rdl-urbantracker-0.1
 title: "USGS NWIS \u2014 NY"
 ---
