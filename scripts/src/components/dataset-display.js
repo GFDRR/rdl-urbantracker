@@ -8,7 +8,6 @@ export default class {
       resourceItem: queryByHook('resource-item', opts.el)
     }
 
-    // Resource details links
     elements.resourceItem.each((index, item) => {
       if ($('table tr', item).length) {
         queryByHook('show-resource-details', item).show()

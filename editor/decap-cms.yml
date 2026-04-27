@@ -1,0 +1,82 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "img"
+
+collections:
+  - name: datasets
+    label: Datasets
+    label_singular: Dataset
+    folder: _datasets
+    create: true
+    fields:
+      - label: Title
+        name: title
+        widget: string
+      - label: External URL
+        name: external_url
+        widget: string
+      - label: Description
+        name: description
+        widget: string
+        required: false
+      - label: Cities
+        name: cities
+        widget: relation
+        collection: "cities"
+        search_fields: ["city_id"]
+        value_field: "city_id"
+        display_fields: ["title"]
+        multiple: true
+      - label: Datatypes
+        name: datatypes
+        widget: relation
+        collection: "datatypes"
+        search_fields: ["title"]
+        value_field: "title"
+        display_fields: ["title"]
+        multiple: true
+  - name: datatypes
+    label: Datatypes
+    label_singular: Datatype
+    folder: _datatypes
+    hide: true
+    identifier_field: id
+    fields:
+      - label: Title
+        name: title
+        widget: string
+  - name: cities
+    label: Cities
+    label_singular: City
+    identifier_field: city_id
+    folder: _cities
+    create: true
+    slug: "{{city_id}}-{{city}}"
+    preview_path: "cities/{{slug}}"
+    fields:
+      - label: City
+        name: city
+        widget: string
+      - label: Wikidata ID
+        name: city_id
+        widget: string
+      - label: Title
+        name: title
+        widget: string
+        required: false
+      - label: Logo URL
+        name: logo
+        required: false
+        widget: string
+        allow_multiple: false
+      - label: Logo Credit
+        name: logo_credit
+        required: false
+        widget: string
+        allow_multiple: false
+      - label: Country
+        name: country
+        widget: string
+        allow_multiple: false

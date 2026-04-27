@@ -6,36 +6,13 @@ layout: default
 <div class="row h-100">
   <div class="col-sm-3 h-100 pt-3">
     <h3>Cities</h3>
-    <div class="list-group js-shown" data-component="city-tracker-nav" data-show="15">
+    <div class="list-group" data-component="city-tracker-nav" data-show="15">
       <div data-hook="city-tracker-nav-search"></div>
       <div data-hook="city-tracker-nav-list"></div>
     </div>
-    <div class="list-group js-hidden">
-      {% for city in sorted_cities %}
-        <a href="/city-tracker/{{city.city_id}}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-          {{ city.title }}
-        </a>
-      {% endfor %}
-    </div>
   </div>
-  <div class="js-shown col-md-9 h-100 overflow-scroll pt-3 pb-3" data-component="city-tracker-overview">
+  <div class="col-md-9 h-100 overflow-scroll pt-3 pb-3" data-component="city-tracker-overview">
     <h3 data-hook="city-tracker-header"></h3>
     <div data-hook="city-tracker-table"></div>
-  </div>
-  <div class="js-hidden col-md-9 h-100 pt-3 pb-3">
-    <h3>Overview</h3>
-    <div class="h-75 overflow-scroll">
-      {% for datatype_category in site.datatype_categories %}
-        <p class="list-group-item  d-flex justify-content-between align-items-center">
-          {{ datatype_category.title }}
-        </p>
-        {% assign datatypes_in_category = site.datatypes | where: "category", datatype_category.title %}
-        {% for datatype in datatypes_in_category %}
-          <p>
-            {{ datatype.title }}
-          </p>
-        {% endfor %}
-      {% endfor %}
-    </div>
   </div>
 </div>

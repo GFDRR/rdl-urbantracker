@@ -25,7 +25,6 @@ export function slugify(text) {
     .replace(/^\-|\-$/i, ""); // Remove leading/trailing hyphen
 }
 
-// Given an object of filters to use, returns a function to be used by _.filter()
 export function createDatasetFilters(filters) {
   return function (dataset) {
     const conditions = [];
@@ -62,8 +61,6 @@ export function createDatasetFilters(filters) {
   };
 }
 
-// Collapses a bootstrap list-group to only show a few items by default
-// Number of items to show can be specified in [data-show] attribute or passed as param
 export function collapseListGroup(container, show) {
   if (!show) show = container.data("show") || 5;
 

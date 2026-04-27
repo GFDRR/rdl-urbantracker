@@ -13,7 +13,6 @@ export default class {
   }
 
   _datatypeCategoriesWithCount (datasets, params, el) {
-    // Check if this filter is in a sidebar context
     const isSidebar = el.closest('.sidebar-filter').length > 0
     const baseUrl = isSidebar ? (window.settings && window.settings.BASE_URL ? window.settings.BASE_URL : '') : ''
 

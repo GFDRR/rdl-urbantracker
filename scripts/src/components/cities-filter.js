@@ -12,7 +12,6 @@ export default class {
     collapseListGroup(opts.el)
   }
 
-  // Given an array of datasets, returns an array of their cities with counts
   _citiesWithCount (datasets, params) {
     return chain(datasets)
       .filter('cities')

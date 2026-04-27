@@ -1,5 +1,5 @@
 import $ from 'jquery'
-import {chain, omit, defaults, filter} from 'lodash'
+import {chain, omit, defaults, filter, debounce} from 'lodash'
 
 import TmplCityTrackerNavItem from '../templates/city-tracker-nav-item'
 import TmplCityTrackerNavSearchBar from '../templates/city-tracker-nav-search-bar'
@@ -17,8 +17,40 @@ export default class {
 
     const searchMarkup = TmplCityTrackerNavSearchBar()
     setContent(elements.cityTrackerNavSearch, searchMarkup)
-    
+    this.wikidataCity = {}
     this._search(opts)
+  }
+
+  async _fetchWikidataCity(query, retries = 3) {
+    const url = `/.netlify/functions/wikidata-search?query=${encodeURIComponent(query)}`;
+    
+    for (let i = 0; i < retries; i++) {
+      try {
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        if (data.results && data.results.bindings.length > 0) {
+          const result = data.results.bindings[0];
+          this.wikidataCity = {
+            city: result.cityLabel.value,
+            city_id: result.city.value.split('/').pop(),
+            title: result.cityLabel.value + ', ' + result.countryLabel.value,
+            logo: result.cityFlag.value,
+            logo_credit: 'Wikimedia',
+            country: result.countryLabel.value
+          };
+        }
+        return;
+      } catch (error) {
+        if (i === retries - 1) throw error;
+        console.warn(`Retry ${i + 1} failed...`);
+        await new Promise(res => setTimeout(res, 1000));
+      }
+    }
   }
 
   _search(opts) {
@@ -26,22 +58,20 @@ export default class {
     const searchResults = $('#cityTrackerNavSearchResults')
     const cities = opts.cities
 
-    searchInput.on('input', (e) => {
-      const query = e.target.value.toLowerCase().trim()
-      
+    const handleInput = debounce(async (e) => {
+      const query = e.target.value.trim()
+      this.wikidataCity = {}
       if (query.length === 0) {
         searchResults.hide()
         return
       }
 
-      // Filter cities based on search query
       const filteredCities = filter(cities, (city) => {
-        const titleMatch = city.title && city.title.toLowerCase().includes(query)
-        const idMatch = city.city_id && city.city_id.toLowerCase().includes(query)
+        const titleMatch = city.title && city.title.toLowerCase().includes(query.toLowerCase())
+        const idMatch = city.city_id && city.city_id.toLowerCase().includes(query.toLowerCase())
         return titleMatch || idMatch
       })
 
-      // Build results HTML
       let resultsHtml = ''
       
       if (filteredCities.length > 0) {
@@ -60,32 +90,37 @@ export default class {
           `
         })
       } else {
-        resultsHtml += `
-          <div class="list-group-item">
-            <p class="mb-1 text-muted">No cities found</p>
-          </div>
-        `
+        try {
+          await this._fetchWikidataCity(query)
+          if (!this.wikidataCity?.city) {
+            throw new Error('City not found')
+          }
+          const encodedParams = Object.entries(this.wikidataCity).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
+  
+          resultsHtml += `
+            <div class="list-group-item">
+              <a href="/editor/#/collections/cities/new?${encodedParams}" class="list-group-item list-group-item-action list-group-item-info">
+                <i class="mb-1 fa fa-plus-circle"></i> Add ${this.wikidataCity.city}
+              </a>
+            </div>
+          `;
+        } catch (err) {
+          resultsHtml = `<div class="list-group-item text-danger">Search failed.</div>`
+        }
       }
-
-      // Add "Add new city" link at the bottom
-      resultsHtml += `
-        <a href="/editor/cities${query.length > 0 ? '?city_search='+query : ''}" class="list-group-item list-group-item-action list-group-item-info">
-          <i class="fa fa-plus-circle"></i> Add new city
-        </a>
-      `
 
       searchResults.html(resultsHtml)
       searchResults.show()
-    })
+    }, 500)
 
-    // Hide dropdown when clicking outside
+    searchInput.on('input', handleInput)
+
     $(document).on('click', (e) => {
       if (!$(e.target).closest('#cityTrackerNavSearchBar, #cityTrackerNavSearchResults').length) {
         searchResults.hide()
       }
     })
 
-    // Show dropdown when focusing on input if there's a value
     searchInput.on('focus', () => {
       if (searchInput.val().trim().length > 0) {
         searchResults.show()

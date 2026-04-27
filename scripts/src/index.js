@@ -18,14 +18,12 @@ urlSearchParams.forEach((value, key) => {
   params[key] = value;
 });
 
-// Helper function to ensure datasets.json is only fetched once per page
 let citiesCache;
 function getCities() {
   citiesCache = citiesCache || $.getJSON(`${settings.BASE_URL}/cities.json`);
   return citiesCache;
 }
 
-// Helper function to ensure datasets.json is only fetched once per page
 let datasetsCache;
 function getDatasets() {
   datasetsCache =
@@ -33,7 +31,6 @@ function getDatasets() {
   return datasetsCache;
 }
 
-// Helper function to ensure datasets.json is only fetched once per page
 let datatypesCache;
 function getDatatypes() {
   datatypesCache =
@@ -41,7 +38,6 @@ function getDatatypes() {
   return datatypesCache;
 }
 
-// Check for these components on the page and initialize them
 const components = [
   { tag: "dataset-display", class: DatasetDisplay },
   { tag: "datasets-list", class: DatasetsList, usesData: true },
@@ -58,7 +54,6 @@ const components = [
 for (let component of components) {
   const els = queryByComponent(component.tag);
   if (els.length) {
-    // If the component depends on datasets.json, fetch it first (once per page) and pass it
     if (component.usesData) {
       Promise.all([getCities(), getDatasets(), getDatatypes()]).then(([cities, datasets, datatypes]) => {
         els.each(
@@ -67,7 +62,6 @@ for (let component of components) {
         ); 
       })
     }
-    // Otherwise simply initialize the component
   } else {
     els.each((_, el) => new component.class({ el: $(el), params })); // eslint-disable-line
   }

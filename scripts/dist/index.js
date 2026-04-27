@@ -28,22 +28,20 @@ ${oB}`);if(i){var u,s;oU("instance",i),n=i.replace(/\/$/,"").replace(`/${a}/api.
     <input type="text" class="form-control" id="cityTrackerNavSearchBar" placeholder="Search cities..." autocomplete="off">
     <div id="cityTrackerNavSearchResults" class="list-group position-absolute w-100 shadow-sm" style="z-index: 1000; max-height: 300px; overflow-y: auto; display: none;"></div>
   </div>
-`;oG(e.cityTrackerNavSearch,r),this._search(t)}_search(t){let e=E(rG)("#cityTrackerNavSearchBar"),n=E(rG)("#cityTrackerNavSearchResults"),r=t.cities;e.on("input",e=>{let i=e.target.value.toLowerCase().trim();if(0===i.length)return void n.hide();let o=(0,rK.filter)(r,t=>{let e=t.title&&t.title.toLowerCase().includes(i),n=t.city_id&&t.city_id.toLowerCase().includes(i);return e||n}),a="";o.length>0?o.forEach(e=>{let n=oK(e.city_id),r=(0,rK.defaults)({city:n},t.params),i="?"+E(rG).param(r);a+=`
+`;oG(e.cityTrackerNavSearch,r),this.wikidataCity={},this._search(t)}async _fetchWikidataCity(t,e=3){let n=`/.netlify/functions/wikidata-search?query=${encodeURIComponent(t)}`;for(let t=0;t<e;t++)try{let t=await fetch(n);if(!t.ok)throw Error(`API error: ${t.status}`);let e=await t.json();if(e.results&&e.results.bindings.length>0){let t=e.results.bindings[0];this.wikidataCity={city:t.cityLabel.value,city_id:t.city.value.split("/").pop(),title:t.cityLabel.value+", "+t.countryLabel.value,logo:t.cityFlag.value,logo_credit:"Wikimedia",country:t.countryLabel.value}}return}catch(n){if(t===e-1)throw n;console.warn(`Retry ${t+1} failed...`),await new Promise(t=>setTimeout(t,1e3))}}_search(t){let e=E(rG)("#cityTrackerNavSearchBar"),n=E(rG)("#cityTrackerNavSearchResults"),r=t.cities,i=(0,rK.debounce)(async e=>{let i=e.target.value.trim();if(this.wikidataCity={},0===i.length)return void n.hide();let o=(0,rK.filter)(r,t=>{let e=t.title&&t.title.toLowerCase().includes(i.toLowerCase()),n=t.city_id&&t.city_id.toLowerCase().includes(i.toLowerCase());return e||n}),a="";if(o.length>0)o.forEach(e=>{let n=oK(e.city_id),r=(0,rK.defaults)({city:n},t.params),i="?"+E(rG).param(r);a+=`
             <a href="${i}" class="list-group-item list-group-item-action">
               <div class="d-flex w-100 justify-content-between">
                 <h6 class="mb-1">${e.title}</h6>
               </div>
               <small class="text-muted">${e.city_id}</small>
             </a>
-          `}):a+=`
-          <div class="list-group-item">
-            <p class="mb-1 text-muted">No cities found</p>
-          </div>
-        `,a+=`
-        <a href="/editor/cities${i.length>0?"?city_search="+i:""}" class="list-group-item list-group-item-action list-group-item-info">
-          <i class="fa fa-plus-circle"></i> Add new city
-        </a>
-      `,n.html(a),n.show()}),E(rG)(document).on("click",t=>{E(rG)(t.target).closest("#cityTrackerNavSearchBar, #cityTrackerNavSearchResults").length||n.hide()}),e.on("focus",()=>{e.val().trim().length>0&&n.show()})}_cities(t){if(!t.params.city){let e=t.cities[0];t.params.city=oK(e.city_id)}return t.cities.map(e=>{let n=oK(e.city_id),r=t.params.city&&t.params.city===n,i=r?(0,rK.omit)(t.params,"city"):(0,rK.defaults)({city:n},t.params),o=t.datasets.filter(t=>t.cities&&t.cities.some(t=>t.city_id===e.city_id)).reduce((t,e)=>{let n=e.datatypes||[];return e.is_partial||e.is_unavailable?t.countExcluded+=n.length:t.countComplete+=n.length,t},{countComplete:0,countExcluded:0});return{...e,...o,coverage:(o.countComplete/t.datatypes.length*100).toFixed(2)+"%",url:"?"+E(rG).param(i),selected:r}})}},usesData:!0},{tag:"city-tracker-overview",class:class{constructor(t){let e={cityTrackerHeader:oY("city-tracker-header",t.el),cityTrackerTable:oY("city-tracker-table",t.el)};if(!t.params.city){let e=t.cities[0];t.params.city=oK(e.city_id)}let n=(0,rK.pick)(t.params,["datatypeCategory","city"]),r=(0,rK.pick)(t.el.data(),["datatypeCategory","city"]),i=oJ((0,rK.defaults)(n,r)),o=(0,rK.filter)(t.datasets,i),a=o.reduce((t,e)=>{let n=e.datatypes||[];return e.is_partial||e.is_unavailable?t.countExcluded+=n.length:t.countComplete+=n.length,t},{countComplete:0,countExcluded:0}),u={...t.cities.find(e=>oK(e.city_id)===t.params.city),countComplete:a.countComplete,countExcluded:a.countExcluded,coverage:(a.countComplete/t.datatypes.length*100).toFixed(2)+"%"},s=((0,rK.defaults)(n,r).datatypeCategory?t.datatypes.filter(t=>oK(t.category)===(0,rK.defaults)(n,r).datatypeCategory):t.datatypes).map(t=>{let e=o.find(e=>e.datatypes&&e.datatypes.some(e=>e.title===t.title));return{datatype:t,dataset:e}}).sort((t,e)=>{if(t.datatype.category<e.datatype.category)return -1;if(t.datatype.category>e.datatype.category)return 1;if(t.datatype.title<e.datatype.title)return -1;if(t.datatype.title>e.datatype.title)return 1;if(t.dataset&&e.dataset){if(t.dataset.title<e.dataset.title)return -1;if(t.dataset.title>e.dataset.title)return 1}return 0});oG(e.cityTrackerHeader,(t=>`
+          `});else try{if(await this._fetchWikidataCity(i),!this.wikidataCity?.city)throw Error("City not found");let t=Object.entries(this.wikidataCity).map(t=>t.map(encodeURIComponent).join("=")).join("&");a+=`
+            <div class="list-group-item">
+              <a href="/editor/#/collections/cities/new?${t}" class="list-group-item list-group-item-action list-group-item-info">
+                <i class="mb-1 fa fa-plus-circle"></i> Add ${this.wikidataCity.city}
+              </a>
+            </div>
+          `}catch(t){a='<div class="list-group-item text-danger">Search failed.</div>'}n.html(a),n.show()},500);e.on("input",i),E(rG)(document).on("click",t=>{E(rG)(t.target).closest("#cityTrackerNavSearchBar, #cityTrackerNavSearchResults").length||n.hide()}),e.on("focus",()=>{e.val().trim().length>0&&n.show()})}_cities(t){if(!t.params.city){let e=t.cities[0];t.params.city=oK(e.city_id)}return t.cities.map(e=>{let n=oK(e.city_id),r=t.params.city&&t.params.city===n,i=r?(0,rK.omit)(t.params,"city"):(0,rK.defaults)({city:n},t.params),o=t.datasets.filter(t=>t.cities&&t.cities.some(t=>t.city_id===e.city_id)).reduce((t,e)=>{let n=e.datatypes||[];return e.is_partial||e.is_unavailable?t.countExcluded+=n.length:t.countComplete+=n.length,t},{countComplete:0,countExcluded:0});return{...e,...o,coverage:(o.countComplete/t.datatypes.length*100).toFixed(2)+"%",url:"?"+E(rG).param(i),selected:r}})}},usesData:!0},{tag:"city-tracker-overview",class:class{constructor(t){let e={cityTrackerHeader:oY("city-tracker-header",t.el),cityTrackerTable:oY("city-tracker-table",t.el)};if(!t.params.city){let e=t.cities[0];t.params.city=oK(e.city_id)}let n=(0,rK.pick)(t.params,["datatypeCategory","city"]),r=(0,rK.pick)(t.el.data(),["datatypeCategory","city"]),i=oJ((0,rK.defaults)(n,r)),o=(0,rK.filter)(t.datasets,i),a=o.reduce((t,e)=>{let n=e.datatypes||[];return e.is_partial||e.is_unavailable?t.countExcluded+=n.length:t.countComplete+=n.length,t},{countComplete:0,countExcluded:0}),u={...t.cities.find(e=>oK(e.city_id)===t.params.city),countComplete:a.countComplete,countExcluded:a.countExcluded,coverage:(a.countComplete/t.datatypes.length*100).toFixed(2)+"%"},s=((0,rK.defaults)(n,r).datatypeCategory?t.datatypes.filter(t=>oK(t.category)===(0,rK.defaults)(n,r).datatypeCategory):t.datatypes).map(t=>{let e=o.find(e=>e.datatypes&&e.datatypes.some(e=>e.title===t.title));return{datatype:t,dataset:e}}).sort((t,e)=>{if(t.datatype.category<e.datatype.category)return -1;if(t.datatype.category>e.datatype.category)return 1;if(t.datatype.title<e.datatype.title)return -1;if(t.datatype.title>e.datatype.title)return 1;if(t.dataset&&e.dataset){if(t.dataset.title<e.dataset.title)return -1;if(t.dataset.title>e.dataset.title)return 1}return 0});oG(e.cityTrackerHeader,(t=>`
   <h3>${t.title}</h3>
   <h6><a href="https://www.wikidata.org/wiki/${t.city_id}">${t.city_id}</a></h6>
 
@@ -62,7 +60,11 @@ ${oB}`);if(i){var u,s;oU("instance",i),n=i.replace(/\/$/,"").replace(`/${a}/api.
         <tr>
           <td>${t.datatype.category}</td>
           <td>${t.datatype.title}</td>
-          ${t.dataset&&!t.dataset.is_partial&&!t.dataset.is_unavailable?`<td><a href="${t.dataset.url}">View dataset</a></td>`:"<td>No dataset</td>"}
+          ${t.dataset&&!t.dataset.is_partial&&!t.dataset.is_unavailable?`<td><a href="${t.dataset.url}">
+                <i class="m-1 fa fa-check"></i>View
+              </a></td>`:`<td><a class="text-danger" href="/editor/#/collections/datasets/new?datatypes=${encodeURIComponent(t.datatype.title)}">
+                <i class="m-1 fa fa-plus-circle"></i>Add
+              </a></td>`}
         </tr>
       `).join("\n")}
   </tbody>

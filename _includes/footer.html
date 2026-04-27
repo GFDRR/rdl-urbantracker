@@ -1,4 +1,19 @@
 <!-- general behavior -->
 <script type="module" src="{{ site.baseurl }}/scripts/dist/index.js"></script>
-
+<script>
+  (function () {
+    var hash = window.location.hash || '';
+    var invitePath = '{{ site.baseurl }}/invite/';
+    var editorPath = '{{ site.baseurl }}/editor/';
+    if (/(^|[#&])(invite_token|recovery_token)=/.test(hash)) {
+      if (window.location.pathname !== invitePath) {
+        window.location.replace(invitePath + hash);
+      }
+    } else if (/(^|[#&])(confirmation_token|access_token)=/.test(hash)) {
+      if (window.location.pathname !== editorPath) {
+        window.location.replace(editorPath + hash);
+      }
+    }
+  })();
+</script> 
 <footer></footer>
