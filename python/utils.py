@@ -1,11 +1,11 @@
-import os
 import chardet
 from git import Repo
-from git.exc import GitCommandError
 import json
 import logging
+import os
 from pathlib import Path
 import re
+import requests
 import unicodedata
 import yaml
 
@@ -185,22 +185,57 @@ def write_frontmatter(metadata, output_path):
         outfile.write(yaml.dump(metadata))
         outfile.write("---\n")
 
+def search_wikidata_for_city(query):
+    sparql_query = f"""
+    SELECT DISTINCT ?city ?cityLabel ?countryEntity ?countryLabel ?cityFlag WHERE {{
+      VALUES ?myCatalog {{
+        "{query}"@en
+      }}
+      ?city rdfs:label ?myCatalog;
+        (wdt:P31/(wdt:P279*)) wd:Q515;
+        wdt:P1082 ?population;
+        wdt:P17 ?countryEntity.
+      OPTIONAL {{ ?city wdt:P41 ?cityFlag. }}
+      FILTER(?population > 0 )
+      ?countryEntity rdfs:label ?country.
+      FILTER((LANG(?country)) = "en")
+      SERVICE wikibase:label {{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }}
+    }}
+    ORDER BY DESC (?population)
+    LIMIT 5
+    """
 
-def write_datatype_frontmatter(metadata, output_path):
-    """Write datatype frontmatter to markdown file using id as filename."""
-    filename = metadata.get("id", "unknown") + ".md"
+    try:
+        url = 'https://query.wikidata.org/sparql'
+        params = {
+            'format': 'json',
+            'query': sparql_query
+        }
+                
+        response = requests.get(
+            url,
+            params=params,
+            headers={
+                'Accept': 'application/json',
+                'User-Agent': 'rdl-urbantracker/0.0 (https://github.com/GFDRR/rdl-urbantracker; lydia@oldgrowth.city)',
+            }
+        )
 
-    with open((Path(output_path) / filename), "w") as outfile:
-        outfile.write("---\n")
-        outfile.write(yaml.dump(metadata))
-        outfile.write("---\n")
+        response.raise_for_status()
+        data = response.json()
+        results = data.get('results', {}).get('bindings', [])
+        city = {
+            'city_id': results[0]['city']['value'].split('/')[-1] if results else None,
+            'city_label': results[0]['cityLabel']['value'] if results else None,
+            'country_entity': results[0]['countryEntity']['value'].split('/')[-1] if results else None,
+            'country_label': results[0]['countryLabel']['value'] if results else None,
+            'city_flag': results[0]['cityFlag']['value'] if results and 'cityFlag' in results[0] else None
+        }
 
-
-def write_datatype_category_frontmatter(metadata, output_path):
-    """Write datatype category frontmatter to markdown file using slugified title as filename."""
-    filename = slugify(metadata.get("title", "unknown"), allow_unicode=True) + ".md"
-
-    with open((Path(output_path) / filename), "w") as outfile:
-        outfile.write("---\n")
-        outfile.write(yaml.dump(metadata))
-        outfile.write("---\n")
+        return city
+    except requests.exceptions.RequestException as error:
+        status_code = error.response.status_code if hasattr(error, 'response') and error.response else 500
+        return {
+            'statusCode': status_code,
+            'body': json.dumps({'error': str(error)})
+        }

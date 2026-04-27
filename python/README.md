@@ -29,15 +29,12 @@ PIP_CONSTRAINT=/tmp/constraint.txt pip install 'PyYAML==5.4.1'
 pip install -r requirements.txt
 ```
 
-### Generate markdown and/or vectors from new JSON metadata
+### Generate markdown from new JSON metadata
 
 - You can configure input and output directories in `/python/config.py`
 - Open a shell here, at `/python`
 - Generate datasets with `python3 main.py --markdown`
   - To run on only files modified since the most recent commit on the target branch, run `python3 main.py --ci --markdown`
-  - To also generate vector embeddings for semantic search, add the `--vectors` flag, e.g. `python3 main.py --ci --markdown --vectors`
-- To test semantic search performance as well, add the following argument: `--test search`
-  - To configure these tests, edit `/python/tests.yml`
 
 ### Handling multi-dataset JSON files
 
