@@ -11,7 +11,7 @@ export default ({ cities, sortField, sortDirection }) => {
     <table class="table table-striped table-hover">
       <thead>
         <tr>
-          <th scope="col">Logo</th>
+          <th scope="col">Flag</th>
           <th scope="col" data-sort="title" style="cursor: pointer;">
             City ${getSortIcon('title')}
           </th>
