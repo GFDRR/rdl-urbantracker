@@ -13,11 +13,9 @@ def make_city_frontmatter(city):
 def make_datatype_frontmatter(datatype):
     """Convert datatype metadata into JKAN frontmatter for a datatype"""
     return {
-        "title": datatype["name"],
-        "category": datatype["category"],
-        "description": datatype.get("description", ""),
-        "logo": "",
-        "logo_credit": "",
+        "title": datatype["Name"],
+        "category": datatype["Category"],
+        "description": datatype.get("Description", "")
     }
 
 
@@ -25,9 +23,7 @@ def make_datatype_category_frontmatter(category_name):
     """Convert category name into JKAN frontmatter for a datatype category"""
     return {
         "title": category_name,
-        "description": f"Datatypes related to {category_name.lower()}",
-        "logo": "",
-        "logo_credit": "",
+        "description": f"Datatypes related to {category_name.lower()}"
     }
 
 

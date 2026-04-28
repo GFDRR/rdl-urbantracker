@@ -4,7 +4,7 @@ import sys
 
 import dataset
 import datatype
-from validator import validate_datasets, validate_datatypes
+from validator import validate_input
 
 
 def setup_args():
@@ -33,16 +33,12 @@ if __name__ == "__main__":
     exit_code = 0
     args = setup_args()
 
+    dataset_errors = validate_input()
     if args.datasets:
-        dataset_errors, datasets = validate_datasets()
-        dataset.write_datasets_to_markdown(datasets)
+        dataset.write_datasets_to_markdown()
 
     if args.datatypes:
-        datatype_errors, datatypes = validate_datatypes()
-        if datatype_errors:
-            exit_code = 1
-        else:
-            datatype.write_datatypes_to_markdown(datatypes)
-            datatype.write_datatype_categories_to_markdown(datatypes)
+        datatype.write_datatypes_to_markdown()
+        datatype.write_datatype_categories_to_markdown()
 
     sys.exit(exit_code)

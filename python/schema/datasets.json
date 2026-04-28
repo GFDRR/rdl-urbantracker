@@ -36,9 +36,14 @@
           "type": "string",
           "pattern": "^(?!\\s).{1,}$",
           "description": "Datatype this dataset is relevant to (e.g., Protected Areas)"
+        },
+        "ID": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier for the datatype"
         }
       },
-      "required": ["Example Dataset", "Example URL", "City", "Category", "Name"]
+      "required": ["Example Dataset", "Example URL", "City", "Category", "Name", "ID"]
     }
   }
 }
