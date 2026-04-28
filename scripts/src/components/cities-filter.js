@@ -6,40 +6,31 @@ import {setContent, slugify, createDatasetFilters, collapseListGroup} from '../u
 
 export default class {
   constructor (opts) {
-    const cities = this._citiesWithCount(opts.datasets, opts.params)
+    const cities = this._citiesWithCount(opts.cities, opts.datasets, opts.params)
     const citiesMarkup = cities.map(TmplListGroupItem)
     setContent(opts.el, citiesMarkup)
     collapseListGroup(opts.el)
   }
 
-  _citiesWithCount (datasets, params) {
-    return chain(datasets)
-      .filter('cities')
-      .flatMap(function (dataset) {
-        return dataset.cities.map(function (city) {
-          return {
-            city: city.title,
-            dataset: dataset
-          }
-        })
-      })
-      .groupBy('city')
-      .map(function (cityDatasets, city) {
-        const datasetsInCity = cityDatasets.map(function (cd) { return cd.dataset })
-        const filters = createDatasetFilters(pick(params, ['city']))
-        const filteredDatasets = filter(datasetsInCity, filters)
-        const citySlug = slugify(city)
+  _citiesWithCount(cities, datasets, params) {
+    return chain(cities)
+      .map(city => {
+        const paramFilters = createDatasetFilters(pick(params, ['city']))
+        const filteredDatasets = filter(datasets, paramFilters)
+        const cityFilters = createDatasetFilters({ city: slugify(city.city_id) })
+        const datasetsInCity = filter(datasets, cityFilters)
+        const citySlug = slugify(city.city_id)
         const selected = params.city && params.city === citySlug
         const itemParams = selected ? omit(params, 'city') : defaults({city: citySlug}, params)
         return {
-          title: city,
+          title: city.title,
           url: '?' + $.param(itemParams),
-          count: filteredDatasets.length,
-          unfilteredCount: datasetsInCity.length,
+          count: datasetsInCity.length,
+          unfilteredCount: filteredDatasets.length,
           selected: selected
         }
       })
-      .orderBy('unfilteredCount', 'desc')
+      .orderBy('title', 'asc')
       .value()
   }
 }

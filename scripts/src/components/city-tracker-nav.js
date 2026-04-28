@@ -136,7 +136,8 @@ export default class {
     
     return opts.cities.map(city => {
       const citySlug = slugify(city.city_id)
-      const selected = opts.params.city && opts.params.city === citySlug
+      const citySlugFromParams = slugify(opts.params.city)
+      const selected = citySlugFromParams && citySlugFromParams === citySlug
       const itemParams = selected ? omit(opts.params, 'city') : defaults({city: citySlug}, opts.params)
 
       const cityDatasets = opts.datasets.filter(d => d.cities && d.cities.some(c => c.city_id === city.city_id))
