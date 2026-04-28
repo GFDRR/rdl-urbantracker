@@ -222,6 +222,7 @@ def search_wikidata_for_city(query):
                 "Accept": "application/json",
                 "User-Agent": "rdl-urbantracker/0.0 (https://github.com/GFDRR/rdl-urbantracker; lydia@oldgrowth.city)",
             },
+            timeout=5,
         )
 
         response.raise_for_status()

@@ -15,7 +15,7 @@ def make_datatype_frontmatter(datatype):
     return {
         "title": datatype["Name"],
         "category": datatype["Category"],
-        "description": datatype.get("Description", "")
+        "description": datatype.get("Description", ""),
     }
 
 
@@ -23,7 +23,7 @@ def make_datatype_category_frontmatter(category_name):
     """Convert category name into JKAN frontmatter for a datatype category"""
     return {
         "title": category_name,
-        "description": f"Datatypes related to {category_name.lower()}"
+        "description": f"Datatypes related to {category_name.lower()}",
     }
 
 

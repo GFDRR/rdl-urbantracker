@@ -1,8 +1,8 @@
+import json
 import os
 from pathlib import Path
 
 import config
-import json
 import mappers
 import utils
 import yaml
@@ -44,7 +44,9 @@ def write_datatype_categories_to_markdown():
 
         for category_name in sorted(categories):
             frontmatter = mappers.make_datatype_category_frontmatter(category_name)
-            write_datatype_category_frontmatter(frontmatter, config.datatype_categories_dir)
+            write_datatype_category_frontmatter(
+                frontmatter, config.datatype_categories_dir
+            )
 
         print(
             f"Generated {len(categories)} datatype category markdown files in {config.datatype_categories_dir}."
@@ -53,7 +55,13 @@ def write_datatype_categories_to_markdown():
 
 def write_datatype_frontmatter(metadata, output_path):
     """Write datatype frontmatter to markdown file."""
-    filename = utils.slugify(str(metadata.get("id", "unknown")) + "-" + metadata.get("title", "unknown"), allow_unicode=True) + ".md"
+    filename = (
+        utils.slugify(
+            str(metadata.get("id", "unknown")) + "-" + metadata.get("title", "unknown"),
+            allow_unicode=True,
+        )
+        + ".md"
+    )
 
     with open((Path(output_path) / filename), "w") as outfile:
         outfile.write("---\n")

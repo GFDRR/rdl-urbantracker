@@ -1,9 +1,9 @@
+import json
 import os
 from pathlib import Path
 
 import city as city_module
 import config
-import json
 import mappers
 import utils
 import yaml
@@ -14,7 +14,7 @@ def write_datasets_to_markdown():
     # Ensure output directory exists
     if not Path(config.datasets_dir).is_dir():
         os.makedirs(config.datasets_dir)
-    
+
     with open(config.datasets_input_json_path, "r") as f:
         datasets = json.load(f)
         num_datasets = 0
@@ -30,7 +30,9 @@ def write_datasets_to_markdown():
                     city_id = city_module.does_city_with_id_exist(city["city_id"])
                     if not city_id:
                         city_module.write_city_to_markdown(city)
-                    frontmatter = mappers.make_dataset_frontmatter(dataset, city["city_id"])
+                    frontmatter = mappers.make_dataset_frontmatter(
+                        dataset, city["city_id"]
+                    )
                     write_dataset_frontmatter(frontmatter, config.datasets_dir)
                     num_datasets += 1
                 except Exception as e:
@@ -38,7 +40,9 @@ def write_datasets_to_markdown():
                         f"Error creating frontmatter for dataset {dataset.get('ID', 'unknown')}: {e}"
                     )
 
-        print(f"Generated {num_datasets} dataset markdown files in {config.datasets_dir}.")
+        print(
+            f"Generated {num_datasets} dataset markdown files in {config.datasets_dir}."
+        )
 
 
 def write_dataset_frontmatter(metadata, output_path):

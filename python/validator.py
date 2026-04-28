@@ -16,7 +16,7 @@ def validate_input():
     with open(config.datasets_schema_path, "r") as f:
         full_schema = json.load(f)
     dataset_schema = full_schema["definitions"]["dataset"]
- 
+
     with open(config.datasets_input_csv_path, "r", newline="") as f:
         datasets = csv.DictReader(f)
 
@@ -27,11 +27,13 @@ def validate_input():
                 validate(instance=dataset, schema=dataset_schema)
                 valid_datasets.append(dataset)
                 num_datasets += 1
-                valid_datatypes.append({
-                    "ID": dataset["ID"],
-                    "Name": dataset["Name"],
-                    "Category": dataset["Category"],
-                })
+                valid_datatypes.append(
+                    {
+                        "ID": dataset["ID"],
+                        "Name": dataset["Name"],
+                        "Category": dataset["Category"],
+                    }
+                )
                 num_datatypes += 1
             except ValidationError as e:
                 error_message = str(e.message)
