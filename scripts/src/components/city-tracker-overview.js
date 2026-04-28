@@ -65,24 +65,22 @@ export default class {
   }
 
   _sortCityDatatypes(cityDatatypes) {
+    const sortHierarchy = ['category', 'datatype', 'dataset']
+      .sort((a,b) => a == this.sortField ? -1 : b == this.sortField ? 1 : 0);
+    const getSortValue = {
+      category: item => item.datatype.category || ''.toString().toLowerCase(),
+      datatype: item => item.datatype.title || ''.toString().toLowerCase(),
+      dataset: item => !!item.dataset?.title,
+    }
     return cityDatatypes.sort((a, b) => {
-      let aVal;
-      let bVal;
-      
-      if (['category'].includes(this.sortField)) {
-        aVal = (a.datatype.category || '').toString().toLowerCase();
-        bVal = (b.datatype.category || '').toString().toLowerCase();
-      } else if (['datatype'].includes(this.sortField)) {
-        aVal = (a.datatype.title || '').toString().toLowerCase();
-        bVal = (b.datatype.title || '').toString().toLowerCase();
-      } else if (['dataset'].includes(this.sortField)) {
-        aVal = (a.dataset?.title || '').toString().toLowerCase();
-        bVal = (b.dataset?.title || '').toString().toLowerCase();
-      }
-      
-      if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
-      if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
-      return 0;
+      return sortHierarchy.reduce((result, field, i) => {
+        if (result !== 0) return result;
+        const aVal = getSortValue[field](a);
+        const bVal = getSortValue[field](b);
+        if (i > 0 || aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
+        if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
+        return 0;
+      }, 0); 
     })
   }
 

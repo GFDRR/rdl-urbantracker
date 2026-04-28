@@ -7,7 +7,7 @@ export default class {
   constructor(opts) {
     this.elements = {
       compareCitiesTable: queryByHook('compare-cities-table', opts.el),
-      searchQuery: queryByHook('search-query', opts.el)
+      searchQuery: queryByHook('compare-cities-search-query', opts.el)
     };
     
     this.cities = opts.cities;
@@ -66,26 +66,28 @@ export default class {
       };
     });
   }
-  
+
+
   _sortCities(cities) {
+    const sortHierarchy = ['title', 'country', 'coverage', 'countComplete', 'countExcluded']
+      .sort((a,b) => a == this.sortField ? -1 : b == this.sortField ? 1 : 0);
+    const getSortValue = {
+      title: item => item.title.toString().toLowerCase(),
+      country: item => item.country.toString().toLowerCase(),
+      coverage: item => item.coverage.toString().toLowerCase(),
+      countComplete: item => parseFloat(item.countComplete) || 0,
+      countExcluded: item => parseFloat(item.countExcluded) || 0,
+    }
     return cities.sort((a, b) => {
-      let aVal = a[this.sortField];
-      let bVal = b[this.sortField];
-      
-      // Handle numeric fields
-      if (['countComplete', 'countExcluded', 'coveragePercent'].includes(this.sortField)) {
-        aVal = parseFloat(aVal) || 0;
-        bVal = parseFloat(bVal) || 0;
-      } else {
-        // Handle string fields (case insensitive)
-        aVal = (aVal || '').toString().toLowerCase();
-        bVal = (bVal || '').toString().toLowerCase();
-      }
-      
-      if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
-      if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
-      return 0;
-    });
+      return sortHierarchy.reduce((result, field, i) => {
+        if (result !== 0) return result;
+        const aVal = getSortValue[field](a);
+        const bVal = getSortValue[field](b);
+        if (i > 0 || aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
+        if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
+        return 0;
+      }, 0); 
+    })
   }
   
   _filterCities(query) {
