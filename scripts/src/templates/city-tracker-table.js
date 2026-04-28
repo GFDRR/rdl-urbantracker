@@ -17,7 +17,7 @@ export default (cityDatatypes) => (`
             ? `<td><a href="${cdt.dataset.url}">
                 <i class="m-1 fa fa-check"></i>View
               </a></td>`
-            : `<td><a class="text-danger" href="/editor/#/collections/datasets/new?datatypes=${encodeURIComponent(cdt.datatype.title)}">
+            : `<td><a class="text-danger" href="/editor/#/collections/datasets/new">
                 <i class="m-1 fa fa-plus-circle"></i>Add
               </a></td>`
           }

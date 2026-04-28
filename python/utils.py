@@ -1,28 +1,24 @@
-import os
-import chardet
-from git import Repo
-from git.exc import GitCommandError
 import json
 import logging
-from pathlib import Path
+import os
 import re
 import unicodedata
-import yaml
+from pathlib import Path
 
+import chardet
 import config
-
+import requests
+import yaml
+from git import Repo
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
     level=logging.DEBUG,
-    handlers=[
-    logging.FileHandler("python.log"),
-    logging.StreamHandler()
-    ]
+    handlers=[logging.FileHandler("python.log"), logging.StreamHandler()],
 )
-logging.getLogger('chardet').setLevel(logging.WARNING)
-logging.getLogger('git').setLevel(logging.WARNING)
+logging.getLogger("chardet").setLevel(logging.WARNING)
+logging.getLogger("git").setLevel(logging.WARNING)
 
 
 def detect_encoding(filepath):
@@ -49,7 +45,9 @@ def get_recently_changed_files():
     repo.remotes.origin.fetch()
     current_commit = repo.head.commit
     # get diff between current commit and remote target branch
-    current_diff = current_commit.diff(f"origin/{config.remote_target_branch}", paths="_datasets/json/", R=True)
+    current_diff = current_commit.diff(
+        f"origin/{config.remote_target_branch}", paths="_datasets/json/", R=True
+    )
     # get diff from unstaged changes
     unstaged_diff = repo.index.diff(None, paths="_datasets/json/", R=True)
     # combine diffs
@@ -57,14 +55,13 @@ def get_recently_changed_files():
 
     json_to_generate_md_from = []
     json_to_delete_md_for = []
-    tweak_filepath = lambda path: os.path.join(config.root_dir, path)
-    
+
     for item in diff:
         if item.change_type == "D":
-            json_to_delete_md_for.append(tweak_filepath(item.a_path))
+            json_to_delete_md_for.append(os.path.join(config.root_dir, item.a_path))
         elif item.change_type in {"A", "M", "R", "C"}:
-            json_to_delete_md_for.append(tweak_filepath(item.a_path))
-            json_to_generate_md_from.append(tweak_filepath(item.b_path))
+            json_to_delete_md_for.append(os.path.join(config.root_dir, item.a_path))
+            json_to_generate_md_from.append(os.path.join(config.root_dir, item.b_path))
     return json_to_generate_md_from, json_to_delete_md_for
 
 
@@ -104,7 +101,10 @@ def get_deleted_json_ids(json_path):
                 except KeyError:
                     # search commit tree for matching basename
                     for item in commit.tree.traverse():
-                        if getattr(item, "type", None) == "blob" and os.path.basename(item.path) == basename:
+                        if (
+                            getattr(item, "type", None) == "blob"
+                            and os.path.basename(item.path) == basename
+                        ):
                             blob = item
                             break
                     if blob:
@@ -123,12 +123,19 @@ def get_deleted_json_ids(json_path):
                     blob = tree[fallback]
                 except KeyError:
                     for item in tree.traverse():
-                        if getattr(item, "type", None) == "blob" and os.path.basename(item.path) == basename:
+                        if (
+                            getattr(item, "type", None) == "blob"
+                            and os.path.basename(item.path) == basename
+                        ):
                             blob = item
-                            logging.debug(f"Found blob by basename {basename} on origin branch at {item.path}")
+                            logging.debug(
+                                f"Found blob by basename {basename} on origin branch at {item.path}"
+                            )
                             break
         except Exception as e:
-            logging.debug(f"Error while checking origin/{config.remote_target_branch}: {e}")
+            logging.debug(
+                f"Error while checking origin/{config.remote_target_branch}: {e}"
+            )
 
     if blob is None:
         logging.warning(
@@ -176,9 +183,7 @@ def slugify(value, allow_unicode=False):
 
 
 def write_frontmatter(metadata, output_path):
-    filename = (
-        slugify(metadata.get("dataset_id"), allow_unicode=True) + ".md"
-    )
+    filename = slugify(metadata.get("dataset_id"), allow_unicode=True) + ".md"
 
     with open((Path(output_path) / filename), "w") as outfile:
         outfile.write("---\n")
@@ -186,21 +191,62 @@ def write_frontmatter(metadata, output_path):
         outfile.write("---\n")
 
 
-def write_datatype_frontmatter(metadata, output_path):
-    """Write datatype frontmatter to markdown file using id as filename."""
-    filename = metadata.get("id", "unknown") + ".md"
+def search_wikidata_for_city(query):
+    sparql_query = f"""
+    SELECT DISTINCT ?city ?cityLabel ?countryEntity ?countryLabel ?cityFlag WHERE {{
+      VALUES ?myCatalog {{
+        "{query}"@en
+      }}
+      ?city rdfs:label ?myCatalog;
+        (wdt:P31/(wdt:P279*)) wd:Q515;
+        wdt:P1082 ?population;
+        wdt:P17 ?countryEntity.
+      OPTIONAL {{ ?city wdt:P41 ?cityFlag. }}
+      FILTER(?population > 0 )
+      ?countryEntity rdfs:label ?country.
+      FILTER((LANG(?country)) = "en")
+      SERVICE wikibase:label {{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }}
+    }}
+    ORDER BY DESC (?population)
+    LIMIT 5
+    """
 
-    with open((Path(output_path) / filename), "w") as outfile:
-        outfile.write("---\n")
-        outfile.write(yaml.dump(metadata))
-        outfile.write("---\n")
+    try:
+        url = "https://query.wikidata.org/sparql"
+        params = {"format": "json", "query": sparql_query}
 
+        response = requests.get(
+            url,
+            params=params,
+            headers={
+                "Accept": "application/json",
+                "User-Agent": "rdl-urbantracker/0.0 (https://github.com/GFDRR/rdl-urbantracker; lydia@oldgrowth.city)",
+            },
+            timeout=5,
+        )
 
-def write_datatype_category_frontmatter(metadata, output_path):
-    """Write datatype category frontmatter to markdown file using slugified title as filename."""
-    filename = slugify(metadata.get("title", "unknown"), allow_unicode=True) + ".md"
+        response.raise_for_status()
+        data = response.json()
+        results = data.get("results", {}).get("bindings", [])
+        city = {
+            "city_id": results[0]["city"]["value"].split("/")[-1] if results else None,
+            "city_label": results[0]["cityLabel"]["value"] if results else None,
+            "country_entity": (
+                results[0]["countryEntity"]["value"].split("/")[-1] if results else None
+            ),
+            "country_label": results[0]["countryLabel"]["value"] if results else None,
+            "city_flag": (
+                results[0]["cityFlag"]["value"]
+                if results and "cityFlag" in results[0]
+                else None
+            ),
+        }
 
-    with open((Path(output_path) / filename), "w") as outfile:
-        outfile.write("---\n")
-        outfile.write(yaml.dump(metadata))
-        outfile.write("---\n")
+        return city
+    except requests.exceptions.RequestException as error:
+        status_code = (
+            error.response.status_code
+            if hasattr(error, "response") and error.response
+            else 500
+        )
+        logging.debug(f"{status_code} error while searching wikidata: {str(error)}")

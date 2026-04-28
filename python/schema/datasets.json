@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Urban Tracker Dataset Schema",
+  "description": "JSON schema for validating RDL Urban Tracker dataset definitions",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/dataset"
+  },
+  "definitions": {
+    "dataset": {
+      "type": "object",
+      "title": "Dataset Definition",
+      "description": "Definition of a dataset including its metadata, requirements, and relationships to standards",
+      "properties": {
+        "Example Dataset": {
+          "type": "string",
+          "pattern": "^(?!\\s).{1,}$",
+          "description": "Human-readable title of the dataset"
+        },
+        "Example URL": {
+          "type": "string",
+          "pattern": "^(?!\\s).{1,}$",
+          "description": "URL reference to the dataset or data source"
+        },
+        "City": {
+          "type": "string",
+          "pattern": "^(?!\\s).{1,}$",
+          "description": "Name the city that this dataset is relevant to (e.g., New York City)"
+        },
+        "Category": {
+          "type": "string",
+          "pattern": "^(?!\\s).{1,}$",
+          "description": "Datatype category this dataset is relevant to (e.g., Land and Water)"
+        },
+        "Name": {
+          "type": "string",
+          "pattern": "^(?!\\s).{1,}$",
+          "description": "Datatype this dataset is relevant to (e.g., Protected Areas)"
+        },
+        "ID": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier for the datatype"
+        }
+      },
+      "required": ["Example Dataset", "Example URL", "City", "Category", "Name", "ID"]
+    }
+  }
+}

@@ -27,18 +27,9 @@
             </ul>
           </nav>
           {% unless page_url == '/about' %}
-          <div class="sidebar-filter">
-            <h5>Data Types</h5>
-            <div class="list-group js-shown" data-component="datatype-categories-filter" data-show="15"></div>
-            <div class="list-group js-hidden">
-              {% for datatype in site.datatypes %}
-              {% assign count = site.datasets | where: "datatype", datatype.title | size %}
-              <a href="{{ site.baseurl}}{{ datatype.url }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                {{ datatype.title }}
-                <span class="badge bg-primary rounded-pill">{{ count }}</span>
-              </a>
-              {% endfor %}
-            </div>
+          <div class="sidebar-filter h-75">
+            <h5>Category</h5>
+            <div class="list-group h-75 overflow-scroll" data-component="datatype-categories-filter" data-show="15"></div>
           </div>
           {% endunless %}
         </div>

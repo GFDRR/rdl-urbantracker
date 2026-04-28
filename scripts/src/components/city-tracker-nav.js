@@ -159,6 +159,6 @@ export default class {
         url: '?' + $.param(itemParams),
         selected: selected
       }
-    })
+    }).sort((a, b) => b.selected - a.selected)
   }
 }
