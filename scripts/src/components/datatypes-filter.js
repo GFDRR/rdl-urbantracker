@@ -27,7 +27,6 @@ export default class {
           title: datatype.title,
           url: '?' + $.param(itemParams),
           count: datasetsInDatatype.length,
-          unfilteredCount: filteredDatasets.length,
           selected: selected
         }
       })

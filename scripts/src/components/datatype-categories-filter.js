@@ -39,8 +39,7 @@ export default class {
         return {
           title: datatypeCategory,
           url: '?' + $.param(itemParams),
-          count: filteredDatasets.length,
-          unfilteredCount: datasetsInDatatypeCategory.length,
+          count: datasetsInDatatypeCategory.length,
           selected: selected
         }
       })

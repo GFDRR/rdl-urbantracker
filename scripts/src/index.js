@@ -10,7 +10,6 @@ import CompareCities from "./components/compare-cities";
 import CitiesFilter from "./components/cities-filter";
 import DatatypesFilter from "./components/datatypes-filter";
 import DatatypeCategoriesFilter from "./components/datatype-categories-filter";
-import DatasetDisplay from "./components/dataset-display";
 import { queryByComponent } from "./util";
 
 const urlSearchParams = new URLSearchParams(window.location.search);
@@ -40,7 +39,6 @@ function getDatatypes() {
 }
 
 const components = [
-  { tag: "dataset-display", class: DatasetDisplay },
   { tag: "datasets-list", class: DatasetsList, usesData: true },
   { tag: "city-tracker-nav", class: CityTrackerNav, usesData: true },
   { tag: "city-tracker-overview", class: CityTrackerOverview, usesData: true },

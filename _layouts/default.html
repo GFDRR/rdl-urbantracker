@@ -15,16 +15,16 @@
       <div class="row h-75">
         <div class="col-sm-2 sidebar h-100">
           <nav class="sidebar-nav mb-4 pt-3">
-            <ul class="nav nav-pills flex-column">
+            <div class="list-group">
               {% for link in site.navigation %}
                 {% if link.url == '/' %}
                 {% elsif link.url contains page_url %}
-                <li class="nav-item"><a class="nav-link active" href="{{ site.baseurl }}{{ link.url }}" aria-current="page">{{ link.title }}</a></li>
+                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center override-active" href="{{ site.baseurl }}{{ link.url }}" aria-current="page">{{ link.title }}</a>
                 {% else %}
-                <li class="nav-item"><a class="nav-link" href="{{ site.baseurl }}{{ link.url }}">{{ link.title }}</a></li>
+                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center override-inactive" href="{{ site.baseurl }}{{ link.url }}">{{ link.title }}</a>
                 {% endif %}
               {% endfor %}
-            </ul>
+            </div>
           </nav>
           {% unless page_url == '/about' %}
           <div class="sidebar-filter h-75">

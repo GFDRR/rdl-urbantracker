@@ -6,7 +6,7 @@ layout: default
 {% assign dataset_system_fields = "title|notes|license" | split: "|" %}
 
 <div class="container">
-  <div data-component="dataset-display" typeof="dcat:Dataset" resource="{{ page.url }}">
+  <div typeof="dcat:Dataset" resource="{{ page.url }}">
     <div class="col">
       <h1>
         <span property="dct:title">{{ page.title }} <a href="/editor/#/collections/datasets/entries/{{page.slug}}"><i class="m-1 fa fa-pencil"></i></a></span>

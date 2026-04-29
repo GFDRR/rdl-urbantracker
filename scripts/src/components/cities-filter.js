@@ -26,7 +26,6 @@ export default class {
           title: city.title,
           url: '?' + $.param(itemParams),
           count: datasetsInCity.length,
-          unfilteredCount: filteredDatasets.length,
           selected: selected
         }
       })

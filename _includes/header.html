@@ -1,5 +1,29 @@
-<nav class="navbar navbar-expand-sm mb-4 navbar-light bg-light" data-component="navigation">
-  <div class="container">
-  <a class="navbar-brand" href="{{ site.baseurl }}/">{{ site.title }}</a>
-  </div>
-</nav>
+<div class="site-header">
+  <nav class="navbar navbar-default" data-component="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="{{ site.baseurl }}/">
+          <img src="{{ site.baseurl }}/img/branding/gfdrr_logo.png" alt="GFDRR Logo">
+          <span class="logo-text">
+            <span>Risk Data Library</span>
+            <span class="header-title">{{ site.title}}</span>
+          </span>
+        </a>
+      </div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          {% for link in site.navigation %}
+            {% if page.url contains link.url %}
+              <li class="override-active"><a href="{{ site.baseurl }}{{ link.url }}">{{ link.title }} <span class="sr-only">(current)</span></a></li>
+            {% else %}
+              <li><a href="{{ site.baseurl }}{{ link.url }}">{{ link.title }}</a></li>
+            {% endif %}
+          {% endfor %}
+          <li><a href="https://docs.riskdatalibrary.org/" target="_blank">Documentation</a></li>
+          <li><a href="https://gfdrr.github.io/CCDR-tools/_static/RDL_MDE.html" target="_blank">Metadata Editor</a></li>
+          <li><a href="https://gfdrr.github.io/CCDR-tools/home.html" target="_blank">Tools</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</div>
