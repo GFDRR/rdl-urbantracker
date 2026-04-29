@@ -10,9 +10,9 @@ export default ({ cityDatatypes, sortField, sortDirection }) => {
     <table class="table table-striped table-hover">
       <thead>
         <tr>
-          <th scope="col" data-sort="category" style="cursor: pointer;">Category ${getSortIcon('category')}</th>
-          <th scope="col" data-sort="datatype" style="cursor: pointer;">Datatype ${getSortIcon('datatype')}</th>
-          <th scope="col" data-sort="dataset" style="cursor: pointer;">Dataset ${getSortIcon('dataset')}</th>
+          <th scope="col" data-sort="category">Category ${getSortIcon('category')}</th>
+          <th scope="col" data-sort="datatype">Datatype ${getSortIcon('datatype')}</th>
+          <th scope="col" data-sort="dataset">Dataset ${getSortIcon('dataset')}</th>
         </tr>
       </thead>
       <tbody>

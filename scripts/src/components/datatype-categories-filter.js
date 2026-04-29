@@ -13,8 +13,7 @@ export default class {
   }
 
   _datatypeCategoriesWithCount (datasets, params, el) {
-    const isSidebar = el.closest('.sidebar-filter').length > 0
-    const baseUrl = isSidebar ? (window.settings && window.settings.BASE_URL ? window.settings.BASE_URL : '') : ''
+    const baseUrl = (window.settings && window.settings.BASE_URL ? window.settings.BASE_URL : '')
 
     return chain(datasets)
     .filter('datatypes')
