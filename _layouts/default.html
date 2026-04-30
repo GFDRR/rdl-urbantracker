@@ -9,8 +9,8 @@
   <body class="h-100">
     {% include header.html %}
     {% assign page_url = page.url | split: '.html' | first %}
-    <div class="row h-75">
-      <div class="col h-100 w-25 p-4">
+    <div class="row h-75 p-4">
+      <div class="col-2 h-100">
         <nav>
           <div class="list-group">
             {% for link in site.navigation %}
@@ -23,14 +23,13 @@
             {% endfor %}
           </div>
         </nav>
-        {% unless page_url == '/about' %}
-        <div class="h-75 mt-4">
-          <h5>Category</h5>
-          <div class="list-group h-75 overflow-scroll" data-component="datatype-categories-filter" data-show="15"></div>
+        {% unless page_url == '/about' or page_url == '/compare-cities' %}
+        <div class="h-50 mt-4">
+          <div class="list-group h-100 overflow-scroll" data-component="datatype-categories-filter" data-show="15"></div>
         </div>
         {% endunless %}
       </div>
-      <div class="col-sm-8 h-100 w-75">
+      <div class="col-10 h-100">
         {{ content }}
       </div>
     </div>

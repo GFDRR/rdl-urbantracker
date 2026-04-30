@@ -4,13 +4,11 @@ layout: default
 ---
 {% assign datasets_count = site.datasets | size %}
 
-<div class="row h-100 m-3">
-  <div class="col-sm-4 h-100">
-    <h3>Cities</h3>
-    <div class="list-group h-25 overflow-scroll" data-component="cities-filter"></div>
+<div class="row h-100">
+  <div class="col-sm-3 h-100">
+    <div class="list-group" data-component="cities-filter" style="height: 35%;"></div>
     <br/>
-    <h3>Data Types</h3>
-    <div class="list-group h-50 overflow-scroll" data-component="datatypes-filter"></div>
+    <div class="list-group" data-component="datatypes-filter" style="height: 50%;"></div>
   </div>
   <div class="col-sm-8 h-75" data-component="datasets-list">
     <h3 class="datasets-count" data-hook="datasets-count">{{ datasets_count }}

@@ -7,7 +7,7 @@ export default ({ cityDatatypes, sortField, sortDirection }) => {
   };
 
   return `
-    <table class="table table-striped table-hover">
+    <table class="table table-striped table-hover m-0">
       <thead>
         <tr>
           <th scope="col" data-sort="category">Category ${getSortIcon('category')}</th>

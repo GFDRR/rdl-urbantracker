@@ -1,8 +1,6 @@
-export default () => (
-`
+export default () => (`
   <div class="position-relative">
-    <input type="text" class="form-control" id="cityTrackerNavSearchBar" placeholder="Search cities..." autocomplete="off">
+    <input type="text" class="form-control city-tracker-nav-search" id="cityTrackerNavSearchBar" placeholder="Search cities..." autocomplete="off">
     <div id="cityTrackerNavSearchResults" class="list-group position-absolute w-100 shadow-sm" style="z-index: 1000; max-height: 300px; overflow-y: auto; display: none;"></div>
   </div>
-`
-)
+`)

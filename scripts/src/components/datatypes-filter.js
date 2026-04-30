@@ -7,7 +7,7 @@ import {setContent, slugify, createDatasetFilters, collapseListGroup} from '../u
 export default class {
   constructor (opts) {
     const datatypes = this._datatypesWithCount(opts.datatypes,opts.datasets, opts.params)
-    const datatypesMarkup = datatypes.map(TmplListGroupItem)
+    const datatypesMarkup = '<h5>Datatype</h5><div class="list-group-inner overflow-scroll">' + datatypes.map(TmplListGroupItem).join('') + '</div>'
     setContent(opts.el, datatypesMarkup)
     collapseListGroup(opts.el)
   }

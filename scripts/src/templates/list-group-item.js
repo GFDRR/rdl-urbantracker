@@ -1,5 +1,5 @@
 export default (data) => (
-`<a href="${data.url}" class="list-group-item ${data.selected ? 'override-active ' : 'override-inactive'} list-group-item-action d-flex justify-content-between align-items-center">
+`<a href="${data.url}" class="list-group-item ${data.selected ? 'override-active ' : 'override-inactive'} list-group-item-action">
   ${data.title}
   <span>${
     data.selected

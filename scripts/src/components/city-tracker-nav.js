@@ -160,6 +160,6 @@ export default class {
         url: '?' + $.param(itemParams),
         selected: selected
       }
-    }).sort((a, b) => b.selected - a.selected)
+    }).sort((a, b) => a.title.localeCompare(b.title))
   }
 }
