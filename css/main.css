@@ -396,3 +396,8 @@ tbody {
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+.category-header td {
+  background-color: var(--color-bg-card) !important;
+  /* color: var(--color-text-inverse); */
+}
