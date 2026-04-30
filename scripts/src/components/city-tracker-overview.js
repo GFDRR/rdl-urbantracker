@@ -1,5 +1,5 @@
 import $ from 'jquery'
-import { defaults, filter, pick } from 'lodash'
+import { defaults, filter, first, pick } from 'lodash'
 import TmplCityTrackerHeader from '../templates/city-tracker-header'
 import TmplCityTrackerTable from '../templates/city-tracker-table'
 import {createDatasetFilters, queryByHook, setContent, slugify} from '../util'
@@ -101,9 +101,43 @@ export default class {
     });
   }
 
+  _toggleCategoryHeader(categoryHeader) {
+    const category = categoryHeader.getAttribute('data-category');
+    const categoryRows = document.querySelectorAll('.category-row.' + category);
+    const icon = categoryHeader.querySelector('.toggle-icon');
+    const isExpanded = categoryRows[0] && categoryRows[0].style.display !== 'none';
+
+    categoryRows.forEach(function(row) {
+      row.style.display = isExpanded ? 'none' : 'table-row';
+    });
+
+    if (icon) {
+      icon.classList.toggle('fa-chevron-right', isExpanded);
+      icon.classList.toggle('fa-chevron-down', !isExpanded);
+    }
+  }
+
+  _attachCollapseListeners() {
+    const firstCategoryHeader = document.querySelectorAll('.category-header')[0];
+    const toggleCategoryHeader = this._toggleCategoryHeader;
+    toggleCategoryHeader(firstCategoryHeader);
+
+    document.addEventListener('click', function(e) {
+      const header = e.target.closest('.category-header');
+      if (!header) return;
+      document.querySelectorAll('.category-header').forEach(h => {
+        if (h === header) {
+          toggleCategoryHeader(h);
+        }
+        // TODO: auto-collapse other categories
+      });
+    })
+  }
+
   _render() {
     setContent(this.elements.cityTrackerHeader, TmplCityTrackerHeader(this.cityStats))
     setContent(this.elements.cityTrackerTable, TmplCityTrackerTable({ cityDatatypes: this._sortCityDatatypes(this.cityDatatypes), sortField: this.sortField, sortDirection: this.sortDirection }))
-    this._attachSortListeners()
+    this._attachCollapseListeners()
+    // this._attachSortListeners()
   }
 }

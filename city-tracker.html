@@ -3,16 +3,15 @@ title: City Tracker
 layout: default
 ---
 {% assign sorted_cities = site.cities | sort: "title" %}
-<div class="row h-100">
-  <div class="col-sm-3 h-100 p-3">
-    <h3>Cities</h3>
-    <div class="list-group h-100" data-component="city-tracker-nav">
+<div class="row h-100 px-0">
+  <div class="col-sm-3 h-100 p-0">
+    <div class="city-tracker-nav list-group h-100" data-component="city-tracker-nav">
       <div data-hook="city-tracker-nav-search"></div>
-      <div class="h-75 overflow-scroll" data-hook="city-tracker-nav-list"></div>
+      <div class="h-100 overflow-scroll" data-hook="city-tracker-nav-list"></div>
     </div>
   </div>
-  <div class="col-md-9 h-100 overflow-scroll pt-3 pb-3" data-component="city-tracker-overview">
-    <h3 data-hook="city-tracker-header"></h3>
-    <div data-hook="city-tracker-table"></div>
+  <div class="col-md-9 h-100 p-0" data-component="city-tracker-overview">
+    <h3 class="h-25 city-tracker-header m-0" data-hook="city-tracker-header"></h3>
+    <div class="h-75 overflow-scroll " data-hook="city-tracker-table"></div>
   </div>
 </div>

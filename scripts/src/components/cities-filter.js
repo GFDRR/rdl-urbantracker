@@ -7,7 +7,7 @@ import {setContent, slugify, createDatasetFilters, collapseListGroup} from '../u
 export default class {
   constructor (opts) {
     const cities = this._citiesWithCount(opts.cities, opts.datasets, opts.params)
-    const citiesMarkup = cities.map(TmplListGroupItem)
+    const citiesMarkup = '<h5>City</h5><div class="list-group-inner overflow-scroll">' + cities.map(TmplListGroupItem).join('') + '</div>'
     setContent(opts.el, citiesMarkup)
     collapseListGroup(opts.el)
   }
@@ -26,7 +26,6 @@ export default class {
           title: city.title,
           url: '?' + $.param(itemParams),
           count: datasetsInCity.length,
-          unfilteredCount: filteredDatasets.length,
           selected: selected
         }
       })
