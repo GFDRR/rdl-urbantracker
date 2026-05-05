@@ -48,10 +48,15 @@ body {
   background-color: var(--color-bg-page);
   overflow: hidden;
   font-family: var(--font-body);
+  overflow-x: hidden;
 }
 
 a {
   color: var(--color-text-primary)
+}
+
+.overflow-scroll {
+  overflow-x: hidden !important;
 }
 
 a:hover {
@@ -237,7 +242,8 @@ dataset {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--color-text-secondary);
-  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-sm) var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-sm) var(--spacing-sm);
+  margin-bottom: 0;
 }
 
 .list-group-item {
@@ -250,7 +256,7 @@ dataset {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm);
 }
 
 .list-group-item:hover {
@@ -271,25 +277,18 @@ dataset {
 }
 
 .city-tracker-nav-search {
-  border-radius: var(--radius-lg);
   border: 0;
+  border-radius: var(--radius-lg);
   margin-bottom: var(--spacing-sm);
 }
 
-.city-list-group-item {
-  border: none;
-  padding: var(--spacing-sm) var(--spacing-md);
-  text-decoration: none;
-  border-top-left-radius: var(--radius-lg);
-  border-bottom-left-radius: var(--radius-lg);
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  transition: all 0.2s;
-  background: transparent;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
+.city-search-list {
+  box-shadow: var(--shadow-lg);
+}
+
+.city-search-list, .city-search-item {
+  background-color: var(--color-bg-card);
+  border-radius: 0;
 }
 
 /* Home Page */
@@ -421,4 +420,10 @@ span.count-badge {
 
 .category-row td {
   padding-left: var(--spacing-2xl)
+}
+
+.cell-is-fulfilled {
+  text-align: end; 
+  vertical-align: middle;
+  width: 30%;
 }

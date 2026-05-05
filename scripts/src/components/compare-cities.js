@@ -42,25 +42,25 @@ export default class {
       const stats = cityDatasets.reduce((acc, dataset) => {
         const datatypes = dataset.datatypes || [];
         if (dataset.is_partial || dataset.is_unavailable) {
-          acc.countExcluded += datatypes.length;
+          acc.countUnfulfilled += datatypes.length;
         } else {
-          acc.countComplete += datatypes.length;
+          acc.countFulfilled += datatypes.length;
         }
         return acc;
       }, {
-        countComplete: 0,
-        countExcluded: 0
+        countFulfilled: 0,
+        countUnfulfilled: 0
       });
       
       const totalDatatypes = this.datatypes.length;
       const coveragePercent = totalDatatypes > 0 
-        ? (stats.countComplete / totalDatatypes * 100) 
+        ? (stats.countFulfilled / totalDatatypes * 100) 
         : 0;
       
       return {
         ...city,
-        countComplete: stats.countComplete,
-        countExcluded: stats.countExcluded,
+        countFulfilled: stats.countFulfilled,
+        countUnfulfilled: stats.countUnfulfilled,
         coverage: coveragePercent.toFixed(2) + '%',
         coveragePercent: Math.round(coveragePercent)
       };
@@ -69,14 +69,14 @@ export default class {
 
 
   _sortCities(cities) {
-    const sortHierarchy = ['title', 'country', 'coverage', 'countComplete', 'countExcluded']
+    const sortHierarchy = ['title', 'country', 'coverage', 'countFulfilled', 'countUnfulfilled']
       .sort((a,b) => a == this.sortField ? -1 : b == this.sortField ? 1 : 0);
     const getSortValue = {
       title: item => item.title.toString().toLowerCase(),
       country: item => item.country.toString().toLowerCase(),
       coverage: item => item.coverage.toString().toLowerCase(),
-      countComplete: item => parseFloat(item.countComplete) || 0,
-      countExcluded: item => parseFloat(item.countExcluded) || 0,
+      countFulfilled: item => parseFloat(item.countFulfilled) || 0,
+      countUnfulfilled: item => parseFloat(item.countUnfulfilled) || 0,
     }
     return cities.sort((a, b) => {
       return sortHierarchy.reduce((result, field, i) => {

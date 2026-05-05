@@ -32,18 +32,22 @@ export default ({ cityDatatypes, sortField, sortDirection }) => {
           const categoryId = getCategoryId(category);
           return `
           <tr class="category-header" data-category="${categoryId}" style="cursor: pointer;">
-            <td colspan="2" class="font-weight-bold">
+            <td class="font-weight-bold">
               <i class="fa fa-chevron-right mr-2 toggle-icon"></i>
               ${category}
               <span class="badge badge-secondary ml-2 count-badge">${items.filter(item => !!item.isFulfilled).length}/${items.length}</span>
             </td>
+            <td class="cell-is-fulfilled"></td>
           </tr>
           ${items.map((cdt) => `
             <tr class="category-row ${categoryId}" style="display: none;">
               <td>${cdt.datatype.title}</td>
-              <td>${cdt.isFulfilled
+              <td class="cell-is-fulfilled">${cdt.isFulfilled
                 ? `<a href="${cdt.url}">
                     <i class="m-1 fa fa-check"></i>View
+                  </a>
+                  <a href="/editor/#/collections/datasets/new">
+                    <i class="m-1 fa fa-plus-circle"></i>Add
                   </a>`
                 : `<a class="text-danger" href="/editor/#/collections/datasets/new">
                     <i class="m-1 fa fa-plus-circle"></i>Add
