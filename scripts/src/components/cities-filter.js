@@ -13,7 +13,6 @@ export default class {
   }
 
   _citiesWithCount(cities, datasets, params) {
-    console.log(params)
     return chain(cities)
       .map(city => {
         const paramFilters = createDatasetFilters(pick(params, ['city']))

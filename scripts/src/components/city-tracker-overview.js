@@ -39,13 +39,11 @@ export default class {
     });
 
     const firstCategoryHeader = document.querySelectorAll('.category-header')[0];
-    console.log('cat headers', document.querySelectorAll('.category-header'));
     const toggleCategoryHeader = this._toggleCategoryHeader;
     toggleCategoryHeader(firstCategoryHeader);
 
     document.addEventListener('click', function(e) {
       const header = e.target.closest('.category-header');
-      console.log('clicked header', header, e);
       if (!header) return;
       document.querySelectorAll('.category-header').forEach(h => {
         if (h === header) {

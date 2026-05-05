@@ -39,8 +39,8 @@ export default class {
             city: result.cityLabel.value,
             city_id: result.city.value.split('/').pop(),
             title: result.cityLabel.value + ', ' + result.countryLabel.value,
-            logo: result.cityFlag.value,
-            logo_credit: 'Wikimedia',
+            logo: result.cityFlag?.value,
+            logo_credit: result.cityFlag?.value && 'Wikimedia',
             country: result.countryLabel.value
           };
         }
