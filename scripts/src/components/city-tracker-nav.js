@@ -47,7 +47,7 @@ export default class {
         return;
       } catch (error) {
         if (i === retries - 1) throw error;
-        console.warn(`Retry ${i + 1} failed...`);
+        console.warn(`Retry ${i + 1} failed...`, error);
         await new Promise(res => setTimeout(res, 1000));
       }
     }
