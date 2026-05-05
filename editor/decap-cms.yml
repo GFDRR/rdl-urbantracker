@@ -21,6 +21,9 @@ collections:
       - label: External URL
         name: external_url
         widget: string
+      - label: Submitter Email
+        name: submitter_email
+        widget: submitter_email
       - label: Cities
         name: cities
         widget: relation

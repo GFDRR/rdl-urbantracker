@@ -24,8 +24,14 @@
     </script> 
     <script type="text/javascript">window.CMS_MANUAL_INIT = true</script>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script type="text/javascript">
       const { CMS, initCMS: init } = window
+      
+      let user_email;
+      netlifyIdentity.on('init', async netlifyUser => {
+        user_email = netlifyUser?.email;
+      })
 
       const config = {
         local_backend: {% if jekyll.environment == "production" %}false{% else %}true{% endif %},
@@ -57,6 +63,27 @@
         }
       });
 
+      const SubmitterEmailControl = createClass({
+        componentDidMount() {
+          this.props.onChange(user_email)
+        },
+
+        handleChange(e) {
+          this.props.onChange(e.target.value);
+        },
+
+        render: function() {          
+          return h('input', {
+            id: this.props.forID,
+            className: this.props.classNameWrapper,
+            type: 'email',
+            value: this.props.value,
+            onChange: this.handleChange,
+            placeholder: user_email
+          });
+        }
+      });
+
       const DatasetPreview = createClass({
         render: function() {
           const entry = this.props.entry;
@@ -66,6 +93,7 @@
           return h('div', { style: { padding: '20px' } },
             h('h1', {}, entry.getIn(['data', 'title'])),
             h('p', {}, entry.getIn(['data', 'description'])),
+            h('p', {}, entry.getIn(['data', 'submitter_email'])),
             h('p', {}, 'Cities: '),
             h('ul', {}, 
               cities.map(function(city_id) {
@@ -87,7 +115,7 @@
 
       CMS.registerPreviewTemplate('cities', CityPreview);
       CMS.registerPreviewTemplate('datasets', DatasetPreview);
-
+      CMS.registerWidget('submitter_email', SubmitterEmailControl);
     </script>
   </body>
 
