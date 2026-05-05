@@ -56,7 +56,6 @@ export default class {
   _search(opts) {
     const searchInput = $('#cityTrackerNavSearchBar')
     const searchResults = $('#cityTrackerNavSearchResults')
-    const cities = opts.cities
 
     const handleInput = debounce(async (e) => {
       const query = e.target.value.trim()
@@ -66,7 +65,7 @@ export default class {
         return
       }
 
-      const filteredCities = filter(cities, (city) => {
+      const filteredCities = filter(opts.cities, (city) => {
         const titleMatch = city.title && city.title.toLowerCase().includes(query.toLowerCase())
         const idMatch = city.city_id && city.city_id.toLowerCase().includes(query.toLowerCase())
         return titleMatch || idMatch
@@ -129,8 +128,9 @@ export default class {
   }
 
   _cities(opts){
+    const sortedCities = opts.cities.sort((a, b) => a.title.localeCompare(b.title));
     if (!opts.params.city) {
-      const firstCity = opts.cities[0]
+      const firstCity = sortedCities[0]
       opts.params.city = slugify(firstCity.city_id)
     }
     
@@ -160,6 +160,6 @@ export default class {
         url: '?' + $.param(itemParams),
         selected: selected
       }
-    }).sort((a, b) => a.title.localeCompare(b.title))
+    })
   }
 }

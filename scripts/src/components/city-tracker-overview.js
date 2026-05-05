@@ -67,10 +67,10 @@ export default class {
       ? this.datatypes.filter(dt => slugify(dt.category) === defaults(paramFilters, attributeFilters).datatypeCategory)
       : this.datatypes;
     this.cityDatatypes = filteredDatatypes.map(datatype => {
-      const dataset = filteredDatasets.find(d => d.datatypes && d.datatypes.some(dt => dt.title === datatype.title))
       return {
         datatype: datatype,
-        dataset: dataset,
+        isFulfilled: this.cityStats.datatypesFulfilled.has(datatype.title),
+        url: `/datasets?datatype=${slugify(datatype.title)}&city=${slugify(this.cityStats.city_id)}`,
       }
     })
   }
@@ -78,22 +78,20 @@ export default class {
   _calculateCityStats(filteredDatasets) {
     const stats = filteredDatasets.reduce((acc, dataset) => {
       const datatypes = dataset.datatypes || [];
-      if (dataset.is_partial || dataset.is_unavailable) {
-        acc.countExcluded += datatypes.length
-      } else {
-        acc.countComplete += datatypes.length
+      if (!dataset.is_partial && !dataset.is_unavailable) {
+        datatypes.forEach(dt => acc.datatypesFulfilled.add(dt.title))
       }
       return acc
     }, {
-      countComplete: 0,
-      countExcluded: 0,      
+      datatypesFulfilled: new Set()    
     });
     const city = this.cities.find(c => slugify(c.city_id) === slugify(this.params.city));
     return {
       ...city,
-      countComplete: stats.countComplete,
-      countExcluded: stats.countExcluded,
-      coverage: (stats.countComplete / this.datatypes.length * 100).toFixed(2)+"%"
+      countFulfilled: stats.datatypesFulfilled.size,
+      countUnfulfilled: this.datatypes.length - stats.datatypesFulfilled.size,
+      coverage: (stats.datatypesFulfilled.size / this.datatypes.length * 100).toFixed(2)+"%",
+      datatypesFulfilled: stats.datatypesFulfilled,
     }
   }
 

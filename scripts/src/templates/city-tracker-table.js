@@ -8,11 +8,10 @@ export default ({ cityDatatypes, sortField, sortDirection }) => {
   };
 
   const groupedByCategory = cityDatatypes.reduce((acc, cdt) => {
-    const category = cdt.datatype.category;
-    if (!acc[category]) {
-      acc[category] = [];
+    if (!acc[cdt.datatype.category]) {
+      acc[cdt.datatype.category] = [];
     }
-    acc[category].push(cdt);
+    acc[cdt.datatype.category].push(cdt);
     return acc;
   }, {});
 
@@ -36,14 +35,14 @@ export default ({ cityDatatypes, sortField, sortDirection }) => {
             <td colspan="2" class="font-weight-bold">
               <i class="fa fa-chevron-right mr-2 toggle-icon"></i>
               ${category}
-              <span class="badge badge-secondary ml-2 count-badge">${items.filter(item => !!item.dataset).length}/${items.length}</span>
+              <span class="badge badge-secondary ml-2 count-badge">${items.filter(item => !!item.isFulfilled).length}/${items.length}</span>
             </td>
           </tr>
           ${items.map((cdt) => `
             <tr class="category-row ${categoryId}" style="display: none;">
               <td>${cdt.datatype.title}</td>
-              <td>${cdt.dataset && !cdt.dataset.is_partial && !cdt.dataset.is_unavailable
-                ? `<a href="${cdt.dataset.url}">
+              <td>${cdt.isFulfilled
+                ? `<a href="${cdt.url}">
                     <i class="m-1 fa fa-check"></i>View
                   </a>`
                 : `<a class="text-danger" href="/editor/#/collections/datasets/new">

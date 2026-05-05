@@ -24,6 +24,8 @@ navigation:
     url: /compare-cities/
   - title: Dataset Catalog
     url: /datasets/
+  - title: Editor
+    url: /editor/
 
 # Collections
 collections:
