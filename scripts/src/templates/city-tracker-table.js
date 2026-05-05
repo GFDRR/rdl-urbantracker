@@ -21,7 +21,7 @@ export default ({ cityDatatypes, sortField, sortDirection }) => {
   };
 
   return `
-    <table class="table table-striped table-hover m-0">
+    <table class="table table-hover m-0">
       <thead>
         <tr>
           <th scope="col" data-sort="datatype">Datatype ${getSortIcon('datatype')}</th>
@@ -36,7 +36,7 @@ export default ({ cityDatatypes, sortField, sortDirection }) => {
             <td colspan="2" class="font-weight-bold">
               <i class="fa fa-chevron-right mr-2 toggle-icon"></i>
               ${category}
-              <span class="badge badge-secondary ml-2">${items.filter(item => !!item.dataset).length}/${items.length}</span>
+              <span class="badge badge-secondary ml-2 count-badge">${items.filter(item => !!item.dataset).length}/${items.length}</span>
             </td>
           </tr>
           ${items.map((cdt) => `

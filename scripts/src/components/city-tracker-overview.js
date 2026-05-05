@@ -17,11 +17,45 @@ export default class {
     this.sortField = 'category';
     this.sortDirection = 'asc';
 
-    if (!this.params.city) {
-      const firstCity = opts.cities[0]
-      this.params.city = slugify(firstCity.city_id)
-    }
+    this._initialize(opts);
+  }
 
+  _initialize(opts) {
+    this._applyFilters(opts);
+    this._render()
+    
+    const tableHeaders = this.elements.cityTrackerTable.find('th[data-sort]');
+    tableHeaders.on('click', (e) => {
+      const field = $(e.currentTarget).data('sort');
+      
+      if (this.sortField === field) {
+        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortField = field;
+        this.sortDirection = 'asc';
+      }
+      
+      this._render();
+    });
+
+    const firstCategoryHeader = document.querySelectorAll('.category-header')[0];
+    console.log('cat headers', document.querySelectorAll('.category-header'));
+    const toggleCategoryHeader = this._toggleCategoryHeader;
+    toggleCategoryHeader(firstCategoryHeader);
+
+    document.addEventListener('click', function(e) {
+      const header = e.target.closest('.category-header');
+      console.log('clicked header', header, e);
+      if (!header) return;
+      document.querySelectorAll('.category-header').forEach(h => {
+        if (h === header) {
+          toggleCategoryHeader(h);
+        }
+      });
+    })
+  }
+
+  _applyFilters(opts) {
     const paramFilters = pick(this.params, ['datatypeCategory', 'city'])
     const attributeFilters = pick(opts.el.data(), ['datatypeCategory', 'city'])
     const filters = createDatasetFilters(defaults(paramFilters, attributeFilters))
@@ -39,7 +73,6 @@ export default class {
         dataset: dataset,
       }
     })
-    this._render()
   }
 
   _calculateCityStats(filteredDatasets) {
@@ -84,23 +117,6 @@ export default class {
     })
   }
 
-
-  _attachSortListeners() {
-    const headers = this.elements.cityTrackerTable.find('th[data-sort]');
-    headers.on('click', (e) => {
-      const field = $(e.currentTarget).data('sort');
-      
-      if (this.sortField === field) {
-        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-      } else {
-        this.sortField = field;
-        this.sortDirection = 'asc';
-      }
-      
-      this._render();
-    });
-  }
-
   _toggleCategoryHeader(categoryHeader) {
     const category = categoryHeader.getAttribute('data-category');
     const categoryRows = document.querySelectorAll('.category-row.' + category);
@@ -117,27 +133,13 @@ export default class {
     }
   }
 
-  _attachCollapseListeners() {
-    const firstCategoryHeader = document.querySelectorAll('.category-header')[0];
-    const toggleCategoryHeader = this._toggleCategoryHeader;
-    toggleCategoryHeader(firstCategoryHeader);
-
-    document.addEventListener('click', function(e) {
-      const header = e.target.closest('.category-header');
-      if (!header) return;
-      document.querySelectorAll('.category-header').forEach(h => {
-        if (h === header) {
-          toggleCategoryHeader(h);
-        }
-        // TODO: auto-collapse other categories
-      });
-    })
-  }
-
   _render() {
+    const cityDatatypes = this._sortCityDatatypes(this.cityDatatypes);
+    if (!this.params.city) {
+      const firstCity = cityDatatypes[0]
+      this.params.city = slugify(firstCity.city_id)
+    }
     setContent(this.elements.cityTrackerHeader, TmplCityTrackerHeader(this.cityStats))
-    setContent(this.elements.cityTrackerTable, TmplCityTrackerTable({ cityDatatypes: this._sortCityDatatypes(this.cityDatatypes), sortField: this.sortField, sortDirection: this.sortDirection }))
-    this._attachCollapseListeners()
-    // this._attachSortListeners()
+    setContent(this.elements.cityTrackerTable, TmplCityTrackerTable({ cityDatatypes, sortField: this.sortField, sortDirection: this.sortDirection }))
   }
 }

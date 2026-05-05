@@ -397,7 +397,22 @@ tbody {
   overflow-x: hidden;
 }
 
-.category-header td {
-  background-color: var(--color-bg-card) !important;
-  /* color: var(--color-text-inverse); */
+span.count-badge {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-inverse);
+  border-radius: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+.category-header {
+  background-color: var(--color-bg-light);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.category-row {
+  background-color: var(--color-bg-card);
 }
