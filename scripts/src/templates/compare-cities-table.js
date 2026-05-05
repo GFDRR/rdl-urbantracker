@@ -18,11 +18,11 @@ export default ({ cities, sortField, sortDirection }) => {
           <th scope="col" data-sort="country" style="cursor: pointer;">
             Country ${getSortIcon('country')}
           </th>
-          <th scope="col" data-sort="countComplete" style="cursor: pointer;">
-            Complete ${getSortIcon('countComplete')}
+          <th scope="col" data-sort="countFulfilled" style="cursor: pointer;">
+            Fulfilled ${getSortIcon('countFulfilled')}
           </th>
-          <th scope="col" data-sort="countExcluded" style="cursor: pointer;">
-            Excluded ${getSortIcon('countExcluded')}
+          <th scope="col" data-sort="countUnfulfilled" style="cursor: pointer;">
+            Unfulfilled ${getSortIcon('countUnfulfilled')}
           </th>
           <th scope="col" data-sort="coverage" style="cursor: pointer;">
             Coverage ${getSortIcon('coverage')}
@@ -43,8 +43,8 @@ export default ({ cities, sortField, sortDirection }) => {
               <a href="/city-tracker?city=${city.city_id}">${city.title}</a>
             </td>
             <td>${city.country || '-'}</td>
-            <td>${city.countComplete}</td>
-            <td>${city.countExcluded}</td>
+            <td>${city.countFulfilled}</td>
+            <td>${city.countUnfulfilled}</td>
             <td>
               <div class="d-flex align-items-center">
                 <div class="progress flex-grow-1 me-2" style="height: 20px; min-width: 100px;">

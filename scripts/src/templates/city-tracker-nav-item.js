@@ -1,7 +1,10 @@
 export default (data) => (
-`<a href="${data.url}" class="list-group-item${data.selected ? ' active ' : ''} list-group-item-action">
-  <p>${data.title}</p>
-  <p>${data.city_id}</p>
-  <p>Coverage: ${data.coverage}</p>
-</a>`
+`
+  <a href="${data.url}" class="list-group-item${data.selected ? ' override-active ' : ''} list-group-item-action">
+    <div class="d-flex w-100 justify-content-between">
+      <h6 class="mb-1">${data.title}</h6>
+    </div>
+    <small class="text-muted">${data.coverage ?? data.city_id}</small>
+  </a>
+`
 )

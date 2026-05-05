@@ -3,21 +3,19 @@ title: Home
 ---
 
 <!DOCTYPE html>
-<html class="no-js h-100" prefix="dct: http://purl.org/dc/terms/
-              rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
-              dcat: http://www.w3.org/ns/dcat#
-              foaf: http://xmlns.com/foaf/0.1/">
-
+<html lang="en">
   {% include head.html %}
+  
+  <body>
+    {% include header.html %}
 
-  <body class="h-100">
-
-    {% assign page_url = page.url | split: '.html' | first %}
-
-    <div class="container p-5">
-      <h1>{{ site.title }}</h1>
-      <p>{{ site.description }}</p>
-      <a class="nav-link begin-link" href="{{ site.baseurl }}/city-tracker">Begin by exploring the City Tracker</a>
+    <div class="hero">
+      <div class="hero-background-image"></div>
+      <div class="hero-content">
+        <h1>{{ site.greeting }}</h1>
+        <p>{{ site.description }}</p>
+        <a class="nav-link begin-link" href="{{ site.baseurl }}/city-tracker">Begin by exploring the City Tracker</a>
+      </div>
     </div>
     {% include footer.html %}
 

@@ -7,14 +7,13 @@ import {setContent, slugify, createDatasetFilters, collapseListGroup} from '../u
 export default class {
   constructor (opts) {
     const datatypeCategories = this._datatypeCategoriesWithCount(opts.datasets, opts.params, opts.el)
-    const datatypeCategoriesMarkup = datatypeCategories.map(TmplListGroupItem)
+    const datatypeCategoriesMarkup = '<h5>Category</h5><div class="list-group-inner overflow-scroll">' + datatypeCategories.map(TmplListGroupItem).join('') + '</div>'
     setContent(opts.el, datatypeCategoriesMarkup)
     collapseListGroup(opts.el)
   }
 
   _datatypeCategoriesWithCount (datasets, params, el) {
-    const isSidebar = el.closest('.sidebar-filter').length > 0
-    const baseUrl = isSidebar ? (window.settings && window.settings.BASE_URL ? window.settings.BASE_URL : '') : ''
+    const baseUrl = (window.settings && window.settings.BASE_URL ? window.settings.BASE_URL : '')
 
     return chain(datasets)
     .filter('datatypes')
@@ -39,8 +38,7 @@ export default class {
         return {
           title: datatypeCategory,
           url: '?' + $.param(itemParams),
-          count: filteredDatasets.length,
-          unfilteredCount: datasetsInDatatypeCategory.length,
+          count: datasetsInDatatypeCategory.length,
           selected: selected
         }
       })

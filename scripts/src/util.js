@@ -62,10 +62,11 @@ export function createDatasetFilters(filters) {
 }
 
 export function collapseListGroup(container, show) {
-  if (!show) show = container.data("show") || 5;
+  if (!show) show = container.data("show");
+  if (!show) return;
 
   const itemsToHide = $(
-    ".list-group-item:gt(" + (show - 1) + "):not(.active)",
+    ".list-group-item:gt(" + (show - 1) + "):not(.override-active)",
     container,
   );
   if (itemsToHide.length) {
