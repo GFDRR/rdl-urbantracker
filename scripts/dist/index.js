@@ -26,12 +26,6 @@ ${oB}`);if(i){var s,u;oH("instance",i),n=i.replace(/\/$/,"").replace(`/${a}/api.
         <i class="fa fa-plus-circle"></i>
         <small class="text-muted">Add ${t.title}</small>
       </a>
-      <a href="${t.url}" class="list-group-item${t.selected?" override-active ":""} list-group-item-action">
-        <div class="d-flex w-100 justify-content-between">
-          <h6 class="mb-1">${t.title}</h6>
-        </div>
-        <small class="text-muted">${t.city_id}</small>
-      </a>
     `:`
       <a href="${t.url}" class="list-group-item${t.selected?" override-active ":""} list-group-item-action">
         <div class="d-flex w-100 justify-content-between">
