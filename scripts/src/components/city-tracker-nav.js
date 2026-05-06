@@ -16,7 +16,7 @@ export default class {
 
     const searchMarkup = `
       <div class="position-relative city-tracker-nav-search">
-        <input type="text" class="form-control city-tracker-nav-search list-group-item mt-2" placeholder="Search cities..." autocomplete="off">
+        <input type="text" class="form-control list-group-item mt-2" placeholder="Search cities..." autocomplete="off">
       </div>
     `
     setContent(this.elements.cityTrackerNavSearch, searchMarkup)
@@ -26,7 +26,9 @@ export default class {
 
   async _fetchWikidataCity(query, retries = 3) {
     const url = `/.netlify/functions/wikidata-search?query=${encodeURIComponent(query)}`;
-    
+    const nestedSearchElement = this.elements.cityTrackerNavSearch.children('.city-tracker-nav-search');
+    nestedSearchElement?.toggleClass('loading',true);
+
     for (let i = 0; i < retries; i++) {
       try {
         const response = await fetch(url);
@@ -52,6 +54,8 @@ export default class {
         if (i === retries - 1) throw error;
         console.warn(`Retry ${i + 1} failed...`, error);
         await new Promise(res => setTimeout(res, 1000));
+      } finally {
+        nestedSearchElement?.toggleClass('loading',false);
       }
     }
   }
@@ -108,17 +112,11 @@ export default class {
         } catch (err) {
           resultsHtml = `<div class="city-search-item list-group-item text-danger">Search failed.</div>`
           setContent(this.elements.cityTrackerNavList, resultsHtml)
+          console.error(err)
         }
       }
-    }, 500)
+    }, 800);
     this.elements.cityTrackerNavSearch.on('input', handleInput)
-      $(document).on('click', (e) => {
-      if (!$(e.target).closest('.city-tracker-nav-search').length) {
-        const citiesMarkup = this._cities(opts).map(TmplCityTrackerNavItem)
-        setContent(this.elements.cityTrackerNavList, citiesMarkup)
-      }
-    })
-
   }
 
   _cities(opts){

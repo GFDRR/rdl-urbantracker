@@ -13,12 +13,13 @@ exports.handler = async (event) => {
       VALUES ?myCatalog {
         "${query}"@en
       }
-      ?city rdfs:label ?myCatalog;
+      ?city rdfs:label ?cityLabelRaw;
         (wdt:P31/(wdt:P279*)) wd:Q515;
         wdt:P1082 ?population;
         wdt:P17 ?countryEntity.
       OPTIONAL { ?city wdt:P41 ?cityFlag. }
       FILTER(?population > 0 )
+      FILTER(LCASE(?cityLabelRaw) = LCASE(?myCatalog))
       ?countryEntity rdfs:label ?country.
       FILTER((LANG(?country)) = "en")
       SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
