@@ -47,7 +47,7 @@ export default ({ cityDatatypes, sortField, sortDirection }) => {
                     <i class="m-1 fa fa-check"></i>View
                   </a>
                   <a href="/editor/#/collections/datasets/new">
-                    <i class="m-1 fa fa-plus-circle"></i>Add
+                    <i class="m-1 fa fa-plus-circle"></i>Add More
                   </a>`
                 : `<a class="text-danger" href="/editor/#/collections/datasets/new">
                     <i class="m-1 fa fa-plus-circle"></i>Add

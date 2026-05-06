@@ -2,7 +2,7 @@
 city: Khartoum
 city_id: Q1963
 title: Khartoum, Sudan
-logo: ""
-logo_credit: ""
+flag: ""
+flag_attribution: ""
 country: Sudan
 ---

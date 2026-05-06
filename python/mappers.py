@@ -5,8 +5,8 @@ def make_city_frontmatter(city):
         "title": city["city_label"] + ", " + city["country_label"],
         "city": city["city_label"],
         "country": city["country_label"],
-        "logo": city["city_flag"],
-        "logo_credit": "Wikimedia",
+        "flag": city["city_flag"],
+        "flag_attribution": "Wikimedia",
     }
 
 

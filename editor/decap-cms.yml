@@ -73,13 +73,13 @@ collections:
         name: title
         widget: string
         required: false
-      - label: Logo URL
-        name: logo
+      - label: Flag URL
+        name: flag
         required: false
         widget: string
         allow_multiple: false
-      - label: Logo Credit
-        name: logo_credit
+      - label: Flag Attribution
+        name: flag_attribution
         required: false
         widget: string
         allow_multiple: false

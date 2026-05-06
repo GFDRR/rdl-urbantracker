@@ -43,7 +43,7 @@
       const CityPreview = createClass({
         render: function() {
           var entry = this.props.entry;
-          var logoUrl = entry.getIn(['data', 'logo']);
+          var logoUrl = entry.getIn(['data', 'flag']);
 
           return h('div', { style: { padding: '20px' } },
             h('h1', {}, entry.getIn(['data', 'city'])),
@@ -52,12 +52,12 @@
               h('li', {}, h('strong', {}, 'Wikidata ID: '), entry.getIn(['data', 'city_id'])),
               h('li', {}, h('strong', {}, 'Country: '), entry.getIn(['data', 'country'])),
                         h('div', { style: { marginBottom: '20px' } },
-              h('li', {}, h('strong', {}, 'Logo Preview:')),
+              h('li', {}, h('strong', {}, 'Flag Preview:')),
               logoUrl 
                 ? h('img', { src: logoUrl, style: { display: 'block', maxWidth: '200px', marginTop: '10px' } })
-                : h('p', { style: { color: '#666' } }, 'No logo URL provided.')
+                : h('p', { style: { color: '#666' } }, 'No flag URL provided.')
               ),
-              h('li', {}, h('strong', {}, 'Logo Credit: '), entry.getIn(['data', 'logo_credit']))
+              h('li', {}, h('strong', {}, 'Flag Credit: '), entry.getIn(['data', 'flag_attribution']))
             )
           );
         }
