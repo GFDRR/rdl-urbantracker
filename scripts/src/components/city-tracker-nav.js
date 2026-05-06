@@ -1,7 +1,6 @@
 import $ from 'jquery'
 import {chain, omit, defaults, filter, debounce} from 'lodash'
 
-import TmplCityTrackerNavItem from '../templates/city-tracker-nav-item'
 import {setContent, slugify, collapseListGroup, queryByHook} from '../util'
 
 export default class {
@@ -10,18 +9,50 @@ export default class {
       cityTrackerNavList: queryByHook('city-tracker-nav-list', opts.el),
       cityTrackerNavSearch: queryByHook('city-tracker-nav-search', opts.el),
     }
-   
-    const citiesMarkup = this._cities(opts).map(TmplCityTrackerNavItem)
-    setContent(this.elements.cityTrackerNavList, citiesMarkup)
 
-    const searchMarkup = `
-      <div class="position-relative city-tracker-nav-search">
-        <input type="text" class="form-control list-group-item mt-2" placeholder="Search cities..." autocomplete="off">
-      </div>
-    `
-    setContent(this.elements.cityTrackerNavSearch, searchMarkup)
+    this._initialize(opts)
+    this._renderCityList()
+    this._renderSearchBar()
+  }
+
+  _initialize(opts) {
+    this.datasets = opts.datasets
+    this.datatypes = opts.datatypes
+    this.params = opts.params
+    const sortedCities = opts.cities.sort((a, b) => a.title.localeCompare(b.title));
+    if (!opts.params.city) {
+      const firstCity = sortedCities[0]
+      this.params.city = slugify(firstCity.city_id)
+    }
     this.searchResults = []
-    this._search(opts)
+
+    this.cities = sortedCities.map(city => {
+      const citySlug = slugify(city.city_id)
+      const citySlugFromParams = slugify(this.params.city)
+      const selected = citySlugFromParams && citySlugFromParams === citySlug
+      const itemParams = selected ? omit(this.params, 'city') : defaults({city: citySlug}, this.params)
+
+      const cityDatasets = this.datasets.filter(d => d.cities && d.cities.some(c => c.city_id === city.city_id))
+      const stats = cityDatasets.reduce((acc, dataset) => {
+        const datatypes = dataset.datatypes || [];
+        if (dataset.is_partial || dataset.is_unavailable) {
+          acc.countUnfulfilled += datatypes.length
+        } else {
+          acc.countFulfilled += datatypes.length
+        }
+        return acc
+      }, {
+        countFulfilled: 0,
+        countUnfulfilled: 0,      
+      });
+      return {
+        ...city,
+        ...stats,
+        coverage: (stats.countFulfilled / this.datatypes.length * 100).toFixed(2)+"%",
+        url: '?' + $.param(itemParams),
+        selected: selected
+      }
+    })
   }
 
   async _fetchWikidataCities(query, retries = 3) {
@@ -55,114 +86,115 @@ export default class {
     }
   }
 
-  _search(opts) {
-    const nestedSearchElement = this.elements.cityTrackerNavSearch.children('.city-tracker-nav-search');
-    const handleInput = debounce(async (e) => {
-      const query = e.target.value.trim()
-      this.searchResults = []
-      if (query.length === 0) {
-        const citiesMarkup = this._cities(opts).map(TmplCityTrackerNavItem)
-        setContent(this.elements.cityTrackerNavList, citiesMarkup)
-        nestedSearchElement?.toggleClass('loading',false);
-        return
-      }
+  _makeCityRow(data) {
+    if (data.isError) {
+      return `
+        <a href="${data.url}" class="city-search-item list-group-item list-group-item-action">
+          <i class="fa fa-plus-circle"></i>
+          <small class="text-muted">Add ${data.query} manually</small>
+        </a>
+      `
+    }
+    if (data.isMissing) {
+    return `
+      <a href="${data.url}" class="list-group-item list-group-item-action">
+        <i class="fa fa-plus-circle"></i>
+        <small class="text-muted">Add ${data.title}</small>
+      </a>
+      <a href="${data.url}" class="list-group-item${data.selected ? ' override-active ' : ''} list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+          <h6 class="mb-1">${data.title}</h6>
+        </div>
+        <small class="text-muted">${data.city_id}</small>
+      </a>
+    `;
+    }
 
-      const filteredCities = filter(opts.cities, (city) => {
-        const titleMatch = city.title && city.title.toLowerCase().includes(query.toLowerCase())
-        const idMatch = city.city_id && city.city_id.toLowerCase().includes(query.toLowerCase())
-        return titleMatch || idMatch
-      })
+    return `
+      <a href="${data.url}" class="list-group-item${data.selected ? ' override-active ' : ''} list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+          <h6 class="mb-1">${data.title}</h6>
+        </div>
+        <small class="text-muted">${data.coverage}</small>
+      </a>
+    `;
+  }
 
-      let resultsHtml = ''
-      
-      if (filteredCities.length > 0) {
-        nestedSearchElement?.toggleClass(false);
-        resultsHtml += filteredCities.map(city => {
-          const citySlug = slugify(city.city_id)
-          const itemParams = defaults({city: citySlug}, opts.params)
-          const url = '?' + $.param(itemParams)
-          
-          return `
-            <a href="${url}" class="list-group-item list-group-item-action city-search-item">
-              <div class="d-flex w-100 justify-content-between">
-                <h6 class="mb-1">${city.title}</h6>
-              </div>
-              <small class="text-muted">${city.city_id}</small>
-            </a>
-          `
-        }).join('\n')
-        setContent(this.elements.cityTrackerNavList, resultsHtml)
-      } else {
-        try {
-          nestedSearchElement?.toggleClass('loading',true);
-          await this._fetchWikidataCities(query)
-          if (!this.searchResults.length) {
-            throw new Error('No cities found')
-          }
-          resultsHtml += this.searchResults.map(city => {
-            const citySlug = slugify(city.city_id)
-            const itemParams = defaults({city: citySlug}, opts.params)
-            const encodedParams = Object.entries(city).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
-            const url = "/editor/#/collections/cities/new?" + encodedParams
-            return `
-            <a href="${url}" class="city-search-item list-group-item list-group-item-action">
-              <i class="fa fa-plus-circle"></i>
-              <small class="text-muted">Add ${city.title}</small>
-            </a>
-            `
-          }).join('\n')
-          setContent(this.elements.cityTrackerNavList, resultsHtml)
-        } catch (err) {
-          const url = "/editor/#/collections/cities/new?city=" + query
-          resultsHtml = `
-            <a href="${url}" class="city-search-item list-group-item list-group-item-action">
-              <i class="fa fa-plus-circle"></i>
-              <small class="text-muted">Add ${query} manually</small>
-            </a>
-          `
-          setContent(this.elements.cityTrackerNavList, resultsHtml)
-          console.error(err)
-        } finally {
-          nestedSearchElement?.toggleClass('loading',true);
-        }
-      }
-    }, 800);
+  _renderCityList(citiesParam) {
+    const cities = citiesParam ?? this.cities;
+    const markup = cities.map(this._makeCityRow).join('\n');
+    setContent(this.elements.cityTrackerNavList, markup)
+  }
+
+  _renderLoadingState() {
+    const nestedSearchElement = $('.city-tracker-nav-search');
+    nestedSearchElement?.toggleClass('loading',true);
+    this._renderCityList([])
+    return () => {
+      nestedSearchElement?.toggleClass('loading',false);
+    }
+  }
+
+  _renderSearchBar() { 
+    const markup = `
+      <div class="position-relative city-tracker-nav-search">
+        <input type="text" class="form-control list-group-item mt-2" placeholder="Search cities..." autocomplete="off">
+      </div>
+    `;
+    setContent(this.elements.cityTrackerNavSearch, markup)
+    const handleInput = debounce((e) => this._search(e), 800);
     this.elements.cityTrackerNavSearch.on('input', handleInput)
   }
 
-  _cities(opts){
-    const sortedCities = opts.cities.sort((a, b) => a.title.localeCompare(b.title));
-    if (!opts.params.city) {
-      const firstCity = sortedCities[0]
-      opts.params.city = slugify(firstCity.city_id)
+  async _search(e) {
+    const query = e.target.value.trim()
+    this.searchResults = []
+    if (query.length === 0) {
+      this._renderCityList()
+      return
     }
-    
-    return opts.cities.map(city => {
-      const citySlug = slugify(city.city_id)
-      const citySlugFromParams = slugify(opts.params.city)
-      const selected = citySlugFromParams && citySlugFromParams === citySlug
-      const itemParams = selected ? omit(opts.params, 'city') : defaults({city: citySlug}, opts.params)
-
-      const cityDatasets = opts.datasets.filter(d => d.cities && d.cities.some(c => c.city_id === city.city_id))
-      const stats = cityDatasets.reduce((acc, dataset) => {
-        const datatypes = dataset.datatypes || [];
-        if (dataset.is_partial || dataset.is_unavailable) {
-          acc.countUnfulfilled += datatypes.length
-        } else {
-          acc.countFulfilled += datatypes.length
-        }
-        return acc
-      }, {
-        countFulfilled: 0,
-        countUnfulfilled: 0,      
-      });
-      return {
-        ...city,
-        ...stats,
-        coverage: (stats.countFulfilled / opts.datatypes.length * 100).toFixed(2)+"%",
-        url: '?' + $.param(itemParams),
-        selected: selected
-      }
+    const filteredCities = filter(this.cities, (city) => {
+      const titleMatch = city.title && city.title.toLowerCase().includes(query.toLowerCase())
+      const idMatch = city.city_id && city.city_id.toLowerCase().includes(query.toLowerCase())
+      return titleMatch || idMatch
     })
+    
+    if (filteredCities.length > 0) {
+      this._renderCityList(filteredCities.map(city => {
+        const citySlug = slugify(city.city_id)
+        const itemParams = defaults({city: citySlug}, this.params)
+        const url = '?' + $.param(itemParams)
+        return {
+          ...city,
+          url,
+        }
+      }))
+    } else {
+      const stopLoading = this._renderLoadingState()
+      try {
+        await this._fetchWikidataCities(query)
+        if (!this.searchResults.length) {
+          throw new Error('No cities found')
+        }
+
+        this._renderCityList(this.searchResults.map(city => {
+          const citySlug = slugify(city.city_id)
+          const itemParams = defaults({city: citySlug}, this.params)
+          const encodedParams = Object.entries(city).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
+          const url = "/editor/#/collections/cities/new?" + encodedParams
+          return {
+            ...city,
+            url,
+            isMissing: true
+          }
+        }))
+        } catch (err) {
+          const url = "/editor/#/collections/cities/new?city=" + query
+          this._renderCityList([{ url, query, isError: true, }])
+          console.error(err)
+      } finally {
+        stopLoading()
+      }
+    }
   }
 }

@@ -391,7 +391,6 @@ dataset {
 *:focus, .city-tracker-nav-search input:focus, input:focus {
   background-color: transparent;
   border: none;
-  border-radius: 2pt;
   box-shadow: var(--shadow-md);
   outline-color: transparent;
   outline: 0;
