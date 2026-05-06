@@ -5,9 +5,9 @@ layout: default
 {% assign datasets_count = datasets | size %}
 
   <div class="row h-100">
-    {% if page.logo and page.logo != empty %}
+    {% if page.flag and page.flag != empty %}
     <div class="col-sm-3 h-100">
-      <a href="{{ page.logo | relative_url }}" class="card-grid-item"><img class="img-thumbnail rounded mx-auto d-block" src="{{ page.logo | relative_url }}" alt="{{ page.title }} logo"></a>
+      <a href="{{ page.flag | relative_url }}" class="card-grid-item"><img class="img-thumbnail rounded mx-auto d-block" src="{{ page.flag | relative_url }}" alt="{{ page.title }} flag"></a>
     </div>
     <div class="col-sm-9 h-100">
     {% else %}

@@ -2,7 +2,7 @@
 city: Shanghai
 city_id: Q8686
 title: Shanghai, People's Republic of China
-logo: ""
-logo_credit: ""
+flag: ""
+flag_attribution: ""
 country: People's Republic of China
 ---

@@ -52,10 +52,10 @@ datatype_category_fields:
 city_fields:
   - field_name: title
     label: Title
-  - field_name: logo
-    label: Logo
-  - field_name: logo_credit
-    label: Logo Credit
+  - field_name: flag
+    label: Flag
+  - field_name: flag_attribution
+    label: Flag Attribution
   - field_name: city
     label: City
   - field_name: country

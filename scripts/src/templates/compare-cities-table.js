@@ -37,7 +37,7 @@ export default ({ cities, sortField, sortDirection }) => {
         ` : cities.map(city => `
           <tr>
             <td>
-              ${city.logo ? `<img src="${city.logo}" alt="${city.title} logo" style="max-height: 30px; max-width: 50px;">` : '-'}
+              ${city.flag ? `<img src="${city.flag}" alt="${city.title} flag" style="max-height: 30px; max-width: 50px;">` : '-'}
             </td>
             <td>
               <a href="/city-tracker?city=${city.city_id}">${city.title}</a>

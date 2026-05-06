@@ -2,7 +2,7 @@
 city: Kolkata
 city_id: Q1348
 title: Kolkata, India
-logo: ""
-logo_credit: ""
+flag: ""
+flag_attribution: ""
 country: India
 ---

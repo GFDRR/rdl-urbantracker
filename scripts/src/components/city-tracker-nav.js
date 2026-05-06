@@ -26,8 +26,6 @@ export default class {
 
   async _fetchWikidataCity(query, retries = 3) {
     const url = `/.netlify/functions/wikidata-search?query=${encodeURIComponent(query)}`;
-    const nestedSearchElement = this.elements.cityTrackerNavSearch.children('.city-tracker-nav-search');
-    nestedSearchElement?.toggleClass('loading',true);
 
     for (let i = 0; i < retries; i++) {
       try {
@@ -38,15 +36,15 @@ export default class {
         }
         
         const data = await response.json();
-        if (data.results && data.results.bindings.length > 0) {
-          const result = data.results.bindings[0];
+        if (data.results && data.results.length > 0) {
+          const result = data.results[0];
           this.wikidataCity = {
-            city: result.cityLabel.value,
-            city_id: result.city.value.split('/').pop(),
-            title: result.cityLabel.value + ', ' + result.countryLabel.value,
-            logo: result.cityFlag?.value,
-            logo_credit: result.cityFlag?.value && 'Wikimedia',
-            country: result.countryLabel.value
+            city: result.cityLabel,
+            city_id: result.city,
+            title: result.cityLabel + ', ' + result.countryLabel,
+            flag: result.cityFlag,
+            flag_attribution: result.cityFlag && 'Wikimedia',
+            country: result.countryLabel
           };
         }
         return;
@@ -54,19 +52,19 @@ export default class {
         if (i === retries - 1) throw error;
         console.warn(`Retry ${i + 1} failed...`, error);
         await new Promise(res => setTimeout(res, 1000));
-      } finally {
-        nestedSearchElement?.toggleClass('loading',false);
       }
     }
   }
 
   _search(opts) {
+    const nestedSearchElement = this.elements.cityTrackerNavSearch.children('.city-tracker-nav-search');
     const handleInput = debounce(async (e) => {
       const query = e.target.value.trim()
       this.wikidataCity = {}
       if (query.length === 0) {
         const citiesMarkup = this._cities(opts).map(TmplCityTrackerNavItem)
         setContent(this.elements.cityTrackerNavList, citiesMarkup)
+        nestedSearchElement?.toggleClass('loading',false);
         return
       }
 
@@ -96,6 +94,7 @@ export default class {
         setContent(this.elements.cityTrackerNavList, resultsHtml)
       } else {
         try {
+          nestedSearchElement?.toggleClass('loading',true);
           await this._fetchWikidataCity(query)
           if (!this.wikidataCity?.city) {
             throw new Error('City not found')
@@ -113,6 +112,8 @@ export default class {
           resultsHtml = `<div class="city-search-item list-group-item text-danger">Search failed.</div>`
           setContent(this.elements.cityTrackerNavList, resultsHtml)
           console.error(err)
+        } finally {
+          nestedSearchElement?.toggleClass('loading',true);
         }
       }
     }, 800);
