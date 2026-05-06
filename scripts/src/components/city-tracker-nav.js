@@ -20,11 +20,11 @@ export default class {
       </div>
     `
     setContent(this.elements.cityTrackerNavSearch, searchMarkup)
-    this.wikidataCity = {}
+    this.searchResults = []
     this._search(opts)
   }
 
-  async _fetchWikidataCity(query, retries = 3) {
+  async _fetchWikidataCities(query, retries = 3) {
     const url = `/.netlify/functions/wikidata-search?query=${encodeURIComponent(query)}`;
 
     for (let i = 0; i < retries; i++) {
@@ -37,15 +37,14 @@ export default class {
         
         const data = await response.json();
         if (data.results && data.results.length > 0) {
-          const result = data.results[0];
-          this.wikidataCity = {
+          this.searchResults = data.results.map(result => ({
             city: result.cityLabel,
             city_id: result.city,
             title: result.cityLabel + ', ' + result.countryLabel,
             flag: result.cityFlag,
             flag_attribution: result.cityFlag && 'Wikimedia',
             country: result.countryLabel
-          };
+          }));
         }
         return;
       } catch (error) {
@@ -60,7 +59,7 @@ export default class {
     const nestedSearchElement = this.elements.cityTrackerNavSearch.children('.city-tracker-nav-search');
     const handleInput = debounce(async (e) => {
       const query = e.target.value.trim()
-      this.wikidataCity = {}
+      this.searchResults = []
       if (query.length === 0) {
         const citiesMarkup = this._cities(opts).map(TmplCityTrackerNavItem)
         setContent(this.elements.cityTrackerNavList, citiesMarkup)
@@ -77,6 +76,7 @@ export default class {
       let resultsHtml = ''
       
       if (filteredCities.length > 0) {
+        nestedSearchElement?.toggleClass(false);
         resultsHtml += filteredCities.map(city => {
           const citySlug = slugify(city.city_id)
           const itemParams = defaults({city: citySlug}, opts.params)
@@ -95,21 +95,31 @@ export default class {
       } else {
         try {
           nestedSearchElement?.toggleClass('loading',true);
-          await this._fetchWikidataCity(query)
-          if (!this.wikidataCity?.city) {
-            throw new Error('City not found')
+          await this._fetchWikidataCities(query)
+          if (!this.searchResults.length) {
+            throw new Error('No cities found')
           }
-          const encodedParams = Object.entries(this.wikidataCity).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
-  
-          resultsHtml += `
-            <a href="/editor/#/collections/cities/new?${encodedParams}" class="city-search-item list-group-item list-group-item-action">
-              <i class="mb-1 fa fa-plus-circle"></i>
-              <small class="text-muted">Add ${this.wikidataCity.city}</small>
+          resultsHtml += this.searchResults.map(city => {
+            const citySlug = slugify(city.city_id)
+            const itemParams = defaults({city: citySlug}, opts.params)
+            const encodedParams = Object.entries(city).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
+            const url = "/editor/#/collections/cities/new?" + encodedParams
+            return `
+            <a href="${url}" class="city-search-item list-group-item list-group-item-action">
+              <i class="fa fa-plus-circle"></i>
+              <small class="text-muted">Add ${city.title}</small>
             </a>
-          `;
+            `
+          }).join('\n')
           setContent(this.elements.cityTrackerNavList, resultsHtml)
         } catch (err) {
-          resultsHtml = `<div class="city-search-item list-group-item text-danger">Search failed.</div>`
+          const url = "/editor/#/collections/cities/new?city=" + query
+          resultsHtml = `
+            <a href="${url}" class="city-search-item list-group-item list-group-item-action">
+              <i class="fa fa-plus-circle"></i>
+              <small class="text-muted">Add ${query} manually</small>
+            </a>
+          `
           setContent(this.elements.cityTrackerNavList, resultsHtml)
           console.error(err)
         } finally {

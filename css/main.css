@@ -452,6 +452,8 @@ dataset {
 .city-search-list, .city-search-item {
   background-color: var(--color-bg-card);
   border-radius: 0;
+  vertical-align: center;
+  justify-content: center;
 }
 
 thead th {
