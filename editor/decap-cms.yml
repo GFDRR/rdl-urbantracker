@@ -57,7 +57,7 @@ collections:
   - name: cities
     label: Cities
     label_singular: City
-    identifier_field: city_id
+    identifier_field: city
     folder: _cities
     create: true
     slug: "{{city_id}}-{{city}}"
