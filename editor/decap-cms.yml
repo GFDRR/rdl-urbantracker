@@ -15,15 +15,16 @@ collections:
     folder: _datasets
     create: true
     fields:
-      - label: Title
-        name: title
-        widget: string
-      - label: External URL
-        name: external_url
-        widget: string
       - label: Submitter Email
         name: submitter_email
         widget: submitter_email
+      - label: Title
+        name: title
+        widget: string
+      - label: Description
+        name: description
+        widget: string
+        required: false
       - label: Cities
         name: cities
         widget: relation
@@ -40,10 +41,9 @@ collections:
         value_field: "title"
         display_fields: ["{{category}} / {{title}}"]
         multiple: true
-      - label: Description
-        name: description
+      - label: External URL
+        name: external_url
         widget: string
-        required: false
   - name: datatypes
     label: Datatypes
     label_singular: Datatype

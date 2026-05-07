@@ -86,24 +86,23 @@
 
       const DatasetPreview = createClass({
         render: function() {
-          const entry = this.props.entry;
-          const cities = entry.getIn(['data', 'cities'])?.toJS() ?? [];
-          const datatypes = entry.getIn(['data', 'datatypes'])?.toJS() ?? [];
+          const { entry, fieldsMetaData } = this.props;
+          const cities = Object.values(fieldsMetaData.getIn(['cities'])?.toJS()?.cities ?? {}) ??[];
+          const datatypes = Object.values(fieldsMetaData.getIn(['datatypes'])?.toJS()?.datatypes ?? {}) ??[];
           const external_url = entry.getIn(['data', 'external_url']);
           return h('div', { style: { padding: '20px' } },
             h('h1', {}, entry.getIn(['data', 'title'])),
             h('p', {}, entry.getIn(['data', 'description'])),
-            h('p', {}, entry.getIn(['data', 'submitter_email'])),
-            h('p', {}, 'Cities: '),
+            cities.length ? h('p', {}, 'Cities: ') : '',
             h('ul', {}, 
-              cities.map(function(city_id) {
-                return h('li', {}, city_id)
+              cities.map(function(c) {
+                return h('li', {}, c.title + ' (' + c.city_id + ')')
               }),
             ),
-            h('p', {}, 'Datatypes: '),
+            datatypes.length ? h('p', {}, 'Datatypes: ') : '',
             h('ul', {}, 
-              datatypes.map(function(datatype_title) {
-                return h('li', {}, datatype_title)
+              datatypes.map(function(dt) {
+                return h('li', {}, dt.category + ' / ' + dt.title)
               }),
             ),
             external_url
