@@ -28,17 +28,17 @@ collections:
         name: cities
         widget: relation
         collection: "cities"
-        search_fields: ["city_id"]
+        search_fields: ["title", "city_id"]
         value_field: "city_id"
-        display_fields: ["title"]
+        display_fields: ["{{title}} ({{city_id}})"]
         multiple: true
       - label: Datatypes
         name: datatypes
         widget: relation
         collection: "datatypes"
-        search_fields: ["title"]
+        search_fields: ["title", "category"]
         value_field: "title"
-        display_fields: ["title"]
+        display_fields: ["{{category}} / {{title}}"]
         multiple: true
       - label: Description
         name: description
@@ -49,10 +49,17 @@ collections:
     label_singular: Datatype
     folder: _datatypes
     hide: true
-    identifier_field: id
+    slug: "{{id}}-{{title}}"
+    preview_path: "datatypes/{{slug}}"
     fields:
       - label: Title
         name: title
+        widget: string
+      - label: Category
+        name: category
+        widget: string
+      - label: ID
+        name: id
         widget: string
   - name: cities
     label: Cities
