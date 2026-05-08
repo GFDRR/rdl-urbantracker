@@ -15,49 +15,56 @@ collections:
     folder: _datasets
     create: true
     fields:
-      - label: Title
-        name: title
-        widget: string
-      - label: External URL
-        name: external_url
-        widget: string
       - label: Submitter Email
         name: submitter_email
         widget: submitter_email
+      - label: Title
+        name: title
+        widget: string
+      - label: Description
+        name: description
+        widget: string
+        required: false
       - label: Cities
         name: cities
         widget: relation
         collection: "cities"
-        search_fields: ["city_id"]
+        search_fields: ["title", "city_id"]
         value_field: "city_id"
-        display_fields: ["title"]
+        display_fields: ["{{title}} ({{city_id}})"]
         multiple: true
       - label: Datatypes
         name: datatypes
         widget: relation
         collection: "datatypes"
-        search_fields: ["title"]
+        search_fields: ["title", "category"]
         value_field: "title"
-        display_fields: ["title"]
+        display_fields: ["{{category}} / {{title}}"]
         multiple: true
-      - label: Description
-        name: description
+      - label: External URL
+        name: external_url
         widget: string
-        required: false
   - name: datatypes
     label: Datatypes
     label_singular: Datatype
     folder: _datatypes
     hide: true
-    identifier_field: id
+    slug: "{{id}}-{{title}}"
+    preview_path: "datatypes/{{slug}}"
     fields:
       - label: Title
         name: title
         widget: string
+      - label: Category
+        name: category
+        widget: string
+      - label: ID
+        name: id
+        widget: string
   - name: cities
     label: Cities
     label_singular: City
-    identifier_field: city_id
+    identifier_field: city
     folder: _cities
     create: true
     slug: "{{city_id}}-{{city}}"
