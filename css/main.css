@@ -249,7 +249,6 @@ dataset {
 .list-group-item {
   border: none;
   margin: 0;
-  border-radius: var(--radius-md);
   transition: all 0.2s;
   background: transparent;
   display: flex;
@@ -257,6 +256,11 @@ dataset {
   justify-content: space-between;
   gap: 8px;
   padding: var(--spacing-sm);
+}
+
+.list-group-item:last-child {
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
 }
 
 .list-group-item:hover {
