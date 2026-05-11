@@ -19,6 +19,15 @@ export default ({ cityDatatypes, sortField, sortDirection }) => {
     return 'category-' + category.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   };
 
+  const getTooltipAttrs = (cdt) => {
+    const description = cdt.datatype.description;
+    if (!description) return ''
+    console.log(cdt.datatype)
+    const exampleIndicators = cdt.datatype.example_indicators;
+    const title = description + (exampleIndicators ? ', e.g. ' + exampleIndicators : '');
+    return `data-scope="city-tracker" data-bs-toggle="tooltip" data-bs-placement="right" title="${title}"`
+  }
+
   return `
     <table class="table table-hover m-0">
       <thead>
@@ -41,7 +50,7 @@ export default ({ cityDatatypes, sortField, sortDirection }) => {
           </tr>
           ${items.map((cdt) => `
             <tr class="category-row ${categoryId}" style="display: none;">
-              <td>${cdt.datatype.title}</td>
+              <td><span ${getTooltipAttrs(cdt)}>${cdt.datatype.title}</span></td>
               <td class="cell-is-fulfilled">${cdt.isFulfilled
                 ? `<a href="${cdt.url}">
                     <i class="m-1 fa fa-check"></i>View
@@ -59,5 +68,11 @@ export default ({ cityDatatypes, sortField, sortDirection }) => {
         }).join("\n")}
       </tbody>
     </table>
+    <script>
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"][data-scope="city-tracker"]'))
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+       return new bootstrap.Tooltip(tooltipTriggerEl)
+      })
+    </script>
   `;
 };
