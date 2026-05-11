@@ -46,10 +46,10 @@ export default ({ cityDatatypes, sortField, sortDirection }) => {
                 ? `<a href="${cdt.url}">
                     <i class="m-1 fa fa-check"></i>View
                   </a>
-                  <a href="/editor/#/collections/datasets/new">
+                  <a href="${cdt.addUrl}">
                     <i class="m-1 fa fa-plus-circle"></i>Add More
                   </a>`
-                : `<a class="text-danger" href="/editor/#/collections/datasets/new">
+                : `<a class="text-danger" href="${cdt.addUrl}">
                     <i class="m-1 fa fa-plus-circle"></i>Add
                   </a>`
               }</td>
