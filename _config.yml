@@ -1,6 +1,6 @@
-title: Urban Tracker
+title: Urban Data Tracker
 greeting: Explore Urban Dataset Coverage
-description: A tool for tracking progress toward comprehensive coverage of fundamental urban datasets
+description: An open tool supporting the creation of a data commons for urban risk data
 logo: /img/jkan.png
 hero_image: /img/homepage-hero.jpg
 strict_front_matter: true
