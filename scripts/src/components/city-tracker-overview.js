@@ -65,7 +65,14 @@ export default class {
       ? this.datatypes.filter(dt => slugify(dt.category) === defaults(paramFilters, attributeFilters).datatypeCategory)
       : this.datatypes;
     this.cityDatatypes = filteredDatatypes.map(datatype => {
+      const encodedParams = Object.entries({
+        cities: this.cityStats.city_id,
+        datatypes: datatype.title,
+      }).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
+      const addUrl = "/editor/#/collections/datasets/new?" + encodedParams
+
       return {
+        addUrl,
         datatype: datatype,
         isFulfilled: this.cityStats.datatypesFulfilled.has(datatype.title),
         url: `/datasets?datatype=${slugify(datatype.title)}&city=${slugify(this.cityStats.city_id)}`,
