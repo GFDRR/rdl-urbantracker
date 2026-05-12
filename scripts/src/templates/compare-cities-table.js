@@ -66,7 +66,13 @@ export default ({ cities, sortField, sortDirection }) => {
     <script>
       var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"][data-scope="compare-cities"]'))
       var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
+        const tooltip = new bootstrap.Tooltip(tooltipTriggerEl, {
+          trigger: 'hover'
+        })
+        tooltipTriggerEl.addEventListener('click', function() {
+          tooltip.hide();
+        });
+        return tooltip
       })
     </script>
   `;

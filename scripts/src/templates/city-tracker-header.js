@@ -5,7 +5,9 @@ export default (data) => (`
   <script>
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"][data-scope="city-tracker-header"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl)
+      return new bootstrap.Tooltip(tooltipTriggerEl, {
+        trigger: 'hover'
+      })
     })
   </script>
 `)
