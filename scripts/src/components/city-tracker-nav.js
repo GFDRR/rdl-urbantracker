@@ -186,7 +186,7 @@ export default class {
           isMissing: true
         }
       })
-      const combinedList = [...filteredCities, ...mappedSearchResults]
+      const combinedList = new Array(new Set([...filteredCities, ...mappedSearchResults]))
 
       this._renderCityList(combinedList)
       } catch (err) {
