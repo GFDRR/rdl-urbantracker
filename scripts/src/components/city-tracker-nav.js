@@ -75,8 +75,10 @@ export default class {
             city: result.cityLabel,
             city_id: result.city,
             title: result.cityLabel + ', ' + result.countryLabel,
-            flag: result.cityFlag,
-            flag_attribution: result.cityFlag && 'Wikimedia',
+            ...(result.cityFlag ? {
+              flag: result.cityFlag,
+              flag_attribution: 'Wikimedia'
+            } : {}),
             country: result.countryLabel
           }));
         }
