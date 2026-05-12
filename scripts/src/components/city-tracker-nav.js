@@ -1,7 +1,7 @@
 import $ from 'jquery'
 import {chain, omit, defaults, filter, debounce} from 'lodash'
 
-import {setContent, slugify, collapseListGroup, queryByHook} from '../util'
+import {setContent, slugify, queryByHook} from '../util'
 
 export default class {
   constructor (opts) {
@@ -16,10 +16,9 @@ export default class {
   }
 
   _initialize(opts) {
-    const store = opts.Alpine.store('filter')
-    this.cities = store.cities
-    this.datasets = store.datasets
-    this.datatypes = store.datatypes
+    this.cities = opts.cities
+    this.datasets = opts.datasets
+    this.datatypes = opts.datatypes
     this.params = opts.params
     const sortedCities = this.cities.sort((a, b) => a.title.localeCompare(b.title));
     if (!opts.params.city) {

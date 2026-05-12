@@ -2,25 +2,16 @@ import $ from 'jquery'
 import {chain, pick, omit, filter, defaults} from 'lodash'
 
 import TmplListGroupItem from '../templates/list-group-item'
-import {setContent, slugify, createDatasetFilters, collapseListGroup} from '../util'
+import {setContent, slugify, createDatasetFilters} from '../util'
 
 export default class {
   constructor (opts) {
-    const store = opts.Alpine.store('filter')
-    // TODO: persist state from other pages
-    // if (!opts.params.datatypeCategory && store.filteredDatatypeCategories.length > 0) {
-    //   console.log(store.filteredDatatypeCategories)
-    //   opts.params.datatypeCategory = filteredDatatypeCategories
-    // }
-    const datatypeCategories = this._datatypeCategoriesWithCount(store.datasets, opts.params, opts.el)
+    const datatypeCategories = this._datatypeCategoriesWithCount(opts.datasets, opts.params, opts.el)
     const datatypeCategoriesMarkup = '<h5>Category</h5><div class="list-group-inner overflow-scroll">' + datatypeCategories.map(TmplListGroupItem).join('') + '</div>'
     setContent(opts.el, datatypeCategoriesMarkup)
-    collapseListGroup(opts.el)
   }
 
-  _datatypeCategoriesWithCount (datasets, params, el) {
-    const baseUrl = (window.settings && window.settings.BASE_URL ? window.settings.BASE_URL : '')
-
+  _datatypeCategoriesWithCount(datasets, params, el) {
     return chain(datasets)
     .filter('datatypes')
     .flatMap(function (dataset) {
@@ -35,16 +26,16 @@ export default class {
       .groupBy('datatypeCategory')
       .map(function (datatypeCategoryDatasets, datatypeCategory) {
         const datasetsInDatatypeCategory = datatypeCategoryDatasets.map(function (dcd) { return dcd.dataset })
-        const filters = createDatasetFilters(pick(params, ['datatypeCategory']))
-        const filteredDatasets = filter(datasetsInDatatypeCategory, filters)
         const datatypeCategorySlug = slugify(datatypeCategory)
+        const filters = createDatasetFilters({...params, datatypeCategory: datatypeCategorySlug})
+        const filteredDatasets = filter(datasetsInDatatypeCategory, filters)
         const selected = params.datatypeCategory && params.datatypeCategory === datatypeCategorySlug
         const itemParams = selected ? omit(params, 'datatypeCategory') : defaults({datatypeCategory: datatypeCategorySlug}, params)
 
         return {
           title: datatypeCategory,
           url: '?' + $.param(itemParams),
-          count: datasetsInDatatypeCategory.length,
+          count: filteredDatasets.length,
           selected: selected
         }
       })

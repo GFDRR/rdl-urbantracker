@@ -1,5 +1,4 @@
 /* global settings */
-import Alpine from 'alpinejs'
 import "bootstrap/js/dist/collapse";
 import "core-js/actual";
 import $ from "jquery";
@@ -60,44 +59,15 @@ const components = [
   },
 ];
 
-Alpine.store('filter', {
-  cities: [],
-  filteredCities: [],
-  datasets: [],
-  filteredDatasets: [],
-  datatypes: [],
-  filteredDatatypes: [],
-  datatypeCategories: [],
-  filteredDatatypeCategories: [],
-  filterDatasets(params) {
-    const filters = createDatasetFilters(params)
-    this.filteredDatasets = filter(this.datasets,filters)
-  },
-  init() {
-    Promise.all([getCities(), getDatasets(), getDatatypes(), getDatatypeCategories()])
-    .then(([cities, datasets, datatypes, datatypeCategories]) => {
-      this.cities = cities
-      this.filteredCities = cities
-      this.datasets = datasets
-      this.filteredDatasets = datasets
-      this.datatypes = datatypes
-      this.filteredDatatypes = datatypes
-      this.datatypeCategories = datatypeCategories
-      this.filteredDatatypeCategories = datatypeCategories
-    })
-    .then(() => {
-      for (let component of components) {
-        const els = queryByComponent(component.tag);
-        if (els.length) {
-          els.each(
-            (_, el) =>
-              new component.class({ el: $(el), Alpine, params }),
-          ); 
-        }
-      }
-    })
+Promise.all([getCities(), getDatasets(), getDatatypes(), getDatatypeCategories()])
+.then(([cities, datasets, datatypes, datatypeCategories]) => {
+  for (let component of components) {
+    const els = queryByComponent(component.tag);
+    if (els.length) {
+      els.each(
+        (_, el) =>
+          new component.class({ el: $(el), cities, datasets, datatypes, datatypeCategories, params }),
+      ); 
+    }
   }
-});
-
-window.Alpine = Alpine
-Alpine.start()
+})

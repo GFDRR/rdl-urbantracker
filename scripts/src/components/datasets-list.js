@@ -26,11 +26,10 @@ export default class {
   }
 
   _initialize(opts) {
-    const store = opts.Alpine.store('filter')
     const paramFilters = pick(opts.params, ['datatype', 'datatypeCategory', 'city'])
     const attributeFilters = pick(opts.el.data(), ['datatype', 'datatypeCategory', 'city'])
     const filters = createDatasetFilters(defaults(paramFilters, attributeFilters))
-    const filteredDatasets = filter(store.datasets, filters)
+    const filteredDatasets = filter(opts.datasets, filters)
     const datasetsMarkup = filteredDatasets.map(TmplDatasetItem)
     setContent(this.elements.datasetsItems, datasetsMarkup)
 

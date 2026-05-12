@@ -13,11 +13,9 @@ export default class {
   }
 
   _initialize(opts) {
-    const store = opts.Alpine.store('filter')
-
-    this.cities = store.cities;
-    this.datasets = store.datasets;
-    this.datatypes = store.datatypes;
+    this.cities = opts.cities;
+    this.datasets = opts.datasets;
+    this.datatypes = opts.datatypes;
     this.params = opts.params;
     
     this.sortField = 'title';
