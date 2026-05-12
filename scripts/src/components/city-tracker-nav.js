@@ -186,7 +186,8 @@ export default class {
           isMissing: true
         }
       }).filter(result => !filteredCities.some(city => result.city_id === city.city_id))
-      const combinedList = [...filteredCities, ...mappedSearchResults]
+      const url = "/editor/#/collections/cities/new?city=" + query
+      const combinedList = [...filteredCities, ...mappedSearchResults, { url, query, isError: true }]
 
       this._renderCityList(combinedList)
       } catch (err) {
