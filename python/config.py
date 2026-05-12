@@ -2,6 +2,7 @@ root_dir = ".."
 python_path = f"{root_dir}/python"
 
 cities_dir = f"{root_dir}/_cities"
+cities_input_csv_path = f"{python_path}/input/cities.csv"
 
 datasets_dir = f"{root_dir}/_datasets"
 datasets_input_csv_path = f"{python_path}/input/datasets.csv"
