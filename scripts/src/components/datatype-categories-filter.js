@@ -39,7 +39,7 @@ export default class {
           selected: selected
         }
       })
-      .orderBy('title', 'asc')
+      .orderBy(['selected','title'], ['desc','asc'])
       .value()
   }
 }
