@@ -10,17 +10,16 @@ export default class {
       cityTrackerHeader: queryByHook('city-tracker-header', opts.el),
       cityTrackerTable: queryByHook('city-tracker-table', opts.el),
     }
+    this._initialize(opts);
+  }
+  
+  _initialize(opts) {
     this.cities = opts.cities;
     this.datasets = opts.datasets;
     this.datatypes = opts.datatypes;
     this.params = opts.params;
     this.sortField = 'category';
     this.sortDirection = 'asc';
-
-    this._initialize(opts);
-  }
-
-  _initialize(opts) {
     this._applyFilters(opts);
     this._render()
     

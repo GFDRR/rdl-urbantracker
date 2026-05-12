@@ -9,23 +9,20 @@ export default class {
       compareCitiesTable: queryByHook('compare-cities-table', opts.el),
       searchQuery: queryByHook('compare-cities-search-query', opts.el)
     };
-    
+    this._initialize(opts)
+  }
+
+  _initialize(opts) {
     this.cities = opts.cities;
     this.datasets = opts.datasets;
     this.datatypes = opts.datatypes;
     this.params = opts.params;
     
-    // State for sorting
     this.sortField = 'title';
     this.sortDirection = 'asc';
-    
-    // Calculate stats for all cities
     this.cityStats = this._calculateCityStats();
-    
-    // Initial render
+
     this._render();
-    
-    // Setup event listeners
     this._setupEventListeners();
   }
   

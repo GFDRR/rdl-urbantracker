@@ -4,6 +4,7 @@
   {
     "city_id": {{ city.city_id | jsonify }},
     "title": {{ city.title | jsonify }},
+    "name": {{ city.city | jsonify }},
     "country": {{ city.country | jsonify }},
     "flag": {{ city.flag | jsonify }}
   }{% unless forloop.last %},{% endunless %}{% endfor %}

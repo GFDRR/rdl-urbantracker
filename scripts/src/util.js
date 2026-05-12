@@ -61,32 +61,6 @@ export function createDatasetFilters(filters) {
   };
 }
 
-export function collapseListGroup(container, show) {
-  if (!show) show = container.data("show");
-  if (!show) return;
-
-  const itemsToHide = $(
-    ".list-group-item:gt(" + (show - 1) + "):not(.override-active)",
-    container,
-  );
-  if (itemsToHide.length) {
-    itemsToHide.hide();
-
-    const showMoreButton = $(
-      '<a href="#" class="list-group-item">Show ' +
-        itemsToHide.length +
-        " more...</a>",
-    );
-    showMoreButton.on("click", function (e) {
-      itemsToHide.show();
-      $(this).off("click");
-      $(this).remove();
-      e.preventDefault();
-    });
-    container.append(showMoreButton);
-  }
-}
-
 const wdk = WBK({
   instance: "https://www.wikidata.org",
   sparqlEndpoint: "https://query.wikidata.org/sparql",

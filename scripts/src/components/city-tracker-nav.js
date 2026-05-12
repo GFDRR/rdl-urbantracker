@@ -1,7 +1,7 @@
 import $ from 'jquery'
-import {chain, omit, defaults, filter, debounce} from 'lodash'
+import {chain, omit, defaults, filter, orderBy, debounce} from 'lodash'
 
-import {setContent, slugify, collapseListGroup, queryByHook} from '../util'
+import {setContent, slugify, queryByHook} from '../util'
 
 export default class {
   constructor (opts) {
@@ -16,43 +16,46 @@ export default class {
   }
 
   _initialize(opts) {
+    this.cities = opts.cities
     this.datasets = opts.datasets
     this.datatypes = opts.datatypes
     this.params = opts.params
-    const sortedCities = opts.cities.sort((a, b) => a.title.localeCompare(b.title));
+    const sortedCities = orderBy(this.cities, ['title'], ['asc']);
     if (!opts.params.city) {
-      const firstCity = sortedCities[0]
-      this.params.city = slugify(firstCity.city_id)
+      this.params.city = slugify(sortedCities[0].city_id)
     }
     this.searchResults = []
 
-    this.cities = sortedCities.map(city => {
-      const citySlug = slugify(city.city_id)
-      const citySlugFromParams = slugify(this.params.city)
-      const selected = citySlugFromParams && citySlugFromParams === citySlug
-      const itemParams = selected ? omit(this.params, 'city') : defaults({city: citySlug}, this.params)
+    this.cities = chain(sortedCities)
+      .map(city => {
+        const citySlug = slugify(city.city_id)
+        const citySlugFromParams = slugify(this.params.city)
+        const selected = citySlugFromParams && citySlugFromParams === citySlug
+        const itemParams = selected ? omit(this.params, 'city') : defaults({city: citySlug}, this.params)
 
-      const cityDatasets = this.datasets.filter(d => d.cities && d.cities.some(c => c.city_id === city.city_id))
-      const stats = cityDatasets.reduce((acc, dataset) => {
-        const datatypes = dataset.datatypes || [];
-        if (dataset.is_partial || dataset.is_unavailable) {
-          acc.countUnfulfilled += datatypes.length
-        } else {
-          acc.countFulfilled += datatypes.length
+        const cityDatasets = this.datasets.filter(d => d.cities && d.cities.some(c => c.city_id === city.city_id))
+        const stats = cityDatasets.reduce((acc, dataset) => {
+          const datatypes = dataset.datatypes || [];
+          if (dataset.is_partial || dataset.is_unavailable) {
+            acc.countUnfulfilled += datatypes.length
+          } else {
+            acc.countFulfilled += datatypes.length
+          }
+          return acc
+        }, {
+          countFulfilled: 0,
+          countUnfulfilled: 0,      
+        });
+        return {
+          ...city,
+          ...stats,
+          coverage: (stats.countFulfilled / this.datatypes.length * 100).toFixed(2)+"%",
+          url: '?' + $.param(itemParams),
+          selected: selected
         }
-        return acc
-      }, {
-        countFulfilled: 0,
-        countUnfulfilled: 0,      
-      });
-      return {
-        ...city,
-        ...stats,
-        coverage: (stats.countFulfilled / this.datatypes.length * 100).toFixed(2)+"%",
-        url: '?' + $.param(itemParams),
-        selected: selected
-      }
-    })
+      })
+      .orderBy(['selected', 'title'], ['desc', 'asc'])
+      .value();
   }
 
   async _fetchWikidataCities(query, retries = 3) {

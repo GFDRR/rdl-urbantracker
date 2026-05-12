@@ -101,7 +101,7 @@ dataset {
   padding-top: var(--spacing-sm);
 }
 
-.datasets-count {
+.datasets-header {
   display: inline-block;
 }
 

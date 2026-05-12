@@ -1,54 +1,50 @@
-/**
- * Usage:
- * <div data-component="datasets-list">
- *   <h3 class="datasets-count" data-hook="datasets-count"></h3>
- *   <input type="text" data-hook="search-query" placeholder="Search..." class="form-control">
- *   <div data-hook="datasets-items"></div>
- * </div>
- *
- * Optionally, add filters to the component element such as
- *   data-dataype="sample-department"
- *   data-city="education"
- */
 import {pick, defaults, filter} from 'lodash'
 
 import TmplDatasetItem from '../templates/dataset-item'
-import {queryByHook, setContent, createDatasetFilters} from '../util'
+import {queryByHook, setContent, createDatasetFilters, slugify} from '../util'
 
 export default class {
   constructor (opts) {
-    const elements = {
+    this.elements = {
       datasetsItems: queryByHook('datasets-items', opts.el),
-      datasetsCount: queryByHook('datasets-count', opts.el),
+      datasetsHeader: queryByHook('datasets-header', opts.el),
       searchQuery: queryByHook('search-query', opts.el)
     }
+    this._initialize(opts)
+  }
 
-    const paramFilters = pick(opts.params, ['datatype', 'datatypeCategory', 'city'])
-    const attributeFilters = pick(opts.el.data(), ['datatype', 'datatypeCategory', 'city'])
-    const filters = createDatasetFilters(defaults(paramFilters, attributeFilters))
+  _initialize(opts) {
+    const filters = createDatasetFilters(opts.params)
     const filteredDatasets = filter(opts.datasets, filters)
     const datasetsMarkup = filteredDatasets.map(TmplDatasetItem)
-    setContent(elements.datasetsItems, datasetsMarkup)
+    setContent(this.elements.datasetsItems, datasetsMarkup)
 
-    const datasetSuffix =  filteredDatasets.length > 1 ? 's' : ''
-    const datasetsCountMarkup = filteredDatasets.length + ' dataset' + datasetSuffix;
-    setContent(elements.datasetsCount, datasetsCountMarkup)
+    this._renderDatasetsHeader(opts, filteredDatasets)
 
     const searchFunction = this._createSearchFunction(filteredDatasets)
-    elements.searchQuery.on('keyup', (e) => {
+    this.elements.searchQuery.on('keyup', (e) => {
       const query = e.currentTarget.value
 
       const results = searchFunction(query)
       const resultsMarkup = results.map(TmplDatasetItem)
-      setContent(elements.datasetsItems, resultsMarkup)
+      setContent(this.elements.datasetsItems, resultsMarkup)
 
-      const resultsCountMarkup = results.length + ' datasets'
-      setContent(elements.datasetsCount, resultsCountMarkup)
+      this._renderDatasetsHeader(opts, results)
     })
   }
 
+  _renderDatasetsHeader(opts, datasets) {
+    const datasetSuffix =  datasets.length !== 1 ? 's' : ''
+    const cityName = opts.cities.find(c => slugify(c.city_id) === opts.params.city)?.name;
+    const datatypeTitle = opts.datatypes.find(dt => slugify(dt.title) === opts.params.datatype)?.title;
+    const datatypeCategoryTitle = opts.datatypeCategories.find(dtc => slugify(dtc.title) === opts.params.datatypeCategory)?.title;
+    const combinedHeaderText = `${datasets.length} ${datatypeTitle ? datatypeTitle : (datatypeCategoryTitle ?? '')} dataset${datasetSuffix} ${cityName ? ' in ' + cityName : ''}`;
+    const datasetsHeaderMarkup = `<h3>${combinedHeaderText}</h3>`;
+    setContent(this.elements.datasetsHeader, datasetsHeaderMarkup)
+  }
+
   _createSearchFunction (datasets) {
-    const keys = ['title', 'notes']
+    const keys = ['title']
     return function (query) {
       const lowerCaseQuery = query.toLowerCase()
       return filter(datasets, function (dataset) {
