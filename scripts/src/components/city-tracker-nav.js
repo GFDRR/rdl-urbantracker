@@ -75,8 +75,10 @@ export default class {
             city: result.cityLabel,
             city_id: result.city,
             title: result.cityLabel + ', ' + result.countryLabel,
-            flag: result.cityFlag,
-            flag_attribution: result.cityFlag && 'Wikimedia',
+            ...(result.cityFlag ? {
+              flag: result.cityFlag,
+              flag_attribution: 'Wikimedia'
+            } : {}),
             country: result.countryLabel
           }));
         }
@@ -92,7 +94,7 @@ export default class {
   _makeCityRow(data) {
     if (data.isError) {
       return `
-        <a href="${data.url}" class="city-search-item list-group-item list-group-item-action">
+        <a href="${data.url}" class="list-group-item list-group-item-action">
           <i class="fa fa-plus-circle"></i>
           <small class="text-muted">Add ${data.query} manually</small>
         </a>
@@ -155,7 +157,8 @@ export default class {
       const idMatch = city.city_id && city.city_id.toLowerCase().includes(query.toLowerCase())
       return titleMatch || idMatch
     })
-    
+
+    const stopLoading = this._renderLoadingState()
     if (filteredCities.length > 0) {
       this._renderCityList(filteredCities.map(city => {
         const citySlug = slugify(city.city_id)
@@ -166,32 +169,34 @@ export default class {
           url,
         }
       }))
-    } else {
-      const stopLoading = this._renderLoadingState()
-      try {
-        await this._fetchWikidataCities(query)
-        if (!this.searchResults.length) {
-          throw new Error('No cities found')
-        }
-
-        this._renderCityList(this.searchResults.map(city => {
-          const citySlug = slugify(city.city_id)
-          const itemParams = defaults({city: citySlug}, this.params)
-          const encodedParams = Object.entries(city).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
-          const url = "/editor/#/collections/cities/new?" + encodedParams
-          return {
-            ...city,
-            url,
-            isMissing: true
-          }
-        }))
-        } catch (err) {
-          const url = "/editor/#/collections/cities/new?city=" + query
-          this._renderCityList([{ url, query, isError: true, }])
-          console.error(err)
-      } finally {
-        stopLoading()
-      }
     }
+    try {
+      await this._fetchWikidataCities(query)
+      if (!this.searchResults.length) {
+        throw new Error('No cities found')
+      }
+      const mappedSearchResults = this.searchResults.map(city => {
+        const citySlug = slugify(city.city_id)
+        const itemParams = defaults({city: citySlug}, this.params)
+        const encodedParams = Object.entries(city).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
+        const url = "/editor/#/collections/cities/new?" + encodedParams
+        return {
+          ...city,
+          url,
+          isMissing: true
+        }
+      }).filter(result => !filteredCities.some(city => result.city_id === city.city_id))
+      const url = "/editor/#/collections/cities/new?city=" + query
+      const combinedList = [...filteredCities, ...mappedSearchResults, { url, query, isError: true }]
+
+      this._renderCityList(combinedList)
+      } catch (err) {
+        const url = "/editor/#/collections/cities/new?city=" + query
+        this._renderCityList([...filteredCities, { url, query, isError: true, }])
+        console.error(err)
+    } finally {
+      stopLoading()
+    }
+    
   }
 }

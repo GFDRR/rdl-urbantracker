@@ -70,7 +70,9 @@ export default ({ cityDatatypes, sortField, sortDirection }) => {
     <script>
       var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"][data-scope="city-tracker"]'))
       var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-       return new bootstrap.Tooltip(tooltipTriggerEl)
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+          trigger: 'hover'
+        })
       })
     </script>
   `;

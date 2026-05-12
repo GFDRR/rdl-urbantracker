@@ -154,7 +154,7 @@ exports.handler = async (event) => {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
       },
-      body: JSON.stringify({ results: processedResults.slice(0, 5) })
+      body: JSON.stringify({ results: processedResults })
     };
   } catch (error) {
     return {
