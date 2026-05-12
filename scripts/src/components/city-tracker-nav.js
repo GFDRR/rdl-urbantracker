@@ -94,7 +94,7 @@ export default class {
   _makeCityRow(data) {
     if (data.isError) {
       return `
-        <a href="${data.url}" class="city-search-item list-group-item list-group-item-action">
+        <a href="${data.url}" class="list-group-item list-group-item-action">
           <i class="fa fa-plus-circle"></i>
           <small class="text-muted">Add ${data.query} manually</small>
         </a>
