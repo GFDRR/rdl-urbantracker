@@ -5,7 +5,6 @@ import sys
 import city
 import dataset
 import datatype
-from validator import validate_input
 
 
 def setup_args():
@@ -38,9 +37,6 @@ def setup_args():
 if __name__ == "__main__":
     exit_code = 0
     args = setup_args()
-
-    if args.datasets or args.datatypes:
-        dataset_errors = validate_input()
 
     if args.datasets:
         dataset.write_datasets_to_markdown()
