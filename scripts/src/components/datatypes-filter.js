@@ -18,7 +18,7 @@ export default class {
         const filteredDatatypes = filter(datasets, filters)
         const datatypeSlug = slugify(datatype.title)
         const selected = params.datatype && params.datatype === datatypeSlug
-        const itemParams = selected ? omit(params, 'datatype') : defaults({datatype: datatypeSlug}, params)
+        const itemParams = selected ? omit(params, 'datatype') : defaults({datatype: datatypeSlug, datatypeCategory: slugify(datatype.category)}, params)
         return {
           title: datatype.title,
           url: '?' + $.param(itemParams),

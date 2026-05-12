@@ -2,7 +2,6 @@
 title: Datasets
 layout: default
 ---
-{% assign datasets_count = site.datasets | size %}
 
 <div class="row h-100">
   <div class="col-sm-3 h-100">
@@ -11,8 +10,7 @@ layout: default
     <div class="list-group" data-component="datatypes-filter" style="height: 50%;"></div>
   </div>
   <div class="col-sm-8 h-75" data-component="datasets-list">
-    <h3 class="datasets-count" data-hook="datasets-count">{{ datasets_count }}
-      {% if datasets_count == 1 %}dataset{% else %}datasets{% endif %}</h3>
+    <h3 class="datasets-header" data-hook="datasets-header"></h3>
     <input type="text" data-hook="search-query" placeholder="Search..." class="form-control mb-3">
     <div class="h-100 overflow-scroll" data-hook="datasets-items">
       {% for dataset in site.datasets %}
