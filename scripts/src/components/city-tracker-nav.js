@@ -185,8 +185,8 @@ export default class {
           url,
           isMissing: true
         }
-      })
-      const combinedList = new Array(new Set([...filteredCities, ...mappedSearchResults]))
+      }).filter(result => !filteredCities.some(city => result.city_id === city.city_id))
+      const combinedList = [...filteredCities, ...mappedSearchResults]
 
       this._renderCityList(combinedList)
       } catch (err) {
