@@ -18,8 +18,8 @@ export default class {
     this.datatypes = opts.datatypes;
     this.params = opts.params;
     
-    this.sortField = 'title';
-    this.sortDirection = 'asc';
+    this.sortField = 'coverage';
+    this.sortDirection = 'desc';
     this.cityStats = this._calculateCityStats();
 
     this._render();
@@ -66,10 +66,10 @@ export default class {
 
 
   _sortCities(cities) {
-    const sortHierarchy = ['title', 'country', 'coverage', 'countFulfilled', 'countUnfulfilled']
+    const sortHierarchy = ['name', 'country', 'coverage', 'countFulfilled', 'countUnfulfilled']
       .sort((a,b) => a == this.sortField ? -1 : b == this.sortField ? 1 : 0);
     const getSortValue = {
-      title: item => item.title.toString().toLowerCase(),
+      name: item => item.name.toString().toLowerCase(),
       country: item => item.country.toString().toLowerCase(),
       coverage: item => item.coverage.toString().toLowerCase(),
       countFulfilled: item => parseFloat(item.countFulfilled) || 0,
@@ -80,7 +80,8 @@ export default class {
         if (result !== 0) return result;
         const aVal = getSortValue[field](a);
         const bVal = getSortValue[field](b);
-        if (i > 0 || aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
+        if (i > 0) return aVal > bVal;
+        if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
         if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
         return 0;
       }, 0); 
@@ -93,7 +94,7 @@ export default class {
     const lowerQuery = query.toLowerCase();
     return this.cityStats.filter(city => {
       return (
-        (city.title && city.title.toLowerCase().includes(lowerQuery)) ||
+        (city.name && city.name.toLowerCase().includes(lowerQuery)) ||
         (city.country && city.country.toLowerCase().includes(lowerQuery))
       );
     });

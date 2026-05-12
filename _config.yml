@@ -16,14 +16,14 @@ schema: urbantracker
 navigation:
   - title: Home
     url: /
-  - title: About
-    url: /about/
-  - title: City Tracker
-    url: /city-tracker/
   - title: Compare Cities
     url: /compare-cities/
+  - title: City Tracker
+    url: /city-tracker/
   - title: Dataset Catalog
     url: /datasets/
+  - title: About
+    url: /about/
   - title: Editor
     url: /editor/
 
@@ -46,27 +46,12 @@ collections:
 defaults:
   - scope:
       path: ""
-      type: cities
-    values:
-      layout: city
-  - scope:
-      path: ""
       type: datasets
     values:
       layout: dataset
       city: Missing
       datatype: Missing
       datatype_category: Missing
-  - scope:
-      path: ""
-      type: datatypes
-    values:
-      layout: datatype
-  - scope:
-      path: ""
-      type: datatype_categories
-    values:
-      layout: datatype_category
 
 # Markdown settings
 markdown: kramdown

@@ -12,8 +12,8 @@ export default ({ cities, sortField, sortDirection }) => {
       <thead>
         <tr>
           <th scope="col">Flag</th>
-          <th scope="col" data-sort="title" style="cursor: pointer;">
-            City ${getSortIcon('title')}
+          <th scope="col" data-sort="name" style="cursor: pointer;">
+            City ${getSortIcon('name')}
           </th>
           <th scope="col" data-sort="country" style="cursor: pointer;">
             Country ${getSortIcon('country')}
@@ -37,10 +37,10 @@ export default ({ cities, sortField, sortDirection }) => {
         ` : cities.map(city => `
           <tr>
             <td>
-              ${city.flag ? `<img src="${city.flag}" alt="${city.title} flag" style="max-height: 30px; max-width: 50px;">` : '-'}
+              ${city.flag ? `<img src="${city.flag}" alt="${city.name} flag" style="max-height: 30px; max-width: 50px;">` : '-'}
             </td>
             <td>
-              <a href="/city-tracker?city=${city.city_id}">${city.title}</a>
+              <a href="/city-tracker?city=${city.city_id}">${city.name}</a>
             </td>
             <td>${city.country || '-'}</td>
             <td>${city.countFulfilled}</td>
