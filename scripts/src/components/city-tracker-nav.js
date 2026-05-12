@@ -157,7 +157,8 @@ export default class {
       const idMatch = city.city_id && city.city_id.toLowerCase().includes(query.toLowerCase())
       return titleMatch || idMatch
     })
-    
+
+    const stopLoading = this._renderLoadingState()
     if (filteredCities.length > 0) {
       this._renderCityList(filteredCities.map(city => {
         const citySlug = slugify(city.city_id)
@@ -168,32 +169,33 @@ export default class {
           url,
         }
       }))
-    } else {
-      const stopLoading = this._renderLoadingState()
-      try {
-        await this._fetchWikidataCities(query)
-        if (!this.searchResults.length) {
-          throw new Error('No cities found')
-        }
-
-        this._renderCityList(this.searchResults.map(city => {
-          const citySlug = slugify(city.city_id)
-          const itemParams = defaults({city: citySlug}, this.params)
-          const encodedParams = Object.entries(city).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
-          const url = "/editor/#/collections/cities/new?" + encodedParams
-          return {
-            ...city,
-            url,
-            isMissing: true
-          }
-        }))
-        } catch (err) {
-          const url = "/editor/#/collections/cities/new?city=" + query
-          this._renderCityList([{ url, query, isError: true, }])
-          console.error(err)
-      } finally {
-        stopLoading()
-      }
     }
+    try {
+      await this._fetchWikidataCities(query)
+      if (!this.searchResults.length) {
+        throw new Error('No cities found')
+      }
+      const mappedSearchResults = this.searchResults.map(city => {
+        const citySlug = slugify(city.city_id)
+        const itemParams = defaults({city: citySlug}, this.params)
+        const encodedParams = Object.entries(city).map(kv => kv.map(encodeURIComponent).join("=")).join("&");
+        const url = "/editor/#/collections/cities/new?" + encodedParams
+        return {
+          ...city,
+          url,
+          isMissing: true
+        }
+      })
+      const combinedList = [...filteredCities, ...mappedSearchResults]
+
+      this._renderCityList(combinedList)
+      } catch (err) {
+        const url = "/editor/#/collections/cities/new?city=" + query
+        this._renderCityList([...filteredCities, { url, query, isError: true, }])
+        console.error(err)
+    } finally {
+      stopLoading()
+    }
+    
   }
 }
