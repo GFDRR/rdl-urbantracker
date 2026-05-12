@@ -6,7 +6,13 @@ import {setContent, slugify, createDatasetFilters, collapseListGroup} from '../u
 
 export default class {
   constructor (opts) {
-    const datatypeCategories = this._datatypeCategoriesWithCount(opts.datasets, opts.params, opts.el)
+    const store = opts.Alpine.store('filter')
+    // TODO: persist state from other pages
+    // if (!opts.params.datatypeCategory && store.filteredDatatypeCategories.length > 0) {
+    //   console.log(store.filteredDatatypeCategories)
+    //   opts.params.datatypeCategory = filteredDatatypeCategories
+    // }
+    const datatypeCategories = this._datatypeCategoriesWithCount(store.datasets, opts.params, opts.el)
     const datatypeCategoriesMarkup = '<h5>Category</h5><div class="list-group-inner overflow-scroll">' + datatypeCategories.map(TmplListGroupItem).join('') + '</div>'
     setContent(opts.el, datatypeCategoriesMarkup)
     collapseListGroup(opts.el)

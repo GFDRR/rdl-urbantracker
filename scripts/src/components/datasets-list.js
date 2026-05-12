@@ -17,33 +17,37 @@ import {queryByHook, setContent, createDatasetFilters} from '../util'
 
 export default class {
   constructor (opts) {
-    const elements = {
+    this.elements = {
       datasetsItems: queryByHook('datasets-items', opts.el),
       datasetsCount: queryByHook('datasets-count', opts.el),
       searchQuery: queryByHook('search-query', opts.el)
     }
+    this._initialize(opts)
+  }
 
+  _initialize(opts) {
+    const store = opts.Alpine.store('filter')
     const paramFilters = pick(opts.params, ['datatype', 'datatypeCategory', 'city'])
     const attributeFilters = pick(opts.el.data(), ['datatype', 'datatypeCategory', 'city'])
     const filters = createDatasetFilters(defaults(paramFilters, attributeFilters))
-    const filteredDatasets = filter(opts.datasets, filters)
+    const filteredDatasets = filter(store.datasets, filters)
     const datasetsMarkup = filteredDatasets.map(TmplDatasetItem)
-    setContent(elements.datasetsItems, datasetsMarkup)
+    setContent(this.elements.datasetsItems, datasetsMarkup)
 
     const datasetSuffix =  filteredDatasets.length > 1 ? 's' : ''
     const datasetsCountMarkup = filteredDatasets.length + ' dataset' + datasetSuffix;
-    setContent(elements.datasetsCount, datasetsCountMarkup)
+    setContent(this.elements.datasetsCount, datasetsCountMarkup)
 
     const searchFunction = this._createSearchFunction(filteredDatasets)
-    elements.searchQuery.on('keyup', (e) => {
+    this.elements.searchQuery.on('keyup', (e) => {
       const query = e.currentTarget.value
 
       const results = searchFunction(query)
       const resultsMarkup = results.map(TmplDatasetItem)
-      setContent(elements.datasetsItems, resultsMarkup)
+      setContent(this.elements.datasetsItems, resultsMarkup)
 
       const resultsCountMarkup = results.length + ' datasets'
-      setContent(elements.datasetsCount, resultsCountMarkup)
+      setContent(this.elements.datasetsCount, resultsCountMarkup)
     })
   }
 

@@ -22,7 +22,6 @@ export default ({ cityDatatypes, sortField, sortDirection }) => {
   const getTooltipAttrs = (cdt) => {
     const description = cdt.datatype.description;
     if (!description) return ''
-    console.log(cdt.datatype)
     const exampleIndicators = cdt.datatype.example_indicators;
     const title = description + (exampleIndicators ? ', e.g. ' + exampleIndicators : '');
     return `data-scope="city-tracker" data-bs-toggle="tooltip" data-bs-placement="right" title="${title}"`

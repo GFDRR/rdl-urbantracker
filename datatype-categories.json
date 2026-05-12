@@ -1,0 +1,8 @@
+---
+---
+[{% for datatype_category in site.datatype_categories %}
+  {
+    "title": {{ datatype_category.title | jsonify }}{% if datatype_category.description != "" %},
+    "description": {{ datatype_category.description | jsonify }}{% endif %}
+  }{% unless forloop.last %},{% endunless %}{% endfor %}
+]

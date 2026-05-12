@@ -16,13 +16,14 @@ export default class {
   }
 
   _initialize(opts) {
-    this.datasets = opts.datasets
-    this.datatypes = opts.datatypes
+    const store = opts.Alpine.store('filter')
+    this.cities = store.cities
+    this.datasets = store.datasets
+    this.datatypes = store.datatypes
     this.params = opts.params
-    const sortedCities = opts.cities.sort((a, b) => a.title.localeCompare(b.title));
+    const sortedCities = this.cities.sort((a, b) => a.title.localeCompare(b.title));
     if (!opts.params.city) {
-      const firstCity = sortedCities[0]
-      this.params.city = slugify(firstCity.city_id)
+      this.params.city = slugify(sortedCities[0].city_id)
     }
     this.searchResults = []
 

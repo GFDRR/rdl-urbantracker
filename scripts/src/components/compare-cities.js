@@ -9,23 +9,22 @@ export default class {
       compareCitiesTable: queryByHook('compare-cities-table', opts.el),
       searchQuery: queryByHook('compare-cities-search-query', opts.el)
     };
-    
-    this.cities = opts.cities;
-    this.datasets = opts.datasets;
-    this.datatypes = opts.datatypes;
+    this._initialize(opts)
+  }
+
+  _initialize(opts) {
+    const store = opts.Alpine.store('filter')
+
+    this.cities = store.cities;
+    this.datasets = store.datasets;
+    this.datatypes = store.datatypes;
     this.params = opts.params;
     
-    // State for sorting
     this.sortField = 'title';
     this.sortDirection = 'asc';
-    
-    // Calculate stats for all cities
     this.cityStats = this._calculateCityStats();
-    
-    // Initial render
+
     this._render();
-    
-    // Setup event listeners
     this._setupEventListeners();
   }
   
