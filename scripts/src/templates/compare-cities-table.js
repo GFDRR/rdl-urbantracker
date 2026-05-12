@@ -19,13 +19,13 @@ export default ({ cities, sortField, sortDirection }) => {
             Country ${getSortIcon('country')}
           </th>
           <th scope="col" data-sort="countFulfilled" style="cursor: pointer;">
-            Fulfilled ${getSortIcon('countFulfilled')}
+            <span data-scope="compare-cities" data-bs-toggle="tooltip" data-bs-placement="top" title="Number of datatypes satisfied by dataset catalog">Fulfilled ${getSortIcon('countFulfilled')}</span>
           </th>
           <th scope="col" data-sort="countUnfulfilled" style="cursor: pointer;">
-            Unfulfilled ${getSortIcon('countUnfulfilled')}
+            <span data-scope="compare-cities" data-bs-toggle="tooltip" data-bs-placement="top" title="Number of datatypes not satisfied by dataset catalog">Unfulfilled ${getSortIcon('countUnfulfilled')}</span>
           </th>
           <th scope="col" data-sort="coverage" style="cursor: pointer;">
-            Coverage ${getSortIcon('coverage')}
+            <span data-scope="compare-cities" data-bs-toggle="tooltip" data-bs-placement="top" title="Percentage of datatypes satisfied by dataset catalog">Coverage ${getSortIcon('coverage')}</span>
           </th>
         </tr>
       </thead>
@@ -63,5 +63,11 @@ export default ({ cities, sortField, sortDirection }) => {
         `).join('')}
       </tbody>
     </table>
+    <script>
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"][data-scope="compare-cities"]'))
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+      })
+    </script>
   `;
 };

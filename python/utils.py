@@ -190,63 +190,178 @@ def write_frontmatter(metadata, output_path):
         outfile.write(yaml.dump(metadata))
         outfile.write("---\n")
 
+import re
+import requests
+from typing import Optional, List, Dict, Any
+from urllib.parse import urlencode
 
-def search_wikidata_for_city(query):
-    sparql_query = f"""
-    SELECT DISTINCT ?city ?cityLabel ?countryEntity ?countryLabel ?cityFlag WHERE {{
-      VALUES ?myCatalog {{
-        "{query}"@en
-      }}
-      ?city rdfs:label ?myCatalog;
-        (wdt:P31/(wdt:P279*)) wd:Q515;
-        wdt:P1082 ?population;
-        wdt:P17 ?countryEntity.
-      OPTIONAL {{ ?city wdt:P41 ?cityFlag. }}
-      FILTER(?population > 0 )
-      ?countryEntity rdfs:label ?country.
-      FILTER((LANG(?country)) = "en")
-      SERVICE wikibase:label {{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }}
-    }}
-    ORDER BY DESC (?population)
-    LIMIT 5
+# Configuration
+WIKIDATA_API_BASE = "https://www.wikidata.org/w/api.php"
+USER_AGENT = "rdl-urbantracker/0.0 (https://github.com/GFDRR/rdl-urbantracker; lydia@oldgrowth.city)"
+HEADERS = {
+    "Accept": "application/json",
+    "User-Agent": USER_AGENT,
+}
+
+
+def search_cities(query: str) -> List[str]:
     """
+    Search for cities matching the query on Wikidata.
+    
+    Returns a list of Wikidata entity IDs (Q-numbers).
+    """
+    params = {
+        "action": "query",
+        "format": "json",
+        "list": "search",
+        "srsearch": f"{query} city",
+        "srnamespace": "0",
+        "srlimit": "50",
+        "srwhat": "text",
+    }
+    
+    response = requests.get(WIKIDATA_API_BASE, params=params, headers=HEADERS)
+    response.raise_for_status()
+    
+    search_data = response.json()
+    results = search_data.get("query", {}).get("search", [])
+    
+    # Extract Wikidata IDs (Q-numbers) from results
+    entity_ids = []
+    for result in results[:5]:
+        match = re.match(r"^Q\d+$", result["title"])
+        if match:
+            entity_ids.append(match.group(0))
+    
+    return entity_ids
 
-    try:
-        url = "https://query.wikidata.org/sparql"
-        params = {"format": "json", "query": sparql_query}
 
-        response = requests.get(
-            url,
-            params=params,
-            headers={
-                "Accept": "application/json",
-                "User-Agent": "rdl-urbantracker/0.0 (https://github.com/GFDRR/rdl-urbantracker; lydia@oldgrowth.city)",
-            },
-            timeout=5,
-        )
+def fetch_entity_data(entity_ids: List[str]) -> Dict[str, Any]:
+    """Fetch entity data (labels and claims) from Wikidata."""
+    params = {
+        "action": "wbgetentities",
+        "format": "json",
+        "ids": "|".join(entity_ids),
+        "props": "labels|claims",
+        "languages": "en",
+        "languagefallback": "1",
+    }
+    
+    response = requests.get(WIKIDATA_API_BASE, params=params, headers=HEADERS)
+    response.raise_for_status()
+    
+    return response.json()
 
-        response.raise_for_status()
-        data = response.json()
-        results = data.get("results", {}).get("bindings", [])
-        city = {
-            "city_id": results[0]["city"]["value"].split("/")[-1] if results else None,
-            "city_label": results[0]["cityLabel"]["value"] if results else None,
-            "country_entity": (
-                results[0]["countryEntity"]["value"].split("/")[-1] if results else None
-            ),
-            "country_label": results[0]["countryLabel"]["value"] if results else None,
-            "city_flag": (
-                results[0]["cityFlag"]["value"]
-                if results and "cityFlag" in results[0]
-                else None
-            ),
-        }
 
-        return city
-    except requests.exceptions.RequestException as error:
-        status_code = (
-            error.response.status_code
-            if hasattr(error, "response") and error.response
-            else 500
-        )
-        logging.debug(f"{status_code} error while searching wikidata: {str(error)}")
+def fetch_country_labels(country_ids: List[str]) -> Dict[str, Any]:
+    """Fetch country labels from Wikidata."""
+    params = {
+        "action": "wbgetentities",
+        "format": "json",
+        "ids": "|".join(country_ids),
+        "props": "labels",
+        "languages": "en",
+        "languagefallback": "1",
+    }
+    
+    response = requests.get(WIKIDATA_API_BASE, params=params, headers=HEADERS)
+    response.raise_for_status()
+    
+    return response.json()
+
+
+def extract_city_data(entity_id: str, entity: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """
+    Extract city information from a Wikidata entity.
+    
+    Returns a dict with city metadata or None if data is invalid.
+    """
+    # Get city label
+    labels = entity.get("labels", {})
+    city_label = labels.get("en", {}).get("value")
+    
+    if not city_label:
+        return None
+    
+    # Extract population (P1082)
+    claims = entity.get("claims", {})
+    population_claim = claims.get("P1082", [{}])[0]
+    population = 0
+    
+    if population_claim.get("mainsnak", {}).get("datavalue", {}).get("value", {}).get("amount"):
+        try:
+            population = int(population_claim["mainsnak"]["datavalue"]["value"]["amount"])
+        except (ValueError, TypeError):
+            population = 0
+    
+    if population <= 0:
+        return None
+    
+    # Extract country (P17)
+    country_claim = claims.get("P17", [{}])[0]
+    country_id = country_claim.get("mainsnak", {}).get("datavalue", {}).get("value", {}).get("id")
+    
+    # Extract flag (P41)
+    flag_claim = claims.get("P41", [{}])[0]
+    flag_filename = flag_claim.get("mainsnak", {}).get("datavalue", {}).get("value")
+    
+    city_flag = None
+    if flag_filename:
+        encoded_filename = requests.utils.quote(flag_filename)
+        city_flag = f"https://commons.wikimedia.org/wiki/Special:FilePath/{encoded_filename}"
+    
+    return {
+        "city_id": entity_id,
+        "city_label": city_label,
+        "country_entity": country_id,
+        "population": population,
+        "city_flag": city_flag,
+    }
+
+
+def search_wikidata_for_city(query: str) -> List[Dict[str, Any]]:
+    if not query or not query.strip():
+        return None
+    
+    entity_ids = search_cities(query)
+    
+    if not entity_ids:
+        return []
+    
+    entities_data = fetch_entity_data(entity_ids)
+    entities = entities_data.get("entities", {})
+    
+    processed_results = []
+    
+    for entity_id in entity_ids:
+        entity = entities.get(entity_id)
+        if not entity:
+            continue
+        
+        city_data = extract_city_data(entity_id, entity)
+        if city_data:
+            processed_results.append(city_data)
+    
+    country_ids = list({
+        result["country_entity"]
+        for result in processed_results
+        if result.get("country_entity")
+    })
+    
+    if country_ids:
+        try:
+            countries_data = fetch_country_labels(country_ids)
+            countries = countries_data.get("entities", {})
+            
+            for result in processed_results:
+                if result.get("country_entity"):
+                    country_entity = countries.get(result["country_entity"], {})
+                    result["country_label"] = country_entity.get("labels", {}).get("en", {}).get("value")
+        except requests.RequestException:
+            pass
+    
+    processed_results.sort(key=lambda x: x["population"], reverse=True)
+    
+    if len(processed_results) == 0:
+        return None
+    return processed_results[0]

@@ -59,6 +59,10 @@ a {
   overflow-x: hidden !important;
 }
 
+.tooltip-inner {
+  max-width: 40vw;
+}
+
 a:hover {
   color: var(--color-text-secondary)
 }
