@@ -1,8 +1,9 @@
 ---
+submitter_email: mattia.amadio@gmail.com
+title: ICIMOD Regional Database System — Nepal Land Cover
 cities:
-- Q3037
+  - Q3037
 datatypes:
-- Landcover / Landuse
-external_url: https://rds.icimod.org/
-title: "ICIMOD Regional Database System \u2014 Nepal Land Cover"
+  - Landcover / Landuse
+external_url: https://rds.icimod.org/Home/DataDetail?metadataId=9224
 ---
