@@ -1,8 +1,9 @@
 ---
+submitter_email: mattia.amadio@gmail.com
+title: Ontario Digital Terrain Model (Lidar-Derived)
 cities:
-- Q172
+  - Q172
 datatypes:
-- Elevation
-external_url: https://open.toronto.ca/
-title: City of Toronto LiDAR DTM (2015)
+  - Elevation
+external_url: https://data.ontario.ca/dataset/ontario-digital-terrain-model-lidar-derived
 ---
