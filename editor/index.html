@@ -29,9 +29,10 @@
       const { CMS, initCMS: init } = window
       
       let user_email;
-      netlifyIdentity.on('init', async netlifyUser => {
-        user_email = netlifyUser?.email;
-      })
+      netlifyIdentity.on('login', user => {
+        user_email = user?.email;
+        netlifyIdentity.close();
+      });
 
       const config = {
         local_backend: {% if jekyll.environment == "production" %}false{% else %}true{% endif %},
@@ -65,7 +66,7 @@
 
       const SubmitterEmailControl = createClass({
         componentDidMount() {
-          this.props.onChange(user_email)
+          this.props.onChange(this.props.value ?? user_email)
         },
 
         handleChange(e) {
@@ -78,8 +79,7 @@
             className: this.props.classNameWrapper,
             type: 'email',
             value: this.props.value,
-            onChange: this.handleChange,
-            placeholder: user_email
+            onChange: this.handleChange
           });
         }
       });

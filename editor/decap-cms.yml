@@ -1,6 +1,22 @@
 backend:
   name: git-gateway
   branch: hackathon
+  commit_messages:
+    create: |
+      Create {{collection}} “{{slug}}"
+      
+      Authored by: {{author-login}}
+    update: |
+      Update {{collection}} “{{slug}}"
+      
+      Authored by: {{author-login}}
+    delete: |
+      Delete {{collection}} “{{slug}}"
+      
+      Authored by: {{author-login}}
+    uploadMedia: Upload “{{path}}”
+    deleteMedia: Delete “{{path}}”
+    openAuthoring: '{{message}}'
 
 logo:
   src: /img/branding/gfdrr_logo-dark.png
