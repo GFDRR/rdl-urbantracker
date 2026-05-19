@@ -77,6 +77,12 @@ collections:
       - label: ID
         name: id
         widget: string
+      - label: Description
+        name: description
+        widget: string
+      - label: Example Indicators
+        name: example_indicators
+        widget: string
   - name: cities
     label: Cities
     label_singular: City
