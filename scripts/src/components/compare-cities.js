@@ -35,30 +35,26 @@ export default class {
       const cityDatasets = filteredDatasets.filter(dataset => 
         dataset.cities && dataset.cities.some(c => slugify(c.city_id) === slugify(city.city_id))
       );
-      
       const stats = cityDatasets.reduce((acc, dataset) => {
         const datatypes = dataset.datatypes || [];
-        if (dataset.is_partial || dataset.is_unavailable) {
-          acc.countUnfulfilled += datatypes.length;
-        } else {
-          acc.countFulfilled += datatypes.length;
+        if (!dataset.is_partial && !dataset.is_unavailable) {
+          datatypes.forEach(dt => acc.datatypesFulfilled.add(dt.title))
         }
-        return acc;
+        return acc
       }, {
-        countFulfilled: 0,
-        countUnfulfilled: 0
-      });
-      
+        datatypesFulfilled: new Set()    
+      });      
       const totalDatatypes = this.datatypes.length;
       const coveragePercent = totalDatatypes > 0 
-        ? (stats.countFulfilled / totalDatatypes * 100) 
+        ? (stats.datatypesFulfilled.size / totalDatatypes * 100) 
         : 0;
       
       return {
         ...city,
-        countFulfilled: stats.countFulfilled,
-        countUnfulfilled: stats.countUnfulfilled,
-        coverage: coveragePercent.toFixed(2) + '%',
+        countFulfilled: stats.datatypesFulfilled.size,
+        countUnfulfilled: this.datatypes.length - stats.datatypesFulfilled.size,
+        coverage: (stats.datatypesFulfilled.size / this.datatypes.length * 100).toFixed(2)+"%",
+        datatypesFulfilled: stats.datatypesFulfilled,
         coveragePercent: Math.round(coveragePercent)
       };
     });
