@@ -1,3 +1,6 @@
-<!-- general behavior -->
-
-<footer class="site-footer"></footer>
+<footer data-component="footer" class="site-footer d-flex justify-content-between align-items-center">
+    <h5 class="m-4">General Statistics</h5>
+    <p class="m-4">{{ site.cities | size }} Cities</p>
+    <p class="m-4">{{ site.datasets | size }} Datasets</p>
+    <p  class="m-4"data-hook="overall-coverage">
+</footer>
