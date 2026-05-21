@@ -7,6 +7,6 @@ description: Information system "Address register". Contains list of real
 cities:
   - Q35493
 datatypes:
-  - Building Permits and Inspections
+  - Building Registry
 external_url: https://data.egov.kz/datasets/view?index=s_grounds_new
 ---
