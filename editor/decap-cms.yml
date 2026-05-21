@@ -1,5 +1,6 @@
 backend:
   name: github
+  repo: GFDRR/rdl-urbantracker
   branch: hackathon
   commit_messages:
     create: |
