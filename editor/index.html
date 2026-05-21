@@ -28,11 +28,6 @@
       const { CMS, initCMS: init } = window
       
       let user_email;
-      netlifyIdentity.on('login', user => {
-        user_email = user?.email;
-        netlifyIdentity.close();
-      });
-
       const config = {
         local_backend: {% if jekyll.environment == "production" %}false{% else %}true{% endif %},
         site_url: "{{ site.url }}"
