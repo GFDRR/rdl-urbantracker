@@ -32,6 +32,7 @@ export function createDatasetFilters(filters) {
       conditions.push(
         dataset.datatypes &&
           dataset.datatypes.some(function (datatype) {
+            if (!datatype.title) return false;
             return slugify(datatype.title).indexOf(filters.datatype) !== -1;
           }),
       );
@@ -40,6 +41,7 @@ export function createDatasetFilters(filters) {
       conditions.push(
         dataset.datatypes &&
           dataset.datatypes.some(function (datatype) {
+            if (!datatype.title) return false;
             return (
               slugify(datatype.category).indexOf(filters.datatypeCategory) !==
               -1
