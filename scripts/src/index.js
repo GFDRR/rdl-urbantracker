@@ -12,6 +12,7 @@ import CitiesFilter from "./components/cities-filter";
 import DatatypesFilter from "./components/datatypes-filter";
 import DatatypeCategoriesFilter from "./components/datatype-categories-filter";
 import { createDatasetFilters, queryByComponent } from "./util";
+import Footer from "./components/footer";
 
 const urlSearchParams = new URLSearchParams(window.location.search);
 const params = {};
@@ -47,6 +48,7 @@ function getDatatypeCategories() {
 }
 
 const components = [
+  { tag: "footer", class: Footer },
   { tag: "datasets-list", class: DatasetsList },
   { tag: "city-tracker-nav", class: CityTrackerNav },
   { tag: "city-tracker-overview", class: CityTrackerOverview },

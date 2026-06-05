@@ -36,21 +36,20 @@ export default class {
         const cityDatasets = this.datasets.filter(d => d.cities && d.cities.some(c => c.city_id === city.city_id))
         const stats = cityDatasets.reduce((acc, dataset) => {
           const datatypes = dataset.datatypes || [];
-          if (dataset.is_partial || dataset.is_unavailable) {
-            acc.countUnfulfilled += datatypes.length
-          } else {
-            acc.countFulfilled += datatypes.length
+          if (!dataset.is_partial && !dataset.is_unavailable) {
+            datatypes.forEach(dt => acc.datatypesFulfilled.add(dt.title))
           }
           return acc
         }, {
-          countFulfilled: 0,
-          countUnfulfilled: 0,      
+          datatypesFulfilled: new Set()    
         });
         return {
           ...city,
           ...stats,
-          coverage: (stats.countFulfilled / this.datatypes.length * 100).toFixed(2)+"%",
-          url: '?' + $.param(itemParams),
+          countFulfilled: stats.datatypesFulfilled.size,
+          countUnfulfilled: this.datatypes.length - stats.datatypesFulfilled.size,
+          coverage: (stats.datatypesFulfilled.size / this.datatypes.length * 100).toFixed(2)+"%",
+          datatypesFulfilled: stats.datatypesFulfilled,          url: '?' + $.param(itemParams),
           selected: selected
         }
       })
@@ -114,7 +113,7 @@ export default class {
         <div class="d-flex w-100 justify-content-between">
           <h6 class="mb-1">${data.title}</h6>
         </div>
-        <small class="text-muted">${data.coverage}</small>
+        <small>${data.coverage}</small>
       </a>
     `;
   }

@@ -1,6 +1,23 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: GFDRR/rdl-urbantracker
   branch: hackathon
+  commit_messages:
+    create: |
+      Create {{collection}} “{{slug}}"
+      
+      Authored by: {{author-login}}
+    update: |
+      Update {{collection}} “{{slug}}"
+      
+      Authored by: {{author-login}}
+    delete: |
+      Delete {{collection}} “{{slug}}"
+      
+      Authored by: {{author-login}}
+    uploadMedia: Upload “{{path}}”
+    deleteMedia: Delete “{{path}}”
+    openAuthoring: '{{message}}'
 
 logo:
   src: /img/branding/gfdrr_logo-dark.png
@@ -60,6 +77,12 @@ collections:
         widget: string
       - label: ID
         name: id
+        widget: string
+      - label: Description
+        name: description
+        widget: string
+      - label: Example Indicators
+        name: example_indicators
         widget: string
   - name: cities
     label: Cities

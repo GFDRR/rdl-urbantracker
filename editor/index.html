@@ -23,16 +23,11 @@
       })();
     </script> 
     <script type="text/javascript">window.CMS_MANUAL_INIT = true</script>
-    <script src="https://cdn.jsdelivr.net/gh/lydiascarf/decap-cms@cfd8ad29dd8ac832f56742d7a9ed3cbb98220c9a/packages/decap-cms/dist/decap-cms.js"></script>
-    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
     <script type="text/javascript">
       const { CMS, initCMS: init } = window
       
       let user_email;
-      netlifyIdentity.on('init', async netlifyUser => {
-        user_email = netlifyUser?.email;
-      })
-
       const config = {
         local_backend: {% if jekyll.environment == "production" %}false{% else %}true{% endif %},
         site_url: "{{ site.url }}"
@@ -65,7 +60,7 @@
 
       const SubmitterEmailControl = createClass({
         componentDidMount() {
-          this.props.onChange(user_email)
+          this.props.onChange(this.props.value ?? user_email)
         },
 
         handleChange(e) {
@@ -78,8 +73,7 @@
             className: this.props.classNameWrapper,
             type: 'email',
             value: this.props.value,
-            onChange: this.handleChange,
-            placeholder: user_email
+            onChange: this.handleChange
           });
         }
       });
@@ -102,7 +96,7 @@
             datatypes.length ? h('p', {}, 'Datatypes: ') : '',
             h('ul', {}, 
               datatypes.map(function(dt) {
-                return h('li', {}, dt.category + ' / ' + dt.title)
+                return h('li', {}, dt.category + ' / ' + dt.title, h('ul', {}, h('li', {}, dt.description + ', e.g. ' + dt.example_indicators)))
               }),
             ),
             external_url
